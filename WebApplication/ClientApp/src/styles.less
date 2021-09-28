@@ -1,10 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* COMMON */
+@import "src/app/shared/styles/indent";
+@import "src/app/shared/styles/colors";
+@import "src/app/shared/styles/media";
+@import "src/app/shared/styles/font";
+@import "src/app/shared/styles/grid";
 @import "src/app/shared/styles/mixins";
+
+/* PAGES */
+@import "src/app/route-components/main/main.component";
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* BLOCK .preloader */
 .preloader {
   .preloader();
 }

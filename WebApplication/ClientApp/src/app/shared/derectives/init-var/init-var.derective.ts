@@ -4,23 +4,22 @@ interface InitVarContext<T> {
   initVar: T;
 }
 
-{
+@Directive({
   selector: "[initVar]"
-}
+})
 export class InitVarDirective<T> implements OnInit {
   private _context: InitVarContext<T> = { initVar: null };
 
   constructor(
     private viewContainer: ViewContainerRef,
-    private templateRef: TemplateRef<InitVarContext<T>
-) {}
+    private templateRef: TemplateRef<InitVarContext<T>>
+  ) {}
 
-)
-set initVar(value: T {
-  this._context.initVar = value;
-}
+  set initVar(value: T) {
+    this._context.initVar = value;
+  }
 
-ngOnInit(): void {
-  this.viewContainer.createEmbeddedView(this.templateRef, this._context);
-}
+  ngOnInit(): void {
+    this.viewContainer.createEmbeddedView(this.templateRef, this._context);
+  }
 }
