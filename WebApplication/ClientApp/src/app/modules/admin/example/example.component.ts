@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { AuthService } from "../../../core/auth/auth.service";
 
 @Component({
     selector     : 'example',
@@ -10,7 +11,12 @@ export class ExampleComponent
     /**
      * Constructor
      */
-    constructor()
+    constructor(
+        private _authService: AuthService
+    )
     {
+    }
+
+    testMethod() {
     }
 }

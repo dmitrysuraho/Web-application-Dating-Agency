@@ -78,11 +78,6 @@
 
                 <!-- Actions -->
                 <div class="inline-flex items-end justify-between w-full mt-1.5">
-                    <mat-checkbox
-                        [color]="'primary'"
-                        [formControlName]="'rememberMe'">
-                        Remember me
-                    </mat-checkbox>
                     <a
                         class="text-md font-medium text-primary-500 hover:underline"
                         [routerLink]="['/forgot-password']">Forgot password?
@@ -125,7 +120,8 @@
                     <button
                         class="flex-auto"
                         type="button"
-                        mat-stroked-button>
+                        mat-stroked-button
+                        (click)="twitterSignIn()">
                         <mat-icon
                             class="icon-size-5"
                             [svgIcon]="'feather:twitter'"></mat-icon>
@@ -133,7 +129,8 @@
                     <button
                         class="flex-auto"
                         type="button"
-                        mat-stroked-button>
+                        mat-stroked-button
+                        (click)="githubSignIn()">
                         <mat-icon
                             class="icon-size-5"
                             [svgIcon]="'feather:github'"></mat-icon>
@@ -170,8 +167,7 @@
                 <div>our community</div>
             </div>
             <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
-                Fuse helps developers to build organized and well coded dashboards full of beautiful and rich modules.
-                Join us and start building your application today.
+                Our agency has a potential match for everyone, whether you are interested in Latin, Asian, African, Christian or senior dating.
             </div>
             <div class="flex items-center mt-8">
                 <div class="flex flex-0 items-center -space-x-1.5">

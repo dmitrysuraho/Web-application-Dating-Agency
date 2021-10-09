@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
@@ -13,7 +13,6 @@ import { AuthService } from 'app/core/auth/auth.service';
 })
 export class AuthSignInComponent implements OnInit
 {
-    @ViewChild('signInNgForm') signInNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
         type   : 'success',
@@ -45,8 +44,8 @@ export class AuthSignInComponent implements OnInit
     {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email     : ['hughes.brian@company.com', [Validators.required, Validators.email]],
-            password  : ['admin', Validators.required],
+            email     : ['', [Validators.required, Validators.email]],
+            password  : ['', Validators.required],
             rememberMe: ['']
         });
     }
@@ -74,36 +73,54 @@ export class AuthSignInComponent implements OnInit
 
         // Sign in
         this._authService.signIn(this.signInForm.value)
-            .subscribe(
+            .then(
                 () => {
-
-                    // Set the redirect url.
-                    // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
-                    // to the correct page after a successful sign in. This way, that url can be set via
-                    // routing file and we don't have to touch here.
+                    // Set the redirect url
                     const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
 
                     // Navigate to the redirect url
                     this._router.navigateByUrl(redirectURL);
 
-                },
+                })
+            .catch(
                 (response) => {
-
                     // Re-enable the form
                     this.signInForm.enable();
 
-                    // Reset the form
-                    this.signInNgForm.resetForm();
+                    // Create error message
+                    let errorMessage: string;
+                    if (response.message.indexOf('Firebase') == -1) {
+                        errorMessage = response.message;
+                    } else {
+                        errorMessage = 'Wrong email or password.';
+                    }
 
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Wrong email or password'
+                        message: errorMessage
                     };
 
                     // Show the alert
                     this.showAlert = true;
-                }
-            );
+                });
+    }
+
+    /**
+     * Sign in with Twitter
+     */
+    twitterSignIn(): void {
+        // Sign in
+        this._authService.twitterSignIn()
+            .then(() => this._router.navigateByUrl(''));
+    }
+
+    /**
+     * Sign in with Github
+     */
+    githubSignIn(): void {
+        // Sign in
+        this._authService.githubSignIn()
+            .then(() => this._router.navigateByUrl(''));
     }
 }

@@ -13,7 +13,6 @@ import { AuthService } from 'app/core/auth/auth.service';
 })
 export class AuthSignUpComponent implements OnInit
 {
-    @ViewChild('signUpNgForm') signUpNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
         type   : 'success',
@@ -47,7 +46,6 @@ export class AuthSignUpComponent implements OnInit
                 name      : ['', Validators.required],
                 email     : ['', [Validators.required, Validators.email]],
                 password  : ['', Validators.required],
-                company   : [''],
                 agreements: ['', Validators.requiredTrue]
             }
         );
@@ -76,24 +74,26 @@ export class AuthSignUpComponent implements OnInit
 
         // Sign up
         this._authService.signUp(this.signUpForm.value)
-            .subscribe(
-                (response) => {
-
+            .then(
+                () => {
                     // Navigate to the confirmation required page
                     this._router.navigateByUrl('/confirmation-required');
-                },
+                })
+            .catch(
                 (response) => {
-
                     // Re-enable the form
                     this.signUpForm.enable();
 
-                    // Reset the form
-                    this.signUpNgForm.resetForm();
+                    // Create error message
+                    let errorMessage: string = response.message.substr(10).split(' (')[0];
+                    if(!errorMessage.endsWith('.')) {
+                        errorMessage += '.';
+                    }
 
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Something went wrong, please try again.'
+                        message: errorMessage
                     };
 
                     // Show the alert

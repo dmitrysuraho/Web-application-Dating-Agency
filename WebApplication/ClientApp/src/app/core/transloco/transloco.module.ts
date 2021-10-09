@@ -18,8 +18,8 @@ import { TranslocoHttpLoader } from 'app/core/transloco/transloco.http-loader';
                         label: 'English'
                     },
                     {
-                        id   : 'tr',
-                        label: 'Turkish'
+                        id   : 'ru',
+                        label: 'Русский'
                     }
                 ],
                 defaultLang         : 'en',
