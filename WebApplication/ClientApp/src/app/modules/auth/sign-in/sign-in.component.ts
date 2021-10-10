@@ -111,8 +111,7 @@ export class AuthSignInComponent implements OnInit
      */
     twitterSignIn(): void {
         // Sign in
-        this._authService.twitterSignIn()
-            .then(() => this._router.navigateByUrl(''));
+        this._authService.twitterSignIn();
     }
 
     /**
@@ -120,7 +119,6 @@ export class AuthSignInComponent implements OnInit
      */
     githubSignIn(): void {
         // Sign in
-        this._authService.githubSignIn()
-            .then(() => this._router.navigateByUrl(''));
+        this._authService.githubSignIn();
     }
 }

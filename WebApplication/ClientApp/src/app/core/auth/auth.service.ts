@@ -79,14 +79,14 @@ export class AuthService
      * Sign in with Twitter
      */
     twitterSignIn(): Promise<any> {
-        return this._angularFireAuth.signInWithPopup(new TwitterAuthProvider());
+        return this._angularFireAuth.signInWithRedirect(new TwitterAuthProvider());
     }
 
     /**
      * Sign in with Github
      */
     githubSignIn(): Promise<any> {
-        return this._angularFireAuth.signInWithPopup(new GithubAuthProvider());
+        return this._angularFireAuth.signInWithRedirect(new GithubAuthProvider());
     }
 
     /**
