@@ -1,7 +1,7 @@
 {
-    "name": "@fuse/starter",
+    "name": "@dating-agency/starter",
     "version": "13.6.2",
-    "description": "Fuse - Angular Admin Template and Starter Project",
+    "description": "Dating Agency",
     "author": "https://themeforest.net/user/srcn",
     "license": "https://themeforest.net/licenses/standard",
     "private": true,
