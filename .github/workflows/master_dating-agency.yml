@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_07994ae97c8c4c7188a198a71270dbf9 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_c5f0c0eb034a413b963a7e32301b70df }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_37ec90978d674f66b76285d6d82f18e3 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_6a4f568277454286ba4aef1d9dca0edf }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_07994ae97c8c4c7188a198a71270dbf9 }}/dsuraho/dating-agency:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_37ec90978d674f66b76285d6d82f18e3 }}/dsuraho/dating-agency:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'dating-agency'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1789d10fc3c34bbd9d78f00bfd6c67bf }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_07994ae97c8c4c7188a198a71270dbf9 }}/dsuraho/dating-agency:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_24c8d984cb5648849606af6e745ef4d5 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_37ec90978d674f66b76285d6d82f18e3 }}/dsuraho/dating-agency:${{ github.sha }}'
