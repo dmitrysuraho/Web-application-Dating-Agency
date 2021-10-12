@@ -20,6 +20,8 @@ export class AuthSignUpComponent implements OnInit
     };
     signUpForm: FormGroup;
     showAlert: boolean = false;
+    minDate: Date;
+    maxDate: Date;
 
     /**
      * Constructor
@@ -41,14 +43,23 @@ export class AuthSignUpComponent implements OnInit
      */
     ngOnInit(): void
     {
+        // Validate birthday field
+        const currentDate = new Date();
+        this.minDate = new Date(currentDate.getFullYear() - 100, currentDate.getMonth(), currentDate.getDate());
+        this.maxDate = new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate());
+
         // Create the form
         this.signUpForm = this._formBuilder.group({
-                name      : ['', Validators.required],
+                sex       : ['', Validators.required],
+                name      : ['', [Validators.required, Validators.maxLength(30), Validators.pattern('^[A-Za-z ]+$')]],
+                birthday  : ['', Validators.required],
+                region    : ['', [Validators.required, Validators.maxLength(30), Validators.pattern('^[A-Za-z., ]+$')]],
                 email     : ['', [Validators.required, Validators.email]],
-                password  : ['', Validators.required],
+                password  : ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
                 agreements: ['', Validators.requiredTrue]
             }
         );
+
     }
 
     // -----------------------------------------------------------------------------------------------------

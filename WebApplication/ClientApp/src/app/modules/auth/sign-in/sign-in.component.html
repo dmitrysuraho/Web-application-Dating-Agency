@@ -35,11 +35,15 @@
 
                 <!-- Email field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Email address</mat-label>
                     <input
                         id="email"
                         matInput
+                        [placeholder]="'Email address'"
                         [formControlName]="'email'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:mail'"></mat-icon>
                     <mat-error *ngIf="signInForm.get('email').hasError('required')">
                         Email address is required
                     </mat-error>
@@ -50,13 +54,17 @@
 
                 <!-- Password field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Password</mat-label>
                     <input
                         id="password"
                         matInput
                         type="password"
+                        [placeholder]="'Password'"
                         [formControlName]="'password'"
                         #passwordField>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:key'"></mat-icon>
                     <button
                         mat-icon-button
                         type="button"
@@ -71,8 +79,14 @@
                             *ngIf="passwordField.type === 'text'"
                             [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
                     </button>
-                    <mat-error>
+                    <mat-error *ngIf="signInForm.get('password').hasError('required')">
                         Password is required
+                    </mat-error>
+                    <mat-error *ngIf="signInForm.get('password').hasError('minlength')">
+                        Min length is 6 symbols
+                    </mat-error>
+                    <mat-error *ngIf="signInForm.get('password').hasError('maxlength')">
+                        Max length is 12 symbols
                     </mat-error>
                 </mat-form-field>
 

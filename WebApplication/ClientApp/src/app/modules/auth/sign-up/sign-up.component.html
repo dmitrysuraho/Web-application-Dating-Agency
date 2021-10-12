@@ -32,25 +32,110 @@
                 class="mt-8"
                 [formGroup]="signUpForm">
 
+                <!-- Sex field -->
+                <mat-form-field class="w-full">
+                    <mat-select
+                        id="sex"
+                        [placeholder]="'Sex'"
+                        [formControlName]="'sex'">
+                        <mat-option value="man">Man</mat-option>
+                        <mat-option value="woman">Woman</mat-option>
+                    </mat-select>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:heart'"></mat-icon>
+                    <mat-error *ngIf="signUpForm.get('sex').hasError('required')">
+                        Sex is required
+                    </mat-error>
+                </mat-form-field>
+
                 <!-- Name field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Full name</mat-label>
                     <input
                         id="name"
                         matInput
+                        [placeholder]="'Full name'"
                         [formControlName]="'name'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('name').hasError('required')">
                         Full name is required
+                    </mat-error>
+                    <mat-error *ngIf="signUpForm.get('name').hasError('maxlength')">
+                        Max length is 30 symbols
+                    </mat-error>
+                    <mat-error *ngIf="signUpForm.get('name').hasError('pattern')">
+                        Incorrect format of name
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Birthday field -->
+                <mat-form-field class="w-full">
+                    <input
+                        matInput
+                        disabled
+                        [min]="minDate"
+                        [max]="maxDate"
+                        [placeholder]="'Birthday'"
+                        [matDatepicker]="picker"
+                        [formControlName]="'birthday'">
+                    <mat-datepicker-toggle
+                        matSuffix
+                        [for]="picker">
+                        <mat-icon
+                            class="icon-size-5"
+                            matDatepickerToggleIcon
+                            [svgIcon]="'heroicons_solid:chevron-down'"></mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker
+                        #picker
+                        touchUi
+                        [disabled]="false"></mat-datepicker>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                    <mat-error *ngIf="signUpForm.get('birthday').hasError('required')">
+                        Birthday is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Region field -->
+                <mat-form-field class="w-full">
+                    <input
+                        id="region"
+                        matInput
+                        [placeholder]="'Region'"
+                        [formControlName]="'region'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                    <mat-error *ngIf="signUpForm.get('region').hasError('required')">
+                        Region is required
+                    </mat-error>
+                    <mat-error *ngIf="signUpForm.get('region').hasError('maxlength')">
+                        Max length is 30 symbols
+                    </mat-error>
+                    <mat-error *ngIf="signUpForm.get('region').hasError('pattern')">
+                        Incorrect format of region
                     </mat-error>
                 </mat-form-field>
 
                 <!-- Email field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Email address</mat-label>
                     <input
                         id="email"
                         matInput
+                        [placeholder]="'Email address'"
                         [formControlName]="'email'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:mail'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('email').hasError('required')">
                         Email address is required
                     </mat-error>
@@ -61,13 +146,17 @@
 
                 <!-- Password field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Password</mat-label>
                     <input
                         id="password"
                         matInput
                         type="password"
+                        [placeholder]="'Password'"
                         [formControlName]="'password'"
                         #passwordField>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:key'"></mat-icon>
                     <button
                         mat-icon-button
                         type="button"
@@ -82,8 +171,14 @@
                             *ngIf="passwordField.type === 'text'"
                             [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
                     </button>
-                    <mat-error>
+                    <mat-error *ngIf="signUpForm.get('password').hasError('required')">
                         Password is required
+                    </mat-error>
+                    <mat-error *ngIf="signUpForm.get('password').hasError('minlength')">
+                        Min length is 6 symbols
+                    </mat-error>
+                    <mat-error *ngIf="signUpForm.get('password').hasError('maxlength')">
+                        Max length is 12 symbols
                     </mat-error>
                 </mat-form-field>
 
@@ -113,7 +208,7 @@
                     [disabled]="signUpForm.disabled"
                     (click)="signUp()">
                     <span *ngIf="!signUpForm.disabled">
-                        Create your free account
+                        Create your account
                     </span>
                     <mat-progress-spinner
                         *ngIf="signUpForm.disabled"
