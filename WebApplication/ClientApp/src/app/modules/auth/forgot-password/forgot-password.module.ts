@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +16,7 @@ import { authForgotPasswordRoutes } from 'app/modules/auth/forgot-password/forgo
     declarations: [
         AuthForgotPasswordComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(authForgotPasswordRoutes),
         MatButtonModule,
         MatFormFieldModule,
@@ -24,7 +25,8 @@ import { authForgotPasswordRoutes } from 'app/modules/auth/forgot-password/forgo
         MatProgressSpinnerModule,
         FuseCardModule,
         FuseAlertModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ]
 })
 export class AuthForgotPasswordModule

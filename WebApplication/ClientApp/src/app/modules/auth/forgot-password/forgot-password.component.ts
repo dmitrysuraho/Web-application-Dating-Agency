@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
+import { TranslateService } from "@ngx-translate/core";
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
@@ -21,13 +21,15 @@ export class AuthForgotPasswordComponent implements OnInit
     };
     forgotPasswordForm: FormGroup;
     showAlert: boolean = false;
+    currentLanguage: string;
 
     /**
      * Constructor
      */
     constructor(
         private _authService: AuthService,
-        private _formBuilder: FormBuilder
+        private _formBuilder: FormBuilder,
+        private _translateService: TranslateService
     )
     {
     }
@@ -41,6 +43,13 @@ export class AuthForgotPasswordComponent implements OnInit
      */
     ngOnInit(): void
     {
+        // Current language
+        this.currentLanguage = this._translateService.currentLang;
+
+        // Change language
+        this._translateService.onLangChange
+            .subscribe((result: any) => this.currentLanguage = result.lang);
+
         // Create the form
         this.forgotPasswordForm = this._formBuilder.group({
             email: ['', [Validators.required, Validators.email]]
@@ -75,7 +84,7 @@ export class AuthForgotPasswordComponent implements OnInit
                     // Set the alert
                     this.alert = {
                         type   : 'success',
-                        message: 'Password reset sent! You\'ll receive an email if you are registered on our system.'
+                        message: this._translateService.instant('common.alert.sent-link')
                     };
                 })
             .catch(
@@ -83,7 +92,7 @@ export class AuthForgotPasswordComponent implements OnInit
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Email does not found! Are you sure you are already a member?'
+                        message: this._translateService.instant('common.alert.email-not-found')
                     };
                 })
             .finally(

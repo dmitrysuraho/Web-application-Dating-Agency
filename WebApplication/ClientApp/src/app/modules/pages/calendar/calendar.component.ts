@@ -19,9 +19,9 @@ import { RRule } from 'rrule';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { CalendarRecurrenceComponent } from 'app/modules/calendar/recurrence/recurrence.component';
-import { CalendarService } from 'app/modules/calendar/calendar.service';
-import { Calendar, CalendarDrawerMode, CalendarEvent, CalendarEventEditMode, CalendarEventPanelMode, CalendarSettings } from 'app/modules/calendar/calendar.types';
+import { CalendarRecurrenceComponent } from 'app/modules/pages/calendar/recurrence/recurrence.component';
+import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
+import { Calendar, CalendarDrawerMode, CalendarEvent, CalendarEventEditMode, CalendarEventPanelMode, CalendarSettings } from 'app/modules/pages/calendar/calendar.types';
 
 @Component({
     selector       : 'calendar',

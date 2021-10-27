@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from "@ngx-translate/core";
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,14 +13,15 @@ import { SharedModule } from 'app/shared/shared.module';
     declarations: [
         NotificationsComponent
     ],
-    imports     : [
+    imports: [
         RouterModule,
         OverlayModule,
         PortalModule,
         MatButtonModule,
         MatIconModule,
         MatTooltipModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ],
     exports     : [
         NotificationsComponent

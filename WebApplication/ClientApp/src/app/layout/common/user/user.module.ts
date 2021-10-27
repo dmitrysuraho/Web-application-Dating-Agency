@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,12 +11,13 @@ import { SharedModule } from 'app/shared/shared.module';
     declarations: [
         UserComponent
     ],
-    imports     : [
+    imports: [
         MatButtonModule,
         MatDividerModule,
         MatIconModule,
         MatMenuModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ],
     exports     : [
         UserComponent

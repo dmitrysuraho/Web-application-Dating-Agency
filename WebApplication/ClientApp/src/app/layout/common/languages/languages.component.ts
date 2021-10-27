@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector       : 'languages',
@@ -7,9 +8,18 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs       : 'languages'
 })
-export class LanguagesComponent implements OnInit, OnDestroy
+export class LanguagesComponent implements OnInit
 {
-    availableLangs: any[] = [];
+    availableLangs: any[] = [
+        {
+            id: 'ru',
+            label: 'Русский'
+        },
+        {
+            id: 'en',
+            label: 'English'
+        }
+    ];
     activeLang: string;
     flagCodes: any;
 
@@ -17,7 +27,7 @@ export class LanguagesComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _changeDetectorRef: ChangeDetectorRef
+        private _translateService: TranslateService
     )
     {
     }
@@ -31,19 +41,14 @@ export class LanguagesComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Set default language
+        this.activeLang = 'ru';
 
         // Set the country iso codes for languages for flags
         this.flagCodes = {
-            'en': 'us',
-            'ru': 'ru'
+            'ru': 'ru',
+            'en': 'us'
         };
-    }
-
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -57,6 +62,8 @@ export class LanguagesComponent implements OnInit, OnDestroy
      */
     setActiveLang(lang: string): void
     {
+        this._translateService.use(lang);
+        this.activeLang = lang;
     }
 
     /**
@@ -69,10 +76,4 @@ export class LanguagesComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-
 }

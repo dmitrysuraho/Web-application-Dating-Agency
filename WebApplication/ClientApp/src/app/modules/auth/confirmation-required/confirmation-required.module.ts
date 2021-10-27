@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from '@angular/material/button';
 import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
@@ -10,11 +11,12 @@ import { authConfirmationRequiredRoutes } from 'app/modules/auth/confirmation-re
     declarations: [
         AuthConfirmationRequiredComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(authConfirmationRequiredRoutes),
         MatButtonModule,
         FuseCardModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ]
 })
 export class AuthConfirmationRequiredModule

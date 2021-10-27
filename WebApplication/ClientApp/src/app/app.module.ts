@@ -8,6 +8,9 @@ import { FuseConfigModule } from '@fuse/services/config';
 import { FuseMockApiModule } from '@fuse/lib/mock-api';
 import { AngularFireModule } from "@angular/fire/compat";
 import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { HttpClient } from "@angular/common/http";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { CoreModule } from 'app/core/core.module';
 import { appConfig } from 'app/core/config/app.config';
 import { mockApiServices } from 'app/mock-api';
@@ -20,6 +23,10 @@ const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
     scrollPositionRestoration: 'enabled'
 };
+
+export function HttpLoaderFactory(http: HttpClient): TranslateLoader {
+    return new TranslateHttpLoader(http, './assets/locale/', '.json');
+}
 
 @NgModule({
     declarations: [
@@ -46,7 +53,17 @@ const routerConfig: ExtraOptions = {
 
         // Firebase module
         AngularFireModule.initializeApp(environment.firebaseConfig),
-        AngularFirestoreModule
+        AngularFirestoreModule,
+
+        // Translate module
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient],
+            },
+            useDefaultLang: false,
+        })
     ],
     bootstrap   : [
         AppComponent

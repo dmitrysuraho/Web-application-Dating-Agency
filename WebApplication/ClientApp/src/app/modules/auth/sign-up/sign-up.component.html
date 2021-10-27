@@ -7,12 +7,12 @@
             </div>
 
             <!-- Title -->
-            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign up</div>
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">{{ 'sign-up.title' | translate }}</div>
             <div class="flex items-baseline mt-0.5 font-medium">
-                <div>Already have an account?</div>
+                <div>{{ 'sign-up.account' | translate }}</div>
                 <a
                     class="ml-1 text-primary-500 hover:underline"
-                    [routerLink]="['/sign-in']">Sign in
+                    [routerLink]="['/sign-in']">{{ 'sign-up.sign-in' | translate }}
                 </a>
             </div>
 
@@ -36,17 +36,17 @@
                 <mat-form-field class="w-full">
                     <mat-select
                         id="sex"
-                        [placeholder]="'Sex'"
+                        [placeholder]="'common.placeholder.sex' | translate"
                         [formControlName]="'sex'">
-                        <mat-option value="man">Man</mat-option>
-                        <mat-option value="woman">Woman</mat-option>
+                        <mat-option value="Мужской">{{ 'sign-up.sex.man' | translate }}</mat-option>
+                        <mat-option value="Женский">{{ 'sign-up.sex.woman' | translate }}</mat-option>
                     </mat-select>
                     <mat-icon
                         class="icon-size-5"
                         matPrefix
                         [svgIcon]="'heroicons_solid:heart'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('sex').hasError('required')">
-                        Sex is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Пол' : 'Sex' } }}
                     </mat-error>
                 </mat-form-field>
 
@@ -55,20 +55,20 @@
                     <input
                         id="name"
                         matInput
-                        [placeholder]="'Full name'"
+                        [placeholder]="'common.placeholder.name' | translate"
                         [formControlName]="'name'">
                     <mat-icon
                         class="icon-size-5"
                         matPrefix
                         [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('name').hasError('required')">
-                        Full name is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Имя и отчество' : 'Full name' } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('name').hasError('maxlength')">
-                        Max length is 30 symbols
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 30 } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('name').hasError('pattern')">
-                        Incorrect format of name
+                        {{ 'common.error.pattern' | translate: { field: currentLanguage === 'ru' ? 'имени и отчества' : 'name' } }}
                     </mat-error>
                 </mat-form-field>
 
@@ -79,7 +79,7 @@
                         disabled
                         [min]="minDate"
                         [max]="maxDate"
-                        [placeholder]="'Birthday'"
+                        [placeholder]="'common.placeholder.birthday' | translate"
                         [matDatepicker]="picker"
                         [formControlName]="'birthday'">
                     <mat-datepicker-toggle
@@ -99,7 +99,7 @@
                         matPrefix
                         [svgIcon]="'heroicons_solid:cake'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('birthday').hasError('required')">
-                        Birthday is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Дата рождения' : 'Birthday' } }}
                     </mat-error>
                 </mat-form-field>
 
@@ -108,20 +108,20 @@
                     <input
                         id="region"
                         matInput
-                        [placeholder]="'Region'"
+                        [placeholder]="'common.placeholder.region' | translate"
                         [formControlName]="'region'">
                     <mat-icon
                         class="icon-size-5"
                         matPrefix
                         [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('region').hasError('required')">
-                        Region is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Страна/город' : 'Region' } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('region').hasError('maxlength')">
-                        Max length is 30 symbols
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 30 } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('region').hasError('pattern')">
-                        Incorrect format of region
+                        {{ 'common.error.pattern' | translate: { field: currentLanguage === 'ru' ? 'страны/города' : 'region' } }}
                     </mat-error>
                 </mat-form-field>
 
@@ -130,17 +130,17 @@
                     <input
                         id="email"
                         matInput
-                        [placeholder]="'Email address'"
+                        [placeholder]="'common.placeholder.email' | translate"
                         [formControlName]="'email'">
                     <mat-icon
                         class="icon-size-5"
                         matPrefix
                         [svgIcon]="'heroicons_solid:mail'"></mat-icon>
                     <mat-error *ngIf="signUpForm.get('email').hasError('required')">
-                        Email address is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Почтовый адрес' : 'Email address' } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('email').hasError('email')">
-                        Please enter a valid email address
+                        {{ 'common.error.email' | translate }}
                     </mat-error>
                 </mat-form-field>
 
@@ -150,7 +150,7 @@
                         id="password"
                         matInput
                         type="password"
-                        [placeholder]="'Password'"
+                        [placeholder]="'common.placeholder.password' | translate"
                         [formControlName]="'password'"
                         #passwordField>
                     <mat-icon
@@ -172,30 +172,25 @@
                             [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
                     </button>
                     <mat-error *ngIf="signUpForm.get('password').hasError('required')">
-                        Password is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Пароль' : 'Password' } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('password').hasError('minlength')">
-                        Min length is 6 symbols
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Минимальная' : 'Min', length: 6 } }}
                     </mat-error>
                     <mat-error *ngIf="signUpForm.get('password').hasError('maxlength')">
-                        Max length is 12 symbols
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 12 } }}
                     </mat-error>
                 </mat-form-field>
 
-                <!-- ToS and PP -->
+                <!-- PP -->
                 <div class="inline-flex items-end w-full mt-1.5">
                     <mat-checkbox
                         [color]="'primary'"
                         [formControlName]="'agreements'">
-                        <span>I agree to the</span>
+                        <span>{{ 'sign-up.agree' | translate }}</span>
                         <a
                             class="ml-1 text-primary-500 hover:underline"
-                            [routerLink]="['./']">Terms of Service
-                        </a>
-                        <span>and</span>
-                        <a
-                            class="ml-1 text-primary-500 hover:underline"
-                            [routerLink]="['./']">Privacy Policy
+                            (click)="openPrivacyPolicy()">{{ 'sign-up.privacy-policy.title' | translate }}
                         </a>
                     </mat-checkbox>
                 </div>
@@ -208,7 +203,7 @@
                     [disabled]="signUpForm.disabled"
                     (click)="signUp()">
                     <span *ngIf="!signUpForm.disabled">
-                        Create your account
+                        {{ 'sign-up.create-your-account' | translate }}
                     </span>
                     <mat-progress-spinner
                         *ngIf="signUpForm.disabled"
@@ -229,25 +224,15 @@
                 <circle r="234" cx="790" cy="491"></circle>
             </g>
         </svg>
-        <!-- Dots -->
-        <svg class="absolute -top-16 -right-16 text-gray-700"
-             viewBox="0 0 220 192" width="220" height="192" fill="none">
-            <defs>
-                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
-                </pattern>
-            </defs>
-            <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
-        </svg>
         <!-- @formatter:on -->
         <!-- Content -->
         <div class="z-10 relative w-full max-w-2xl">
             <div class="text-7xl font-bold leading-none text-gray-100">
-                <div>Welcome to</div>
-                <div>our community</div>
+                <div>{{ 'common.welcome.title.welcome-to' | translate }}</div>
+                <div>{{ 'common.welcome.title.our-community' | translate }}</div>
             </div>
             <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
-                Our agency has a potential match for everyone, whether you are interested in Latin, Asian, African, Christian or senior dating.
+                {{ 'common.welcome.description' | translate }}
             </div>
             <div class="flex items-center mt-8">
                 <div class="flex flex-0 items-center -space-x-1.5">
@@ -264,7 +249,7 @@
                         class="flex-0 w-10 h-10 rounded-full ring-4 ring-offset-1 ring-gray-800 ring-offset-gray-800 object-cover"
                         src="assets/images/avatars/male-16.jpg">
                 </div>
-                <div class="ml-4 font-medium tracking-tight text-gray-400">More than 17k people joined us, it's your turn</div>
+                <div class="ml-4 font-medium tracking-tight text-gray-400">{{ 'common.welcome.people-joined' | translate }}</div>
             </div>
         </div>
     </div>

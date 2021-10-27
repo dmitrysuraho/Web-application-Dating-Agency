@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Moment } from 'moment';
-import { Calendar, CalendarEvent, CalendarEventEditMode, CalendarSettings, CalendarWeekday } from 'app/modules/calendar/calendar.types';
+import { Calendar, CalendarEvent, CalendarEventEditMode, CalendarSettings, CalendarWeekday } from 'app/modules/pages/calendar/calendar.types';
 
 @Injectable({
     providedIn: 'root'

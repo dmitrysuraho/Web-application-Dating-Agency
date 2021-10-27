@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FuseConfigService } from '@fuse/services/config';
 import { FuseTailwindService } from '@fuse/services/tailwind';
-import { AppConfig, Scheme, Theme } from 'app/core/config/app.config';
+import { AppConfig, Scheme } from 'app/core/config/app.config';
 import { Layout } from 'app/layout/layout.types';
 
 @Component({
@@ -110,15 +110,5 @@ export class SettingsComponent implements OnInit, OnDestroy
     setScheme(scheme: Scheme): void
     {
         this._fuseConfigService.config = {scheme};
-    }
-
-    /**
-     * Set the theme on the config
-     *
-     * @param theme
-     */
-    setTheme(theme: Theme): void
-    {
-        this._fuseConfigService.config = {theme};
     }
 }

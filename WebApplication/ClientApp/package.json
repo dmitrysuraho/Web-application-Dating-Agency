@@ -34,6 +34,8 @@
         "@fullcalendar/moment": "4.4.2",
         "@fullcalendar/rrule": "4.4.2",
         "@fullcalendar/timegrid": "4.4.2",
+        "@ngx-translate/core": "^13.0.0",
+        "@ngx-translate/http-loader": "^6.0.0",
         "apexcharts": "3.28.1",
         "crypto-js": "3.3.0",
         "firebase": "^9.1.1",

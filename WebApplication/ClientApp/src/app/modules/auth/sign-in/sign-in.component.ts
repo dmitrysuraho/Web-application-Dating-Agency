@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from "@ngx-translate/core";
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
@@ -20,6 +21,7 @@ export class AuthSignInComponent implements OnInit
     };
     signInForm: FormGroup;
     showAlert: boolean = false;
+    currentLanguage: string;
 
     /**
      * Constructor
@@ -28,7 +30,8 @@ export class AuthSignInComponent implements OnInit
         private _activatedRoute: ActivatedRoute,
         private _authService: AuthService,
         private _formBuilder: FormBuilder,
-        private _router: Router
+        private _router: Router,
+        private _translateService: TranslateService
     )
     {
     }
@@ -42,11 +45,17 @@ export class AuthSignInComponent implements OnInit
      */
     ngOnInit(): void
     {
+        // Current language
+        this.currentLanguage = this._translateService.currentLang;
+
+        // Change language
+        this._translateService.onLangChange
+            .subscribe((result: any) => this.currentLanguage = result.lang);
+
         // Create the form
         this.signInForm = this._formBuilder.group({
             email     : ['', [Validators.required, Validators.email]],
-            password  : ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
-            rememberMe: ['']
+            password  : ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]]
         });
     }
 
@@ -60,10 +69,7 @@ export class AuthSignInComponent implements OnInit
     signIn(): void
     {
         // Return if the form is invalid
-        if ( this.signInForm.invalid )
-        {
-            return;
-        }
+        if (this.signInForm.invalid) return;
 
         // Disable the form
         this.signInForm.disable();
@@ -92,7 +98,7 @@ export class AuthSignInComponent implements OnInit
                     if (response.message.indexOf('Firebase') == -1) {
                         errorMessage = response.message;
                     } else {
-                        errorMessage = 'Wrong email or password.';
+                        errorMessage = this._translateService.instant('common.alert.wrong-email-or-password');
                     }
 
                     // Set the alert
@@ -107,11 +113,21 @@ export class AuthSignInComponent implements OnInit
     }
 
     /**
+     * Sign in with Google
+     */
+    googleSignIn(): void {
+        // Sign in
+        this._authService.googleSignIn()
+            .then(() => this._router.navigateByUrl(''));
+    }
+
+    /**
      * Sign in with Twitter
      */
     twitterSignIn(): void {
         // Sign in
-        this._authService.twitterSignIn();
+        this._authService.twitterSignIn()
+            .then(() => this._router.navigateByUrl(''));
     }
 
     /**
@@ -119,6 +135,7 @@ export class AuthSignInComponent implements OnInit
      */
     githubSignIn(): void {
         // Sign in
-        this._authService.githubSignIn();
+        this._authService.githubSignIn()
+            .then(() => this._router.navigateByUrl(''));
     }
 }

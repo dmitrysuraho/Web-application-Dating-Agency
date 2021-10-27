@@ -7,12 +7,13 @@
             </div>
 
             <!-- Title -->
-            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign in</div>
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">{{ 'sign-in.title' | translate }}</div>
             <div class="flex items-baseline mt-0.5 font-medium">
-                <div>Don't have an account?</div>
+                <div>{{ 'sign-in.account' | translate }}</div>
                 <a
                     class="ml-1 text-primary-500 hover:underline"
-                    [routerLink]="['/sign-up']">Sign up
+                    [routerLink]="['/sign-up']">
+                    {{ 'sign-in.sign-up' | translate }}
                 </a>
             </div>
 
@@ -38,17 +39,17 @@
                     <input
                         id="email"
                         matInput
-                        [placeholder]="'Email address'"
+                        [placeholder]="'common.placeholder.email' | translate"
                         [formControlName]="'email'">
                     <mat-icon
                         class="icon-size-5"
                         matPrefix
                         [svgIcon]="'heroicons_solid:mail'"></mat-icon>
                     <mat-error *ngIf="signInForm.get('email').hasError('required')">
-                        Email address is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Почтовый адрес' : 'Email address' } }}
                     </mat-error>
                     <mat-error *ngIf="signInForm.get('email').hasError('email')">
-                        Please enter a valid email address
+                        {{ 'common.error.email' | translate }}
                     </mat-error>
                 </mat-form-field>
 
@@ -58,7 +59,7 @@
                         id="password"
                         matInput
                         type="password"
-                        [placeholder]="'Password'"
+                        [placeholder]="'common.placeholder.password' | translate"
                         [formControlName]="'password'"
                         #passwordField>
                     <mat-icon
@@ -80,13 +81,13 @@
                             [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
                     </button>
                     <mat-error *ngIf="signInForm.get('password').hasError('required')">
-                        Password is required
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Пароль' : 'Password' } }}
                     </mat-error>
                     <mat-error *ngIf="signInForm.get('password').hasError('minlength')">
-                        Min length is 6 symbols
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Минимальная' : 'Min', length: 6 } }}
                     </mat-error>
                     <mat-error *ngIf="signInForm.get('password').hasError('maxlength')">
-                        Max length is 12 symbols
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 12 } }}
                     </mat-error>
                 </mat-form-field>
 
@@ -94,7 +95,8 @@
                 <div class="inline-flex items-end justify-between w-full mt-1.5">
                     <a
                         class="text-md font-medium text-primary-500 hover:underline"
-                        [routerLink]="['/forgot-password']">Forgot password?
+                        [routerLink]="['/forgot-password']">
+                        {{ 'sign-in.forgot-password' | translate }}
                     </a>
                 </div>
 
@@ -106,7 +108,7 @@
                     [disabled]="signInForm.disabled"
                     (click)="signIn()">
                     <span *ngIf="!signInForm.disabled">
-                        Sign in
+                        {{ 'sign-in.title' | translate }}
                     </span>
                     <mat-progress-spinner
                         *ngIf="signInForm.disabled"
@@ -117,7 +119,7 @@
                 <!-- Separator -->
                 <div class="flex items-center mt-8">
                     <div class="flex-auto mt-px border-t"></div>
-                    <div class="mx-2 text-secondary">Or continue with</div>
+                    <div class="mx-2 text-secondary">{{ 'sign-in.continue-with' | translate }}</div>
                     <div class="flex-auto mt-px border-t"></div>
                 </div>
 
@@ -126,10 +128,11 @@
                     <button
                         class="flex-auto"
                         type="button"
-                        mat-stroked-button>
+                        mat-stroked-button
+                        (click)="googleSignIn()">
                         <mat-icon
                             class="icon-size-5"
-                            [svgIcon]="'feather:facebook'"></mat-icon>
+                            [svgIcon]="'feather:chrome'"></mat-icon>
                     </button>
                     <button
                         class="flex-auto"
@@ -163,25 +166,15 @@
                 <circle r="234" cx="790" cy="491"></circle>
             </g>
         </svg>
-        <!-- Dots -->
-        <svg class="absolute -top-16 -right-16 text-gray-700"
-             viewBox="0 0 220 192" width="220" height="192" fill="none">
-            <defs>
-                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
-                </pattern>
-            </defs>
-            <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
-        </svg>
         <!-- @formatter:on -->
         <!-- Content -->
         <div class="z-10 relative w-full max-w-2xl">
             <div class="text-7xl font-bold leading-none text-gray-100">
-                <div>Welcome to</div>
-                <div>our community</div>
+                <div>{{ 'common.welcome.title.welcome-to' | translate }}</div>
+                <div>{{ 'common.welcome.title.our-community' | translate }}</div>
             </div>
             <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
-                Our agency has a potential match for everyone, whether you are interested in Latin, Asian, African, Christian or senior dating.
+                {{ 'common.welcome.description' | translate }}
             </div>
             <div class="flex items-center mt-8">
                 <div class="flex flex-0 items-center -space-x-1.5">
@@ -198,7 +191,7 @@
                         class="flex-0 w-10 h-10 rounded-full ring-4 ring-offset-1 ring-gray-800 ring-offset-gray-800 object-cover"
                         src="assets/images/avatars/male-16.jpg">
                 </div>
-                <div class="ml-4 font-medium tracking-tight text-gray-400">More than 17k people joined us, it's your turn</div>
+                <div class="ml-4 font-medium tracking-tight text-gray-400">{{ 'common.welcome.people-joined' | translate }}</div>
             </div>
         </div>
     </div>

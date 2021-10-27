@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CalendarService } from 'app/modules/calendar/calendar.service';
-import { Calendar, CalendarSettings, CalendarWeekday } from 'app/modules/calendar/calendar.types';
+import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
+import { Calendar, CalendarSettings, CalendarWeekday } from 'app/modules/pages/calendar/calendar.types';
 
 @Injectable({
     providedIn: 'root'

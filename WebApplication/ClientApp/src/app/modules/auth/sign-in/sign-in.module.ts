@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,7 +17,7 @@ import { authSignInRoutes } from 'app/modules/auth/sign-in/sign-in.routing';
     declarations: [
         AuthSignInComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(authSignInRoutes),
         MatButtonModule,
         MatCheckboxModule,
@@ -26,7 +27,8 @@ import { authSignInRoutes } from 'app/modules/auth/sign-in/sign-in.routing';
         MatProgressSpinnerModule,
         FuseCardModule,
         FuseAlertModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ]
 })
 export class AuthSignInModule

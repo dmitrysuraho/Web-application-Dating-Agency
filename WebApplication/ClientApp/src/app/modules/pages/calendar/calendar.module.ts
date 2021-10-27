@@ -19,11 +19,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { FuseDateRangeModule } from '@fuse/components/date-range';
 import { SharedModule } from 'app/shared/shared.module';
-import { CalendarComponent } from 'app/modules/calendar/calendar.component';
-import { CalendarRecurrenceComponent } from 'app/modules/calendar/recurrence/recurrence.component';
-import { CalendarSettingsComponent } from 'app/modules/calendar/settings/settings.component';
-import { CalendarSidebarComponent } from 'app/modules/calendar/sidebar/sidebar.component';
-import { calendarRoutes } from 'app/modules/calendar/calendar.routing';
+import { CalendarComponent } from 'app/modules/pages/calendar/calendar.component';
+import { CalendarRecurrenceComponent } from 'app/modules/pages/calendar/recurrence/recurrence.component';
+import { CalendarSettingsComponent } from 'app/modules/pages/calendar/settings/settings.component';
+import { CalendarSidebarComponent } from 'app/modules/pages/calendar/sidebar/sidebar.component';
+import { calendarRoutes } from 'app/modules/pages/calendar/calendar.routing';
 
 @NgModule({
     declarations: [

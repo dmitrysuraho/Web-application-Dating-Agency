@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ 'privacy-policy.title' | translate }}</h2>
+<mat-dialog-content class="mat-typography">
+    <!-- General information -->
+    <p>
+        <b>{{ 'privacy-policy.general-information.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.general-information.description-1' | translate }}</p>
+    <p>{{ 'privacy-policy.general-information.description-2' | translate }}</p>
+    <p>{{ 'privacy-policy.general-information.description-3' | translate }}</p>
+    <p>{{ 'privacy-policy.general-information.description-4' | translate }}</p>
+
+    <!-- Information Collection and Use -->
+    <p>
+        <b>{{ 'privacy-policy.information-collection-and-use.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.information-collection-and-use.description-1' | translate }}</p>
+    <p>{{ 'privacy-policy.information-collection-and-use.description-2' | translate }}</p>
+
+    <!-- Log Data -->
+    <p>
+        <b>{{ 'privacy-policy.log-data.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.log-data.description' | translate }}</p>
+
+    <!-- Cookies -->
+    <p>
+        <b>{{ 'privacy-policy.cookies.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.cookies.description-1' | translate }}</p>
+    <p>{{ 'privacy-policy.cookies.description-2' | translate }}</p>
+
+    <!-- Service Providers -->
+    <p>
+        <b>{{ 'privacy-policy.service-providers.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.service-providers.description-1' | translate }}</p>
+    <ul [innerHTML]="'privacy-policy.service-providers.description-2' | translate"></ul>
+    <br>
+    <p>{{ 'privacy-policy.service-providers.description-3' | translate }}</p>
+
+    <!-- Security -->
+    <p>
+        <b>{{ 'privacy-policy.security.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.security.description' | translate }}</p>
+
+    <!-- Links to Other Sites -->
+    <p>
+        <b>{{ 'privacy-policy.links-to-other-sites.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.links-to-other-sites.description' | translate }}</p>
+
+    <!-- Changes to This Privacy Policy -->
+    <p>
+        <b>{{ 'privacy-policy.changes-to-this-privacy-policy.title' | translate }}</b>
+    </p>
+    <p>{{ 'privacy-policy.changes-to-this-privacy-policy.description' | translate }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>{{ 'privacy-policy.close' | translate }}</button>
+</mat-dialog-actions>

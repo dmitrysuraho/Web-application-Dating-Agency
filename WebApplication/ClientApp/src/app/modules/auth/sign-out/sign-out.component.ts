@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from "@ngx-translate/core";
 import { Subject, timer } from 'rxjs';
 import { finalize, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { AuthService } from 'app/core/auth/auth.service';
@@ -12,10 +13,7 @@ import { AuthService } from 'app/core/auth/auth.service';
 export class AuthSignOutComponent implements OnInit, OnDestroy
 {
     countdown: number = 5;
-    countdownMapping: any = {
-        '=1'   : '# second',
-        'other': '# seconds'
-    };
+    countdownMapping: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -23,9 +21,12 @@ export class AuthSignOutComponent implements OnInit, OnDestroy
      */
     constructor(
         private _authService: AuthService,
-        private _router: Router
+        private _router: Router,
+        private _translateService: TranslateService
     )
     {
+        // Set counter depending on the language
+        this._setCountdown(this._translateService.currentLang);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -37,6 +38,13 @@ export class AuthSignOutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Change language
+        this._translateService.onLangChange
+            .subscribe((result: any) => {
+                // Set counter depending on the language
+                this._setCountdown(result.lang);
+            });
+
         // Sign out
         this._authService.signOut();
 
@@ -61,5 +69,29 @@ export class AuthSignOutComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Set countdown
+     *
+     * @param lang
+     */
+    private _setCountdown(lang: string): void {
+        if (lang === 'ru') {
+            this.countdownMapping = {
+                '=5'   : this._translateService.instant('sign-out.seconds-five'),
+                '=1'   : this._translateService.instant('sign-out.second'),
+                'other': this._translateService.instant('sign-out.seconds')
+            };
+        } else {
+            this.countdownMapping = {
+                '=1'   : this._translateService.instant('sign-out.second'),
+                'other': this._translateService.instant('sign-out.seconds')
+            };
+        }
     }
 }

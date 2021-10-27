@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule } from "@ngx-translate/core";
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { SharedModule } from 'app/shared/shared.module';
 
@@ -9,13 +10,14 @@ import { SharedModule } from 'app/shared/shared.module';
     declarations: [
         LanguagesComponent
     ],
-    imports     : [
+    imports: [
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
-        SharedModule
+        SharedModule,
+        TranslateModule
     ],
-    exports     : [
+    exports: [
         LanguagesComponent
     ]
 })

@@ -4,9 +4,9 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { cloneDeep } from 'lodash-es';
-import { Calendar } from 'app/modules/calendar/calendar.types';
-import { CalendarService } from 'app/modules/calendar/calendar.service';
-import { calendarColors } from 'app/modules/calendar/sidebar/calendar-colors';
+import { Calendar } from 'app/modules/pages/calendar/calendar.types';
+import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
+import { calendarColors } from 'app/modules/pages/calendar/sidebar/calendar-colors';
 
 @Component({
     selector     : 'calendar-sidebar',

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CalendarService } from 'app/modules/calendar/calendar.service';
+import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
 
 @Component({
     selector       : 'calendar-settings',

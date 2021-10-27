@@ -4,8 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CalendarService } from 'app/modules/calendar/calendar.service';
-import { CalendarWeekday } from 'app/modules/calendar/calendar.types';
+import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
+import { CalendarWeekday } from 'app/modules/pages/calendar/calendar.types';
 
 @Component({
     selector     : 'calendar-recurrence',
