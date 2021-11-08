@@ -6,9 +6,15 @@ import { InitialDataResolver } from 'app/app.resolvers';
 
 export const appRoutes: Route[] = [
 
-    {path: '', pathMatch : 'full', redirectTo: 'calendar'},
+    // Error routes
+    {path: 'not-found', loadChildren: () => import('app/modules/error/error-404/error-404.module').then(m => m.Error404Module)},
+    {path: 'internal-error', loadChildren: () => import('app/modules/error/error-500/error-500.module').then(m => m.Error500Module)},
 
-    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'calendar'},
+    // Default route
+    {path: '', pathMatch : 'full', redirectTo: 'profile'},
+
+    // Redirect route
+    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'profile'},
 
     // Auth routes for guests
     {
@@ -64,7 +70,13 @@ export const appRoutes: Route[] = [
             initialData: InitialDataResolver,
         },
         children: [
+            {path: 'profile', loadChildren: () => import('app/modules/pages/profile/profile.module').then(m => m.ProfileModule)},
+            {path: 'profile/:id', loadChildren: () => import('app/modules/pages/profile/profile.module').then(m => m.ProfileModule)},
             {path: 'calendar', loadChildren: () => import('app/modules/pages/calendar/calendar.module').then(m => m.CalendarModule)},
+            {path: 'settings', loadChildren: () => import('app/modules/pages/settings/settings.module').then(m => m.SettingsModule)},
         ]
-    }
+    },
+
+    // Incorrect route
+    {path: '**', loadChildren: () => import('app/modules/error/error-404/error-404.module').then(m => m.Error404Module)},
 ];

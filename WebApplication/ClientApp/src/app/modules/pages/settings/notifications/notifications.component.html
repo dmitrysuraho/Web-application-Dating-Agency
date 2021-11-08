@@ -1,0 +1,83 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="notificationsForm">
+
+        <!-- Alert -->
+        <fuse-alert
+            class="my-8"
+            *ngIf="showAlert"
+            [appearance]="'outline'"
+            [showIcon]="false"
+            [type]="alert.type">
+            {{ alert.message }}
+        </fuse-alert>
+
+        <!-- Section -->
+        <div class="grid grid-cols-1 gap-6 w-full mt-8">
+
+            <!-- Communication -->
+            <div class="flex items-center justify-between">
+                <div
+                    class="flex-auto cursor-pointer"
+                    (click)="communication.toggle()">
+                    <div class="leading-6 font-medium">{{ 'profile.settings.notifications.communications.title' | translate }}</div>
+                    <div class="text-md text-secondary">{{ 'profile.settings.notifications.communications.description' | translate }}</div>
+                </div>
+                <mat-slide-toggle
+                    class="ml-2"
+                    [color]="'primary'"
+                    [formControlName]="'communication'"
+                    #communication>
+                </mat-slide-toggle>
+            </div>
+
+            <!-- Email -->
+            <div class="flex items-center justify-between">
+                <div
+                    class="flex-auto cursor-pointer"
+                    (click)="meetupsToggle.toggle()">
+                    <div class="leading-6 font-medium">{{ 'profile.settings.notifications.email.title' | translate }}</div>
+                    <div class="text-md text-secondary">{{ 'profile.settings.notifications.email.description' | translate }}</div>
+                </div>
+                <mat-slide-toggle
+                    class="ml-2"
+                    [color]="'primary'"
+                    [formControlName]="'email'"
+                    #meetupsToggle>
+                </mat-slide-toggle>
+            </div>
+
+            <!-- Security -->
+            <div class="flex items-center justify-between">
+                <div
+                    class="flex-auto cursor-pointer"
+                    (click)="securityToggle.toggle()">
+                    <div class="leading-6 font-medium">{{ 'profile.settings.notifications.security.title' | translate }}</div>
+                    <div class="text-md text-secondary">{{ 'profile.settings.notifications.security.description' | translate }}</div>
+                </div>
+                <mat-slide-toggle
+                    class="ml-2"
+                    [color]="'primary'"
+                    [formControlName]="'security'"
+                    #securityToggle>
+                </mat-slide-toggle>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-6 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                (click)="save()">
+                {{ 'profile.settings.notifications.save' | translate }}
+            </button>
+        </div>
+    </form>
+
+</div>

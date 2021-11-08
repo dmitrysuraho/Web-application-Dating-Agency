@@ -19,6 +19,8 @@
     <Folder Include="Models\Users\" />
     <Folder Include="Core\" />
     <Folder Include="Core\Filters\" />
+    <Folder Include="Models\Notifications\" />
+    <Folder Include="Models\Blacklist\" />
   </ItemGroup>
   
   <ItemGroup>
@@ -27,6 +29,8 @@
     <None Remove="Models\.DS_Store" />
     <None Remove="Core\" />
     <None Remove="Core\Filters\" />
+    <None Remove="Models\Notifications\" />
+    <None Remove="Models\Blacklist\" />
   </ItemGroup>
 <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->

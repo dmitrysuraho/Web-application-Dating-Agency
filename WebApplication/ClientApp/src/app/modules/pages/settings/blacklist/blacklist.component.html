@@ -1,0 +1,13 @@
+<div class="w-full max-w-3xl text-center">
+
+    <!-- Blocked users -->
+    <ng-container *ngFor="let blockedUser of blockedUsers; let i = index">
+        <blocked-user [blockedUser]="blockedUser"
+                      [isUpDivider]="i == 0"
+                      (onBlockedUsers)="updateBlockedUsers($event)"></blocked-user>
+    </ng-container>
+
+    <!-- If no blockedUsers -->
+    <span *ngIf="blockedUsers.length === 0"
+          [innerHTML]="'No blocked users.<br><br>Blocked users cannot view your profile, leave comments or send you private messages.'"></span>
+</div>

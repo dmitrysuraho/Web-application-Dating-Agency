@@ -62,10 +62,27 @@ export class SettingsComponent implements OnInit, OnDestroy
         this._fuseConfigService.config$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((config: AppConfig) => {
-
                 // Store the config
                 this.config = config;
             });
+
+        // Set scheme
+        if (localStorage.getItem('scheme') === 'light' || !localStorage.getItem('scheme')) {
+            this.setScheme('light');
+        } else if (localStorage.getItem('scheme') === 'dark') {
+            this.setScheme('dark');
+        } else {
+            this.setScheme('auto');
+        }
+
+        // Set layout
+        if (localStorage.getItem('layout') === 'classy' || !localStorage.getItem('layout')) {
+            this.setLayout('classy');
+        } else if (localStorage.getItem('layout') === 'compact') {
+            this.setLayout('compact');
+        } else {
+            this.setLayout('modern');
+        }
     }
 
     /**
@@ -96,8 +113,8 @@ export class SettingsComponent implements OnInit, OnDestroy
             },
             queryParamsHandling: 'merge'
         }).then(() => {
-
             // Set the config
+            localStorage.setItem('layout', layout);
             this._fuseConfigService.config = {layout};
         });
     }
@@ -109,6 +126,7 @@ export class SettingsComponent implements OnInit, OnDestroy
      */
     setScheme(scheme: Scheme): void
     {
+        localStorage.setItem('scheme', scheme);
         this._fuseConfigService.config = {scheme};
     }
 }

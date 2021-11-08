@@ -2,28 +2,74 @@ import { FuseNavigationItem } from '@fuse/components/navigation';
 
 export const defaultNavigation: FuseNavigationItem[] = [
     {
+        id  : 'divider-1',
+        type: 'divider'
+    },
+    {
+        id   : 'profile',
+        title: 'navigation.profile',
+        type : 'basic',
+        icon : 'heroicons_outline:user-circle',
+        link : '/profile'
+    },
+    {
         id   : 'calendar',
-        title: 'Calendar',
+        title: 'navigation.calendar',
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/calendar'
+    },
+    {
+        id   : 'settings',
+        title: 'navigation.settings',
+        type : 'basic',
+        icon : 'heroicons_outline:cog',
+        link : '/settings'
     }
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
+        id   : 'profile',
+        title: 'navigation.profile',
+        type : 'basic',
+        icon : 'heroicons_outline:user-circle',
+        link : '/profile'
+    },
+    {
         id   : 'calendar',
-        title: 'Calendar',
+        title: 'navigation.calendar',
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/calendar'
+    },
+    {
+        id   : 'settings',
+        title: 'navigation.settings',
+        type : 'basic',
+        icon : 'heroicons_outline:cog',
+        link : '/settings'
     }
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
     {
+        id   : 'profile',
+        title: 'navigation.profile',
+        type : 'basic',
+        icon : 'heroicons_outline:user-circle',
+        link : '/profile'
+    },
+    {
         id   : 'calendar',
-        title: 'Calendar',
+        title: 'navigation.calendar',
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/calendar'
+    },
+    {
+        id   : 'settings',
+        title: 'navigation.settings',
+        type : 'basic',
+        icon : 'heroicons_outline:cog',
+        link : '/settings'
     }
 ];

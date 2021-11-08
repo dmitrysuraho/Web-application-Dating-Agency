@@ -6,13 +6,17 @@ import { MatDialog } from "@angular/material/dialog";
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
-import { PrivacyPolicyDialogComponent } from "./privacy-policy-dialog/privacy-policy-dialog.component";
+import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
     selector     : 'auth-sign-up',
     templateUrl  : './sign-up.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+    animations   : fuseAnimations,
+    providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }
+    ]
 })
 export class AuthSignUpComponent implements OnInit
 {
@@ -35,7 +39,8 @@ export class AuthSignUpComponent implements OnInit
         private _formBuilder: FormBuilder,
         private _router: Router,
         private _dialog: MatDialog,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _dateAdapter: DateAdapter<any>
     )
     {
     }
@@ -51,10 +56,7 @@ export class AuthSignUpComponent implements OnInit
     {
         // Current language
         this.currentLanguage = this._translateService.currentLang;
-
-        // Change language
-        this._translateService.onLangChange
-            .subscribe((result: any) => this.currentLanguage = result.lang);
+        this._dateAdapter.setLocale(this._translateService.currentLang);
 
         // Validate birthday field
         const currentDate = new Date();
@@ -69,7 +71,7 @@ export class AuthSignUpComponent implements OnInit
                 region    : ['', [Validators.required, Validators.maxLength(30), Validators.pattern('^[A-Za-zА-Яа-я., ]+$')]],
                 email     : ['', [Validators.required, Validators.email]],
                 password  : ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
-                agreements: ['', Validators.requiredTrue]
+                agreements: ['']
             }
         );
 
@@ -93,15 +95,45 @@ export class AuthSignUpComponent implements OnInit
         // Hide the alert
         this.showAlert = false;
 
+        // Check agreements
+        if (!this.signUpForm.get('agreements').value) {
+
+            // Re-enable the form
+            this.signUpForm.enable();
+
+            // Set the alert
+            this.alert = {
+                type   : 'error',
+                message: this._translateService.instant('common.alert.agreements')
+            };
+
+            // Show the alert
+            this.showAlert = true;
+
+            return;
+        }
+
         // Sign up
         this._authService.signUp(this.signUpForm.value)
             .then(
-                () => {
-                    // Navigate to the confirmation required page
-                    this._router.navigateByUrl('/confirmation-required');
+                (response) => {
+                    response.subscribe(() => {},
+                    () => {
+                        // Re-enable the form
+                        this.signUpForm.enable();
+
+                        // Set the alert
+                        this.alert = {
+                            type   : 'error',
+                            message: this._translateService.instant('common.error.duplicate-email')
+                        };
+
+                        // Show the alert
+                        this.showAlert = true;
+                    });
                 })
             .catch(
-                (response) => {
+                () => {
                     // Re-enable the form
                     this.signUpForm.enable();
 

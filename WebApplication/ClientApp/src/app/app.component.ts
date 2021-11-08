@@ -11,7 +11,6 @@ import {Subject} from "rxjs";
 })
 export class AppComponent
 {
-
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -43,6 +42,10 @@ export class AppComponent
                 .subscribe(), 3500 * 1000);
 
         // Set default language
-        this._translateService.use('ru');
+        if (localStorage.getItem('lang')) {
+            this._translateService.use(localStorage.getItem('lang'));
+        } else {
+            this._translateService.use('ru');
+        }
     }
 }

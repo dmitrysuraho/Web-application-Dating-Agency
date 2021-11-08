@@ -70,23 +70,11 @@ export class UserComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Update the user status
-     *
-     * @param status
+     * Navigate
      */
-    updateUserStatus(status: string): void
+    navigate(url: string): void
     {
-        // Return if user is not available
-        if ( !this.user )
-        {
-            return;
-        }
-
-        // Update the user
-        this._userService.update({
-            ...this.user,
-            status
-        }).subscribe();
+        this._router.navigate([url]);
     }
 
     /**

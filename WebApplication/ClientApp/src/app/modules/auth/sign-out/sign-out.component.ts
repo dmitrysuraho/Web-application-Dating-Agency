@@ -25,8 +25,6 @@ export class AuthSignOutComponent implements OnInit, OnDestroy
         private _translateService: TranslateService
     )
     {
-        // Set counter depending on the language
-        this._setCountdown(this._translateService.currentLang);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -38,12 +36,9 @@ export class AuthSignOutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Change language
-        this._translateService.onLangChange
-            .subscribe((result: any) => {
-                // Set counter depending on the language
-                this._setCountdown(result.lang);
-            });
+
+        // Set counter depending on the language
+        this._setCountdown(this._translateService.currentLang);
 
         // Sign out
         this._authService.signOut();

@@ -1,0 +1,42 @@
+<fuse-card
+    class="flex flex-col p-6 pb-6 mt-8 lg:mt-0 mb-8">
+    <div class="text-xl font-semibold">{{ 'profile.create-post.title' | translate }}</div>
+    <div class="flex flex-col sm:flex-row items-start mt-5">
+        <div class="flex items-center mb-6 sm:mb-0">
+            <img
+                *ngIf="user.photo"
+                class="w-12 min-w-12 h-12 rounded-full mr-4"
+                [src]="user.photo"
+                alt="Card cover image">
+            <mat-icon
+                *ngIf="!user.photo"
+                class="w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+
+        </div>
+        <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
+                        <textarea
+                            matInput
+                            [placeholder]="'profile.create-post.placeholder' | translate"
+                            [rows]="3"
+                            matTextareaAutosize></textarea>
+        </mat-form-field>
+    </div>
+    <div class="flex items-center justify-between mt-2 -mx-3">
+        <button
+            class="px-3"
+            mat-button
+            [routerLink]="['./']">
+            <mat-icon
+                class="icon-size-5 mr-2"
+                [svgIcon]="'heroicons_solid:photograph'"></mat-icon>
+            <span>{{ 'profile.create-post.photo' | translate }}</span>
+        </button>
+        <button
+            class="px-3"
+            mat-button
+            [color]="'primary'">
+            <span>{{ 'profile.create-post.create' | translate }}</span>
+        </button>
+    </div>
+</fuse-card>

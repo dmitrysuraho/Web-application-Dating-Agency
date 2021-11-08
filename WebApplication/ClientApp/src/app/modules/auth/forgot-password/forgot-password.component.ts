@@ -46,10 +46,6 @@ export class AuthForgotPasswordComponent implements OnInit
         // Current language
         this.currentLanguage = this._translateService.currentLang;
 
-        // Change language
-        this._translateService.onLangChange
-            .subscribe((result: any) => this.currentLanguage = result.lang);
-
         // Create the form
         this.forgotPasswordForm = this._formBuilder.group({
             email: ['', [Validators.required, Validators.email]]

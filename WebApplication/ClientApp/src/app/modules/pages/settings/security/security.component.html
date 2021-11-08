@@ -1,0 +1,140 @@
+<div
+    *ngIf="firebaseUser | async as firebaseUser"
+    class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form
+        *ngIf="firebaseUser?.providerData[0].providerId === 'password'; else notPasswordProvider"
+        [formGroup]="securityForm">
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">{{ 'profile.settings.security.change-password' | translate }}</div>
+        </div>
+
+        <!-- Alert -->
+        <fuse-alert
+            class="mt-8"
+            *ngIf="showAlert"
+            [appearance]="'outline'"
+            [showIcon]="false"
+            [type]="alert.type">
+            {{ alert.message }}
+        </fuse-alert>
+
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+
+            <!-- Current password -->
+            <div class="sm:col-span-4">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'profile.settings.security.new-password' | translate }}</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:key'"
+                        matPrefix></mat-icon>
+                    <input
+                        type="password"
+                        matInput
+                        #newPasswordField
+                        [formControlName]="'newPassword'">
+                    <button
+                        mat-icon-button
+                        type="button"
+                        (click)="newPasswordField.type === 'password' ? newPasswordField.type = 'text' : newPasswordField.type = 'password'"
+                        matSuffix>
+                        <mat-icon
+                            class="icon-size-5"
+                            *ngIf="newPasswordField.type === 'password'"
+                            [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon
+                            class="icon-size-5"
+                            *ngIf="newPasswordField.type === 'text'"
+                            [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                    </button>
+                    <mat-error *ngIf="securityForm.get('newPassword').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Пароль' : 'Password' } }}
+                    </mat-error>
+                    <mat-error *ngIf="securityForm.get('newPassword').hasError('minlength')">
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Минимальная' : 'Min', length: 6 } }}
+                    </mat-error>
+                    <mat-error *ngIf="securityForm.get('newPassword').hasError('maxlength')">
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 12 } }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- New password -->
+            <div class="sm:col-span-4">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'profile.settings.security.confirm-password' | translate }}</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:key'"
+                        matPrefix></mat-icon>
+                    <input
+                        type="password"
+                        matInput
+                        #confirmPasswordField
+                        [formControlName]="'confirmPassword'">
+                    <button
+                        mat-icon-button
+                        type="button"
+                        (click)="confirmPasswordField.type === 'password' ? confirmPasswordField.type = 'text' : confirmPasswordField.type = 'password'"
+                        matSuffix>
+                        <mat-icon
+                            class="icon-size-5"
+                            *ngIf="confirmPasswordField.type === 'password'"
+                            [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon
+                            class="icon-size-5"
+                            *ngIf="confirmPasswordField.type === 'text'"
+                            [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                    </button>
+                    <mat-error *ngIf="securityForm.get('confirmPassword').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Подтверждение пароля' : 'Confirm password' } }}
+                    </mat-error>
+                </mat-form-field>
+                <div class="mt-1 text-md text-hint">{{ 'profile.settings.security.confirm-password-description' | translate }}</div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-6 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                [disabled]="securityForm.disabled"
+                (click)="save()">
+                <span *ngIf="!securityForm.disabled">
+                    {{ 'profile.settings.security.save' | translate }}
+                </span>
+                <mat-progress-spinner
+                    *ngIf="securityForm.disabled"
+                    [diameter]="24"
+                    [mode]="'indeterminate'"></mat-progress-spinner>
+            </button>
+        </div>
+    </form>
+
+    <ng-template #notPasswordProvider>
+        <div class="w-full">
+            <div class="text-l">
+                {{ 'profile.settings.security.sign-in-with' | translate }}
+                <span class="font-bold">{{ firebaseUser?.providerData[0].providerId }}:</span>
+            </div>
+            <div class="flex flex-row items-center mt-2">
+                <img
+                    class="w-12 h-12 rounded-full mr-4"
+                    [src]="firebaseUser.photoURL">
+                <div class="flex">
+                    <span class="font-semibold leading-none">{{ firebaseUser.displayName }}</span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+</div>

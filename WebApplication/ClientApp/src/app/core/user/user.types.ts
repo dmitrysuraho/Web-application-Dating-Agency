@@ -1,8 +1,14 @@
 export interface User
 {
     id: string;
+    sex?: string;
     name: string;
-    email: string;
-    avatar?: string;
-    status?: string;
+    birthday: Date;
+    region?: string;
+    photo?: string;
+    about?: string;
+    email?: string;
+    phone?: string;
+    isCurrentUser?: boolean;
+    isBlocked?: boolean;
 }

@@ -4,6 +4,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Observable, of, Subject } from "rxjs";
 import { catchError, takeUntil, tap } from "rxjs/operators";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { Router } from "@angular/router";
 import { TwitterAuthProvider, GithubAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import firebase from "firebase/compat";
 import User = firebase.User;
@@ -20,7 +21,8 @@ export class AuthService implements OnDestroy
     constructor(
         private _httpClient: HttpClient,
         private _angularFireAuth: AngularFireAuth,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _router: Router
     )
     {
     }
@@ -105,37 +107,51 @@ export class AuthService implements OnDestroy
     {
         return this._angularFireAuth.createUserWithEmailAndPassword(user.email, user.password)
             .then((result: UserCredential) => {
-                this._httpClient.post('api/users', {
+                return this._httpClient.post('api/users', {
                     uid: result.user.uid,
                     sex: user.sex,
                     name: user.name,
                     birthday: user.birthday,
-                    region: user.region
+                    region: user.region,
+                    email: user.email
                 })
-                    .pipe(takeUntil(this._unsubscribeAll))
-                    .subscribe(() => result.user.sendEmailVerification());
+                    .pipe(
+                        catchError(() => {
+                            // Delete firebase user
+                            result.user.delete();
+                            throw new Error();
+                        }),
+                        takeUntil(this._unsubscribeAll),
+                        tap(() => {
+                            // Sent email verification
+                            result.user.sendEmailVerification();
+
+                            // Navigate to the confirmation required page
+                            this._router.navigateByUrl('/confirmation-required');
+                        })
+                    );
             });
     }
 
     /**
      * Sign in with Google
      */
-    googleSignIn(): Promise<any> {
-        return this._selectProvider(new GoogleAuthProvider());
+    googleSignIn(): void {
+        this._selectProvider(new GoogleAuthProvider());
     }
 
     /**
      * Sign in with Twitter
      */
-    twitterSignIn(): Promise<any> {
-        return this._selectProvider(new TwitterAuthProvider());
+    twitterSignIn(): void {
+        this._selectProvider(new TwitterAuthProvider());
     }
 
     /**
      * Sign in with Github
      */
-    githubSignIn(): Promise<any> {
-        return this._selectProvider(new GithubAuthProvider());
+    githubSignIn(): void {
+        this._selectProvider(new GithubAuthProvider());
     }
 
     /**
@@ -155,7 +171,7 @@ export class AuthService implements OnDestroy
         return this._angularFireAuth.authState
             .pipe(
                 tap(async (user: User) => {
-                    if (user) this.accessToken = await user.getIdToken(true);
+                    if (user && this.accessToken) this.accessToken = await user.getIdToken(true);
                 })
             );
     }
@@ -175,14 +191,18 @@ export class AuthService implements OnDestroy
                 const user: User = result.user;
                 this._httpClient.post('api/users', {
                     uid: user.uid,
-                    name: user.displayName
+                    name: user.displayName,
+                    email: user.email,
+                    phone: user.phoneNumber
                 })
                     .pipe(
                         takeUntil(this._unsubscribeAll),
                         catchError(() => this.accessToken = '')
                     )
-                    .subscribe();
-                this.accessToken = result.user.multiFactor.user.accessToken;
+                    .subscribe(() => {
+                        this.accessToken = result.user.multiFactor.user.accessToken;
+                        this._router.navigateByUrl('');
+                    });
             });
     }
 }

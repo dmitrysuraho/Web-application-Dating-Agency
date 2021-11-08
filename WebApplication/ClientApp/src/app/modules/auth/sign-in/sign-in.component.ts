@@ -48,10 +48,6 @@ export class AuthSignInComponent implements OnInit
         // Current language
         this.currentLanguage = this._translateService.currentLang;
 
-        // Change language
-        this._translateService.onLangChange
-            .subscribe((result: any) => this.currentLanguage = result.lang);
-
         // Create the form
         this.signInForm = this._formBuilder.group({
             email     : ['', [Validators.required, Validators.email]],
@@ -117,8 +113,7 @@ export class AuthSignInComponent implements OnInit
      */
     googleSignIn(): void {
         // Sign in
-        this._authService.googleSignIn()
-            .then(() => this._router.navigateByUrl(''));
+        this._authService.googleSignIn();
     }
 
     /**
@@ -126,8 +121,7 @@ export class AuthSignInComponent implements OnInit
      */
     twitterSignIn(): void {
         // Sign in
-        this._authService.twitterSignIn()
-            .then(() => this._router.navigateByUrl(''));
+        this._authService.twitterSignIn();
     }
 
     /**
@@ -135,7 +129,6 @@ export class AuthSignInComponent implements OnInit
      */
     githubSignIn(): void {
         // Sign in
-        this._authService.githubSignIn()
-            .then(() => this._router.navigateByUrl(''));
+        this._authService.githubSignIn();
     }
 }

@@ -1,0 +1,167 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Scheme -->
+    <div class="text-xl">{{ 'profile.settings.appearance.scheme.title' | translate }}</div>
+    <div class="text-secondary">{{ 'profile.settings.appearance.scheme.description' | translate }}</div>
+    <div class="flex flex-col md:flex-row lg:flex-row mt-6">
+        <!-- Auto -->
+        <div
+            class="flex items-center max-w-max py-3 pl-5 pr-6 rounded-full cursor-pointer ring-inset ring-primary bg-hover"
+            [class.ring-2]="config.scheme === 'auto'"
+            (click)="setScheme('auto')">
+            <div class="flex items-center rounded-full overflow-hidden">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:lightning-bolt'"></mat-icon>
+            </div>
+            <div
+                class="flex items-center ml-2 font-medium leading-5"
+                [class.text-secondary]="config.scheme !== 'auto'">
+                {{ 'profile.settings.appearance.scheme.auto' | translate }}
+            </div>
+        </div>
+        <!-- Dark -->
+        <div
+            class="flex items-center max-w-max ml-0 md:ml-2 lg:ml-2 mt-2 md:mt-0 lg:mt-0 py-3 pl-5 pr-6 rounded-full cursor-pointer ring-inset ring-primary bg-hover"
+            [class.ring-2]="config.scheme === 'dark'"
+            (click)="setScheme('dark')">
+            <div class="flex items-center rounded-full overflow-hidden">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:moon'"></mat-icon>
+            </div>
+            <div
+                class="flex items-center ml-2 font-medium leading-5"
+                [class.text-secondary]="config.scheme !== 'dark'">
+                {{ 'profile.settings.appearance.scheme.dark' | translate }}
+            </div>
+        </div>
+        <!-- Light -->
+        <div
+            class="flex items-center max-w-max ml-0 md:ml-2 lg:ml-2 mt-2 md:mt-0 lg:mt-0 py-3 pl-5 pr-6 rounded-full cursor-pointer ring-inset ring-primary bg-hover"
+            [class.ring-2]="config.scheme === 'light'"
+            (click)="setScheme('light')">
+            <div class="flex items-center rounded-full overflow-hidden">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:sun'"></mat-icon>
+            </div>
+            <div
+                class="flex items-center ml-2 font-medium leading-5"
+                [class.text-secondary]="config.scheme !== 'light'">
+                {{ 'profile.settings.appearance.scheme.light' | translate }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="mt-6 mb-6 border-t"></div>
+
+    <!-- Layout -->
+    <div class="text-xl">{{ 'profile.settings.appearance.layout.title' | translate }}</div>
+    <div class="text-secondary">{{ 'profile.settings.appearance.layout.description' | translate }}</div>
+    <div class="grid grid-cols-3 gap-3 mt-6">
+
+        <!-- Classy -->
+        <div
+            class="flex flex-col cursor-pointer max-w-50"
+            (click)="setLayout('classy')">
+            <div
+                class="flex h-20 rounded-md overflow-hidden border-2 hover:opacity-80"
+                [class.border-primary]="config.layout === 'classy'">
+                <div class="w-8 bg-gray-100 dark:bg-gray-800">
+                    <div class="flex items-center mt-1 mx-1">
+                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-1 h-1 ml-auto rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-1 h-1 ml-0.5 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                    </div>
+                    <div class="w-4 h-4 mt-2.5 mx-auto rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                    <div class="mt-2 mx-1 space-y-1">
+                        <div class="h-1 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="h-1 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="h-1 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="h-1 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto border-l">
+                    <div class="h-3 bg-gray-100 dark:bg-gray-800">
+                        <div class="flex items-center justify-end h-full mr-2">
+                            <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-auto border-t bg-gray-50 dark:bg-gray-900"></div>
+                </div>
+            </div>
+            <div
+                class="mt-2 text-md font-medium text-center text-secondary"
+                [class.text-primary]="config.layout === 'classy'">
+                {{ 'profile.settings.appearance.layout.classy' | translate }}
+            </div>
+        </div>
+
+        <!-- Compact -->
+        <div
+            class="flex flex-col cursor-pointer max-w-50"
+            (click)="setLayout('compact')">
+            <div
+                class="flex h-20 rounded-md overflow-hidden border-2 hover:opacity-80"
+                [class.border-primary]="config.layout === 'compact'">
+                <div class="w-5 bg-gray-100 dark:bg-gray-800">
+                    <div class="w-3 h-3 mt-2 mx-auto rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                    <div class="flex flex-col items-center w-full mt-2 space-y-1">
+                        <div class="w-3 h-2.5 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-3 h-2.5 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-3 h-2.5 rounded-sm bg-gray-300 dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto border-l">
+                    <div class="h-3 bg-gray-100 dark:bg-gray-800">
+                        <div class="flex items-center justify-end h-full mr-1.5">
+                            <div class="w-1 h-1 ml-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="w-1 h-1 ml-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="w-1 h-1 ml-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-auto border-t bg-gray-50 dark:bg-gray-900"></div>
+                </div>
+            </div>
+            <div
+                class="mt-2 text-md font-medium text-center text-secondary"
+                [class.text-primary]="config.layout === 'compact'">
+                {{ 'profile.settings.appearance.layout.compact' | translate }}
+            </div>
+        </div>
+
+        <!-- Modern -->
+        <div
+            class="flex flex-col cursor-pointer max-w-50"
+            (click)="setLayout('modern')">
+            <div
+                class="flex flex-col h-20 rounded-md overflow-hidden border-2 hover:opacity-80"
+                [class.border-primary]="config.layout === 'modern'">
+                <div class="flex items-center h-4 px-2 border-b bg-gray-100 dark:bg-gray-800">
+                    <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                    <div class="flex items-center h-3 ml-2 space-x-1">
+                        <div class="w-3 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-3 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-3 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                    </div>
+                    <div class="flex items-center justify-end ml-auto space-x-1">
+                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto">
+                    <div class="flex flex-auto bg-gray-50 dark:bg-gray-900"></div>
+                </div>
+            </div>
+            <div
+                class="mt-2 text-md font-medium text-center text-secondary"
+                [class.text-primary]="config.layout === 'modern'">
+                {{ 'profile.settings.appearance.layout.modern' | translate }}
+            </div>
+        </div>
+
+    </div>
+
+</div>

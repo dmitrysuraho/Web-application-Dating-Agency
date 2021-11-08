@@ -1,0 +1,47 @@
+<div class="w-full">
+
+    <!-- Divider -->
+    <div
+        *ngIf="isUpDivider"
+        class="mt-2 border-t"></div>
+
+    <!-- Blocked user -->
+    <div class="flex flex-col lg:flex-row md:flex-row sm:flex-row items-center justify-between my-2">
+        <div class="flex flex-row items-center rounded-3xl"
+             mat-menu-item
+            (click)="navigateToProfile('profile', blockedUser.id)">
+            <img
+                *ngIf="blockedUser.photo"
+                class="w-12 min-w-12 h-12 rounded-full mr-4"
+                [src]="blockedUser.photo"
+                alt="Card cover image">
+            <mat-icon
+                *ngIf="!blockedUser.photo"
+                class="w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+            <div class="flex">
+                <span class="font-semibold leading-none">{{ blockedUser.name }}</span>
+            </div>
+        </div>
+        <button
+            class="fuse-mat-button-rounded"
+            mat-button
+            [color]="'primary'"
+            (click)="unblock()">
+            <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:exclamation'"></mat-icon>
+            <span
+                *ngIf="!isBlocking"
+                class="ml-2">Unblock</span>
+            <mat-progress-spinner
+                *ngIf="isBlocking"
+                class="ml-2"
+                [diameter]="24"
+                [mode]="'indeterminate'"></mat-progress-spinner>
+        </button>
+    </div>
+
+    <!-- Divider -->
+    <div class="mb-2 border-t"></div>
+</div>

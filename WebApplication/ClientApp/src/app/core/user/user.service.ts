@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Observable, ReplaySubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { User } from 'app/core/user/user.types';
+import { Notification } from 'app/core/user/notification.types';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +16,10 @@ export class UserService
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(
+        private _httpClient: HttpClient,
+        private _angularFireAuth: AngularFireAuth
+    )
     {
     }
 
@@ -43,28 +48,88 @@ export class UserService
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get the current logged in user data
+     * Get current user
      */
-    get(): Observable<User>
-    {
-        return this._httpClient.get<User>('api/common/user').pipe(
-            tap((user) => {
-                this._user.next(user);
-            })
-        );
+    getCurrentUser(): Observable<User> {
+        return this._httpClient.get<User>('api/users')
+            .pipe(
+                tap((user: User) => this._user.next(user))
+            );
     }
 
     /**
-     * Update the user
+     * Get user by id
+     *
+     * @param id
+     */
+    getUserById(id: string): Observable<User>
+    {
+        return this._httpClient.get<User>('api/users/' + id);
+    }
+
+    /**
+     * Update current user
      *
      * @param user
      */
-    update(user: User): Observable<any>
+    updateCurrentUser(user: User): Observable<User>
     {
-        return this._httpClient.patch<User>('api/common/user', {user}).pipe(
-            map((response) => {
-                this._user.next(response);
-            })
-        );
+        return this._httpClient.put<User>('api/users', user);
+    }
+
+
+    /**
+     * Change password
+     *
+     * @param newPassword
+     */
+    changePassword(newPassword: string): Observable<any> {
+        return this._angularFireAuth.authState
+            .pipe(
+                tap((user) => {
+                    user.updatePassword(newPassword);
+                })
+            );
+    }
+
+    /**
+     * Get notifications
+     */
+    getNotifications(): Observable<Notification> {
+        return this._httpClient.get<Notification>('api/notifications');
+    }
+
+    /**
+     * Update notifications
+     *
+     * @param notifications
+     */
+    updateNotifications(notifications: Notification): Observable<Notification> {
+        return this._httpClient.put<Notification>('api/notifications', notifications);
+    }
+
+    /**
+     * Get blocked users
+     */
+    getBlockedUsers(): Observable<User[]> {
+        return this._httpClient.get<User[]>('api/users/blacklists');
+    }
+
+    /**
+     * Block user
+     *
+     * @param id
+     */
+    blockUser(id: string): Observable<User> {
+        return this._httpClient.post<User>('api/users/blacklists/' + id, null);
+    }
+
+    /**
+     * Unblock user
+     *
+     * @param id
+     */
+    unblockUser(id: string): Observable<User> {
+        return this._httpClient.delete<User>('api/users/blacklists/' + id);
     }
 }

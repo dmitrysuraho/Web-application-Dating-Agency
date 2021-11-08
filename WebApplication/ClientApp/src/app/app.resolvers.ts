@@ -40,7 +40,7 @@ export class InitialDataResolver implements Resolve<any>
             this._navigationService.get(),
             this._messagesService.getAll(),
             this._notificationsService.getAll(),
-            this._userService.get()
+            this._userService.getCurrentUser()
         ]);
     }
 }

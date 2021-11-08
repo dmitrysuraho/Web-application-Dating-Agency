@@ -41,8 +41,8 @@ export class LanguagesComponent implements OnInit
      */
     ngOnInit(): void
     {
-        // Set default language
-        this.activeLang = 'ru';
+        // Set the language
+        this.activeLang = this._translateService.currentLang;
 
         // Set the country iso codes for languages for flags
         this.flagCodes = {
@@ -62,8 +62,9 @@ export class LanguagesComponent implements OnInit
      */
     setActiveLang(lang: string): void
     {
-        this._translateService.use(lang);
-        this.activeLang = lang;
+        // Set language and reload the page
+        localStorage.setItem('lang', lang);
+        location.reload();
     }
 
     /**

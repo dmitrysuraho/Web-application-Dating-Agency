@@ -1,0 +1,103 @@
+<!-- Info -->
+<div class="flex flex-col flex-0 lg:flex-row items-center justify-between max-w-5xl w-full mx-auto p-8 lg:p-4 bg-card">
+
+    <div class="flex flex-col flex-0 lg:flex-row">
+        <!-- Avatar -->
+        <div class="rounded-full flex flex-col justify-center items-center">
+            <img
+                *ngIf="user.photo"
+                class="w-32 h-32 rounded-full ring-4 ring-bg-card"
+                [src]="user.photo"
+                alt="User avatar">
+            <mat-icon
+                *ngIf="!user.photo"
+                class="w-32 h-32 rounded-full ring-4 ring-bg-card bg-gray-200"
+                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+            <div class="flex flex-row mt-1">
+                <button
+                    *ngIf="user?.isCurrentUser"
+                    class="px-3"
+                    mat-button
+                    [color]="'primary'"
+                    (click)="fileInput.click()">
+                    <span *ngIf="!user?.photo">{{ 'profile.info.add-photo' | translate }}</span>
+                    <span *ngIf="user?.photo">{{ 'profile.info.change-photo' | translate }}</span>
+                </button>
+                <button
+                    *ngIf="user?.isCurrentUser && user?.photo"
+                    class="px-3"
+                    mat-button
+                    [color]="'primary'"
+                    (click)="deletePhoto()">
+                    <span>{{ 'profile.info.delete-photo' | translate }}</span>
+                </button>
+            </div>
+            <input hidden
+                   #fileInput
+                   type="file"
+                   id="uploadPhoto"
+                   accept="image/jpeg, image/png"
+                   (change)="uploadPhoto()">
+        </div>
+
+        <!-- Details -->
+        <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:mt-14"
+            [ngClass]="{ 'lg:ml-4' : !user?.isCurrentUser || !user?.photo }">
+            <div class="text-lg font-bold leading-none">{{ user.name }}</div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center lg:items-end flex-col mt-6 lg:mt-0">
+        <!-- Buttons -->
+        <button
+            *ngIf="!user?.isBlocked"
+            class="fuse-mat-button-rounded"
+            mat-button
+            [color]="'primary'">
+            <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:mail'"></mat-icon>
+            <span
+                *ngIf="user?.isCurrentUser"
+                class="ml-2">{{ 'profile.info.messages' | translate }}</span>
+            <span
+                *ngIf="!user?.isCurrentUser"
+                class="ml-2">{{ 'profile.info.write-message' | translate }}</span>
+        </button>
+        <button
+            *ngIf="user?.isCurrentUser"
+            class="fuse-mat-button-rounded"
+            mat-button
+            [color]="'primary'"
+            (click)="navigate('settings')">
+            <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:cog'"></mat-icon>
+            <span class="ml-2">{{ 'profile.info.settings' | translate }}</span>
+        </button>
+        <button
+            *ngIf="!user?.isCurrentUser"
+            class="fuse-mat-button-rounded"
+            mat-button
+            [disabled]="isBlockDisabled"
+            [color]="'primary'"
+            (click)="user?.isBlocked ? unblock() : block()">
+            <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:exclamation'"></mat-icon>
+            <span
+                *ngIf="!user?.isBlocked && !isBlockDisabled"
+                class="ml-2">{{ 'profile.info.block' | translate }}</span>
+            <span
+                *ngIf="user?.isBlocked && !isBlockDisabled"
+                class="ml-2">{{ 'profile.info.unblock' | translate }}</span>
+            <mat-progress-spinner
+                *ngIf="isBlockDisabled"
+                class="ml-2"
+                [diameter]="24"
+                [mode]="'indeterminate'"></mat-progress-spinner>
+        </button>
+    </div>
+
+</div>

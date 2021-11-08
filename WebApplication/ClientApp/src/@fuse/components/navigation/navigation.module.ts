@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,7 +36,7 @@ import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/ver
         FuseVerticalNavigationSpacerItemComponent,
         FuseVerticalNavigationComponent
     ],
-    imports     : [
+    imports: [
         CommonModule,
         RouterModule,
         MatButtonModule,
@@ -43,7 +44,8 @@ import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/ver
         MatIconModule,
         MatMenuModule,
         MatTooltipModule,
-        FuseScrollbarModule
+        FuseScrollbarModule,
+        TranslateModule
     ],
     exports     : [
         FuseHorizontalNavigationComponent,

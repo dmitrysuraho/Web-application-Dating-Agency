@@ -1,0 +1,59 @@
+<fuse-card class="flex flex-col p-8 rounded-none lg:rounded-2xl md:rounded-t-2xl">
+    <div class="text-2xl font-semibold leading-tight">{{ 'profile.description.title' | translate }}</div>
+    <div
+        *ngIf="user?.about"
+        class="mt-4">
+        {{ user.about }}
+    </div>
+    <div
+        *ngIf="!user?.about"
+        class="mt-4">
+        {{ 'profile.description.no-info' | translate }}
+    </div>
+    <hr class="w-full border-t my-6">
+    <div class="flex flex-col">
+        <div class="flex items-center">
+            <mat-icon
+                class="icon-size-5 mr-3"
+                [svgIcon]="'heroicons_solid:heart'"></mat-icon>
+            <span
+                *ngIf="user?.sex"
+                class="leading-none">{{ getSex }}</span>
+            <span
+                *ngIf="!user?.sex"
+                class="leading-none">
+                {{ 'profile.description.no-info' | translate }}
+            </span>
+        </div>
+        <div
+            class="flex items-center mt-4">
+            <mat-icon
+                class="icon-size-5 mr-3"
+                [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+            <span
+                *ngIf="user.birthday.toString() !== '0001-01-01T00:00:00'"
+                class="leading-none">
+                {{ user.birthday | date: 'longDate' : '' : getLang }}
+            </span>
+            <span
+                *ngIf="user.birthday.toString() == '0001-01-01T00:00:00'"
+                class="leading-none">
+                {{ 'profile.description.no-info' | translate }}
+            </span>
+        </div>
+        <div
+            class="flex items-center mt-4">
+            <mat-icon
+                class="icon-size-5 mr-3"
+                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+            <span
+                *ngIf="user?.region"
+                class="leading-none">{{ user.region }}</span>
+            <span
+                *ngIf="!user?.region"
+                class="leading-none">
+                {{ 'profile.description.no-info' | translate }}
+            </span>
+        </div>
+    </div>
+</fuse-card>

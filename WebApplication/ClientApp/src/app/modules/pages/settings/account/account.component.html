@@ -1,0 +1,223 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="accountForm">
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">{{ 'profile.settings.account.profile-title' | translate }}</div>
+            <div class="text-secondary">{{ 'profile.settings.account.profile-description' | translate }}</div>
+        </div>
+
+        <!-- Alert -->
+        <fuse-alert
+            class="my-8"
+            *ngIf="showAlert"
+            [appearance]="'outline'"
+            [showIcon]="false"
+            [type]="alert.type">
+            {{ alert.message }}
+        </fuse-alert>
+
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+
+            <!-- Sex -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'common.placeholder.sex' | translate }}</mat-label>
+                    <mat-select
+                        id="sex"
+                        [formControlName]="'sex'">
+                        <mat-option value="Мужской">{{ 'sign-up.sex.man' | translate }}</mat-option>
+                        <mat-option value="Женский">{{ 'sign-up.sex.woman' | translate }}</mat-option>
+                    </mat-select>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:heart'"></mat-icon>
+                    <mat-error *ngIf="accountForm.get('sex').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Пол' : 'Sex' } }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Name -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'common.placeholder.name' | translate }}</mat-label>
+                    <input
+                        id="name"
+                        matInput
+                        [formControlName]="'name'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                    <mat-error *ngIf="accountForm.get('name').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Имя и отчество' : 'Full name' } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('name').hasError('maxlength')">
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 30 } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('name').hasError('pattern')">
+                        {{ 'common.error.pattern' | translate: { field: currentLanguage === 'ru' ? 'имени и отчества' : 'name' } }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Birthday -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'common.placeholder.birthday' | translate }}</mat-label>
+                    <input
+                        matInput
+                        disabled
+                        [min]="minDate"
+                        [max]="maxDate"
+                        [matDatepicker]="picker"
+                        [formControlName]="'birthday'">
+                    <mat-datepicker-toggle
+                        matSuffix
+                        [for]="picker">
+                        <mat-icon
+                            class="icon-size-5"
+                            matDatepickerToggleIcon
+                            [svgIcon]="'heroicons_solid:chevron-down'"></mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker
+                        #picker
+                        touchUi
+                        [disabled]="false"></mat-datepicker>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                    <mat-error *ngIf="accountForm.get('birthday').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Дата рождения' : 'Birthday' } }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Region -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'common.placeholder.region' | translate }}</mat-label>
+                    <input
+                        id="region"
+                        matInput
+                        [formControlName]="'region'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                    <mat-error *ngIf="accountForm.get('region').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Страна/город' : 'Region' } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('region').hasError('maxlength')">
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 30 } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('region').hasError('pattern')">
+                        {{ 'common.error.pattern' | translate: { field: currentLanguage === 'ru' ? 'страны/города' : 'region' } }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- About -->
+            <div class="sm:col-span-4">
+                <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
+                    <mat-label>{{ 'common.placeholder.about' | translate }}</mat-label>
+                    <textarea
+                        id="about"
+                        #about
+                        matInput
+                        matTextareaAutosize
+                        [formControlName]="'about'"
+                        [matAutosizeMinRows]="2"
+                        [maxLength]="150"></textarea>
+                </mat-form-field>
+                <div class="text-right mt-1 text-md text-hint">{{ about.value.length }} / 150</div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-6 border-t"></div>
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">{{ 'profile.settings.account.personal-info-title' | translate }}</div>
+            <div class="text-secondary">{{ 'profile.settings.account.personal-info-description' | translate }}</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-6">
+
+            <!-- Email -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'common.placeholder.email' | translate }}</mat-label>
+                    <input
+                        id="email"
+                        matInput
+                        [formControlName]="'email'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:mail'"></mat-icon>
+                    <mat-error *ngIf="accountForm.get('email').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Почтовый адрес' : 'Email address' } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('email').hasError('email')">
+                        {{ 'common.error.email' | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Phone -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="w-full">
+                    <mat-label>{{ 'common.placeholder.phone' | translate }}</mat-label>
+                    <input
+                        id="phone"
+                        matInput
+                        [formControlName]="'phone'">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                    <mat-error *ngIf="accountForm.get('phone').hasError('required')">
+                        {{ 'common.error.required' | translate: { field: currentLanguage === 'ru' ? 'Номер телефона' : 'Phone' } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('phone').hasError('minlength')">
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Минимальная' : 'Min', length: 7 } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('phone').hasError('maxlength')">
+                        {{ 'common.error.length' | translate: { title: currentLanguage === 'ru' ? 'Максимальная' : 'Max', length: 20 } }}
+                    </mat-error>
+                    <mat-error *ngIf="accountForm.get('phone').hasError('pattern')">
+                        {{ 'common.error.pattern' | translate: { field: currentLanguage === 'ru' ? 'номера телефона' : 'phone' } }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="mt-6 mb-6 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                [disabled]="accountForm.disabled"
+                (click)="save()">
+                <span *ngIf="!accountForm.disabled">
+                    {{ 'profile.settings.account.save' | translate }}
+                </span>
+                <mat-progress-spinner
+                    *ngIf="accountForm.disabled"
+                    [diameter]="24"
+                    [mode]="'indeterminate'"></mat-progress-spinner>
+            </button>
+        </div>
+    </form>
+
+</div>
