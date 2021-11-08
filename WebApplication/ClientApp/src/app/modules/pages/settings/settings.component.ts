@@ -69,8 +69,8 @@ export class SettingsComponent implements OnInit, OnDestroy
             {
                 id         : 'blacklist',
                 icon       : 'heroicons_outline:ban',
-                title      : 'Blacklist',
-                description: 'В разработке...'
+                title      : this._translateService.instant('profile.settings.blacklist.title'),
+                description: this._translateService.instant('profile.settings.blacklist.description')
             },
             {
                 id         : 'appearance',

@@ -31,7 +31,7 @@ namespace WebApplication.Controllers
         public IActionResult GetUsers()
         {
             User user = _GetCurrentUser();
-            return _JsonResult(user, true, null);
+            return _JsonResult(user, true);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -50,7 +50,8 @@ namespace WebApplication.Controllers
                 return _JsonResult(
                     user,
                     user.Uid == currentUser.Uid,
-                    _blacklistsRepository.IsUserBlocked(currentUser.UserId, id));
+                    _blacklistsRepository.IsUserBlocked(currentUser.UserId, id),
+                    _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
             }
         }
 
@@ -87,7 +88,7 @@ namespace WebApplication.Controllers
             else
             {
                 User updatedUser = _usersRepository.UpdateUser(user);
-                return _JsonResult(updatedUser, true, null);
+                return _JsonResult(updatedUser, true);
             }
         }
 
@@ -119,7 +120,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.AddToBlacklist(currentUser, id);
-                return _JsonResult(blockUser, false, true);
+                return _JsonResult(blockUser, false, true, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
             }
         }
 
@@ -141,7 +142,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.RemoveFromBlackList(currentUser, id);
-                return _JsonResult(unblockUser, false, false);
+                return _JsonResult(unblockUser, false, false, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
             }
         }
 
@@ -153,7 +154,7 @@ namespace WebApplication.Controllers
             return _usersRepository.FindUserByUid(uid);
         }
 
-        private IActionResult _JsonResult(User user, bool isCurrentUser, bool? isBlocked)
+        private IActionResult _JsonResult(User user, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null)
         {
             return Json(new
             {
@@ -167,7 +168,8 @@ namespace WebApplication.Controllers
                 email = isCurrentUser ? user.Email : "",
                 phone = isCurrentUser ? user.Phone: "",
                 isCurrentUser = isCurrentUser,
-                isBlocked = isBlocked
+                isBlocked = isBlocked,
+                isYouBlocked = isYouBlocked
             });
         }
     }

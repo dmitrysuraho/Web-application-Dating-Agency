@@ -38,6 +38,13 @@ namespace WebApplication.Models
             else return true;
         }
 
+        public bool IsYouBlocked(int currentUserId, int userId)
+        {
+            Blacklist blacklist = _context.Blacklists.FirstOrDefault(prop => prop.UserId == userId && prop.BlockedUser == currentUserId);
+            if (blacklist == null) return false;
+            else return true;
+        }
+
         public void AddToBlacklist(User user, int userId)
         {
             Blacklist blacklist = _context.Blacklists.FirstOrDefault(prop => prop.UserId == user.UserId && prop.BlockedUser == userId);

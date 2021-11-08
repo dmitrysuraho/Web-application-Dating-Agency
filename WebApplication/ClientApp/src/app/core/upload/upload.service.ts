@@ -82,7 +82,7 @@ export class UploadService implements OnDestroy {
                             return of(null);
                         })
                     )
-                    .subscribe();
+                    .subscribe(() => this._userService.user = user);
             })
             .catch((error) => {
                 console.log(error);
@@ -107,6 +107,6 @@ export class UploadService implements OnDestroy {
                     return of(null);
                 })
             )
-            .subscribe();
+            .subscribe(() => this._userService.user = user);
     }
 }

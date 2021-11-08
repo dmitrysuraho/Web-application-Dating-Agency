@@ -33,7 +33,7 @@
                 [svgIcon]="'heroicons_solid:exclamation'"></mat-icon>
             <span
                 *ngIf="!isBlocking"
-                class="ml-2">Unblock</span>
+                class="ml-2">{{ 'profile.settings.blacklist.unblock' | translate }}</span>
             <mat-progress-spinner
                 *ngIf="isBlocking"
                 class="ml-2"

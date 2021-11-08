@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FuseCardModule } from '@fuse/components/card';
+import { FuseAlertModule } from "@fuse/components/alert";
 import { FuseSplashScreenModule } from '@fuse/services/splash-screen';
 import { SharedModule } from 'app/shared/shared.module';
 import { ProfileComponent } from 'app/modules/pages/profile/profile.component';
@@ -40,7 +41,8 @@ import { profileRoutes } from 'app/modules/pages/profile/profile.routing';
         SharedModule,
         TranslateModule,
         FuseSplashScreenModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        FuseAlertModule
     ]
 })
 export class ProfileModule

@@ -1,6 +1,7 @@
 <div
     class="fuse-alert-container"
     *ngIf="!dismissible || dismissible && !dismissed"
+    [ngClass]="{ 'justify-center': isContentCentered }"
     [@fadeIn]="!dismissed"
     [@fadeOut]="!dismissed">
 

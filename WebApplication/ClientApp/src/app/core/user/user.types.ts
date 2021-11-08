@@ -11,4 +11,5 @@ export interface User
     phone?: string;
     isCurrentUser?: boolean;
     isBlocked?: boolean;
+    isYouBlocked?: boolean;
 }

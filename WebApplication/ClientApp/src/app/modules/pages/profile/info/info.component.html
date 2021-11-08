@@ -51,7 +51,7 @@
     <div class="flex items-center lg:items-end flex-col mt-6 lg:mt-0">
         <!-- Buttons -->
         <button
-            *ngIf="!user?.isBlocked"
+            *ngIf="!user?.isBlocked && !user?.isYouBlocked"
             class="fuse-mat-button-rounded"
             mat-button
             [color]="'primary'">
@@ -101,3 +101,14 @@
     </div>
 
 </div>
+
+<!-- Block alert -->
+<fuse-alert
+    *ngIf="user?.isYouBlocked"
+    class="text-center"
+    [appearance]="'soft'"
+    [showIcon]="false"
+    [type]="'error'"
+    [isContentCentered]="true">
+    {{ 'profile.info.block-alert' | translate }}
+</fuse-alert>
