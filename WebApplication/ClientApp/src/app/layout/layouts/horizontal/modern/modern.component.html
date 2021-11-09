@@ -2,6 +2,7 @@
 <ng-container *ngIf="isScreenSmall">
     <fuse-vertical-navigation
         class="dark bg-gray-900 print:hidden"
+        [appearance]="'compact'"
         [mode]="'over'"
         [name]="'mainNavigation'"
         [navigation]="navigation.default"
@@ -26,9 +27,9 @@
     <div class="relative flex flex-0 items-center w-full h-16 sm:h-20 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
         <ng-container *ngIf="!isScreenSmall">
             <!-- Logo -->
-            <div class="flex items-center mx-2 lg:mr-8">
+            <div class="flex items-center mx-2">
                 <img
-                    class="flex lg:hidden w-8"
+                    class="flex w-8"
                     src="assets/images/logo/logo.svg">
             </div>
             <!-- Horizontal navigation -->

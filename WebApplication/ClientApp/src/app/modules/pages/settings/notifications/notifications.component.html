@@ -74,8 +74,15 @@
                 class="ml-4"
                 mat-flat-button
                 [color]="'primary'"
+                [disabled]="notificationsForm.disabled"
                 (click)="save()">
-                {{ 'profile.settings.notifications.save' | translate }}
+                <span *ngIf="notificationsForm.enabled">
+                    {{ 'profile.settings.notifications.save' | translate }}
+                </span>
+                <mat-progress-spinner
+                    *ngIf="notificationsForm.disabled"
+                    [diameter]="24"
+                    [mode]="'indeterminate'"></mat-progress-spinner>
             </button>
         </div>
     </form>

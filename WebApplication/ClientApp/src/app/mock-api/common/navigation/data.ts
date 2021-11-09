@@ -13,10 +13,17 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/profile'
     },
     {
+        id   : 'dating',
+        title: 'navigation.dating',
+        type : 'basic',
+        icon : 'heroicons_outline:fire',
+        link : '/dating'
+    },
+    {
         id   : 'calendar',
         title: 'navigation.calendar',
         type : 'basic',
-        icon : 'heroicons_outline:chart-pie',
+        icon : 'heroicons_outline:calendar',
         link : '/calendar'
     },
     {
@@ -29,11 +36,22 @@ export const defaultNavigation: FuseNavigationItem[] = [
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
+        id  : 'divider-1',
+        type: 'divider'
+    },
+    {
         id   : 'profile',
         title: 'navigation.profile',
         type : 'basic',
         icon : 'heroicons_outline:user-circle',
         link : '/profile'
+    },
+    {
+        id   : 'dating',
+        title: 'navigation.dating',
+        type : 'basic',
+        icon : 'heroicons_outline:fire',
+        link : '/dating'
     },
     {
         id   : 'calendar',
@@ -57,6 +75,13 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:user-circle',
         link : '/profile'
+    },
+    {
+        id   : 'dating',
+        title: 'navigation.dating',
+        type : 'basic',
+        icon : 'heroicons_outline:fire',
+        link : '/dating'
     },
     {
         id   : 'calendar',
