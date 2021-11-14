@@ -48,7 +48,7 @@ namespace WebApplication.Controllers
         {
             return Json(new
             {
-                id = notification.NotificationId,
+                notificationId = notification.NotificationId,
                 communication = notification.Communication,
                 email = notification.Email,
                 security = notification.Security

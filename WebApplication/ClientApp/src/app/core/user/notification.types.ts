@@ -1,6 +1,6 @@
 export interface Notification
 {
-    id: string;
+    notificationId: string;
     communication: boolean;
     email: boolean;
     security: boolean;

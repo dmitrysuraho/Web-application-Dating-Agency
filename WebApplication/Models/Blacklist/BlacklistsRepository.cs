@@ -23,7 +23,7 @@ namespace WebApplication.Models
                 User blockedUser = _context.Users.Find(blacklist.BlockedUser);
                 blockedUsers.Add(new
                 {
-                    id = blockedUser.UserId,
+                    userId = blockedUser.UserId,
                     name = blockedUser.Name,
                     photo = blockedUser.Photo
                 });

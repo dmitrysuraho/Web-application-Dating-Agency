@@ -19,6 +19,7 @@ import { RRule } from 'rrule';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { CalendarRecurrenceComponent } from 'app/modules/pages/calendar/recurrence/recurrence.component';
 import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
 import { Calendar, CalendarDrawerMode, CalendarEvent, CalendarEventEditMode, CalendarEventPanelMode, CalendarSettings } from 'app/modules/pages/calendar/calendar.types';
@@ -65,7 +66,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         private _matDialog: MatDialog,
         private _overlay: Overlay,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _splashScreen: FuseSplashScreenService
     )
     {
     }
@@ -257,6 +259,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
                 listDayAltFormat: false
             }
         };
+
+        // Splash screen
+        this._splashScreen.show();
+        setTimeout(() => this._splashScreen.hide(), 1000);
     }
 
     /**

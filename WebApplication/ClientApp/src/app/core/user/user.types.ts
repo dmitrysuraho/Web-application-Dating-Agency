@@ -1,6 +1,6 @@
 export interface User
 {
-    id: string;
+    userId: string;
     sex?: string;
     name: string;
     birthday: Date;
@@ -9,6 +9,7 @@ export interface User
     about?: string;
     email?: string;
     phone?: string;
+    gallery?: string[];
     isCurrentUser?: boolean;
     isBlocked?: boolean;
     isYouBlocked?: boolean;

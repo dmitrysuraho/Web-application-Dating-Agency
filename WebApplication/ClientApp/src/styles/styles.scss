@@ -1,4 +1,46 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Import/write your custom styles here.
-/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/*  @ Styles from this file will override 'vendors.scss' and common styles.
 /* ----------------------------------------------------------------------------------------------------- */
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+
+/* Importing Datepicker SCSS file. */
+@import "~ngx-bootstrap/datepicker/bs-datepicker";
+
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel.pointer-event {
+    touch-action: pan-y;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    @include clearfix();
+}
+
+.carousel-item {
+    position: relative;
+    display: none;
+    float: left;
+    width: 100%;
+    height: 100%;
+    margin-right: -100%;
+    backface-visibility: hidden;
+    @include transition($carousel-transition);
+
+    div {
+        width: 100%;
+        height: 100%;
+    }
+}

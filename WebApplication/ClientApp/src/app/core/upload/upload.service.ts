@@ -42,11 +42,11 @@ export class UploadService implements OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Upload image
+     * Upload avatar
      */
-    upload(file: File, user: User): void {
+    uploadAvatar(file: File, user: User): void {
         // Create path
-        const path: string = `images/${user.id}/avatar/${Date.now()}.${file.type.substr(6)}`;
+        const path: string = `images/${user.userId}/avatar/${Date.now()}.${file.type.substr(6)}`;
 
         // Upload file to storage
         this._fireStorage.upload(path, file)
@@ -91,9 +91,47 @@ export class UploadService implements OnDestroy {
     }
 
     /**
-     * Delete image
+     * Upload gallery image
+     *
      */
-    delete(user: User): void {
+    uploadGallery(file: File, user: User): void {
+        // Create path
+        const path: string = `images/${user.userId}/gallery/${Date.now()}.${file.type.substr(6)}`;
+
+        // Upload file to storage
+        this._fireStorage.upload(path, file)
+            .then(() => {
+                // Get image url
+                this._fireStorage.ref(path)
+                    .getDownloadURL()
+                    .pipe(
+                        switchMap((image: string) => {
+                            // Add image to user gallery
+                            user.gallery.push(image);
+                            return this._userService.addToGallery(image)
+                        }),
+                        takeUntil(this._unsubscribeAll),
+                        catchError((error) => {
+                            console.log(error);
+                            if (error.status !== 409) {
+                                this._route.navigateByUrl('internal-error');
+                            }
+                            this._fireStorage.refFromURL(user.gallery.pop()).delete();
+                            return of(null);
+                        })
+                    )
+                    .subscribe(() => this._userService.user = user);
+            })
+            .catch((error) => {
+                console.log(error);
+                this._route.navigateByUrl('internal-error');
+            });
+    }
+
+    /**
+     * Delete avatar
+     */
+    deleteAvatar(user: User): void {
         this._fireStorage.refFromURL(user?.photo).delete()
             .pipe(
                 switchMap(() => {

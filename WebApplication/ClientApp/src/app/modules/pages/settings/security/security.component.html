@@ -1,6 +1,6 @@
 <div
     *ngIf="firebaseUser | async as firebaseUser"
-    class="w-full max-w-3xl">
+    class="w-full max-w-3xl m-auto">
 
     <!-- Form -->
     <form
@@ -121,7 +121,7 @@
     </form>
 
     <ng-template #notPasswordProvider>
-        <div class="w-full">
+        <div class="w-full flex flex-col items-center">
             <div class="text-l">
                 {{ 'profile.settings.security.sign-in-with' | translate }}
                 <span class="font-bold">{{ firebaseUser?.providerData[0].providerId }}:</span>

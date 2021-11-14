@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using WebApplication.Models;
-using WebApplication.Models.Users;
 
 namespace WebApplication.Core.Filters
 {

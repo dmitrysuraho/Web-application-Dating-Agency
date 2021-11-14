@@ -77,6 +77,15 @@ export class UserService
         return this._httpClient.put<User>('api/users', user);
     }
 
+    /**
+     * Update gallery
+     *
+     * @param image
+     */
+    addToGallery(image: string): Observable<any>
+    {
+        return this._httpClient.post('api/gallery', { image: image });
+    }
 
     /**
      * Change password
@@ -131,5 +140,12 @@ export class UserService
      */
     unblockUser(id: string): Observable<User> {
         return this._httpClient.delete<User>('api/users/blacklists/' + id);
+    }
+
+    /**
+     * Find user for dating
+     */
+    getDatingUser(): Observable<User> {
+        return this._httpClient.get<User>('api/dating');
     }
 }

@@ -18,6 +18,7 @@ namespace WebApplication.Models
         public string Phone { get; set; }
 
         public Notification Notifications { get; set; }
+        public List<Gallery> Galleries { get; set; }
         public List<Blacklist> Blacklists { get; set; }
     }
 }

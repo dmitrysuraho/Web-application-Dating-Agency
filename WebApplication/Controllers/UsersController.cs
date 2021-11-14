@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApplication.Core.Filters;
 using WebApplication.Models;
-using WebApplication.Models.Users;
 
 namespace WebApplication.Controllers
 {
@@ -17,12 +16,14 @@ namespace WebApplication.Controllers
     {
         private readonly ILogger<UsersController> _logger;
         private readonly UsersRepository _usersRepository;
+        private readonly GalleriesRepository _galleriesRepository;
         private readonly BlacklistsRepository _blacklistsRepository;
 
         public UsersController(ILogger<UsersController> logger, ApplicationContext context)
         {
             _logger = logger;
             _usersRepository = new UsersRepository(context);
+            _galleriesRepository = new GalleriesRepository(context);
             _blacklistsRepository = new BlacklistsRepository(context);
         }
 
@@ -31,7 +32,7 @@ namespace WebApplication.Controllers
         public IActionResult GetUsers()
         {
             User user = _GetCurrentUser();
-            return _JsonResult(user, true);
+            return _JsonResult(user, _GalleryResult(_galleriesRepository.GetGalleries(user)), true);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -49,6 +50,7 @@ namespace WebApplication.Controllers
             {
                 return _JsonResult(
                     user,
+                    _GalleryResult(_galleriesRepository.GetGalleries(user)),
                     user.Uid == currentUser.Uid,
                     _blacklistsRepository.IsUserBlocked(currentUser.UserId, id),
                     _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
@@ -88,7 +90,7 @@ namespace WebApplication.Controllers
             else
             {
                 User updatedUser = _usersRepository.UpdateUser(user);
-                return _JsonResult(updatedUser, true);
+                return _JsonResult(updatedUser, null, true);
             }
         }
 
@@ -120,7 +122,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.AddToBlacklist(currentUser, id);
-                return _JsonResult(blockUser, false, true, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
+                return _JsonResult(blockUser, null, false, true, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
             }
         }
 
@@ -142,8 +144,18 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.RemoveFromBlackList(currentUser, id);
-                return _JsonResult(unblockUser, false, false, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
+                return _JsonResult(unblockUser, null, false, false, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
             }
+        }
+
+        private string[] _GalleryResult(List<Gallery> galleries)
+        {
+            List<string> result = new List<string>();
+            foreach(Gallery gallery in galleries)
+            {
+                result.Add(gallery.Image);
+            }
+            return result.ToArray();
         }
 
         private User _GetCurrentUser()
@@ -154,11 +166,11 @@ namespace WebApplication.Controllers
             return _usersRepository.FindUserByUid(uid);
         }
 
-        private IActionResult _JsonResult(User user, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null)
+        private IActionResult _JsonResult(User user, string[] galleries, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null)
         {
             return Json(new
             {
-                id = user.UserId,
+                userId = user.UserId,
                 sex = user.Sex,
                 name = user.Name,
                 birthday = user.Birthday,
@@ -167,6 +179,7 @@ namespace WebApplication.Controllers
                 about = user.About,
                 email = isCurrentUser ? user.Email : "",
                 phone = isCurrentUser ? user.Phone: "",
+                gallery = galleries,
                 isCurrentUser = isCurrentUser,
                 isBlocked = isBlocked,
                 isYouBlocked = isYouBlocked

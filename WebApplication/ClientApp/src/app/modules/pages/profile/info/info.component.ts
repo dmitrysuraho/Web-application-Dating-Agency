@@ -57,14 +57,11 @@ export class InfoComponent implements OnDestroy
         if (typeof (FileReader) !== 'undefined') {
             const reader = new FileReader();
 
-            reader.onload = (event: any) => {
-            };
-
             // Get data url
             reader.readAsDataURL(inputNode.files[0]);
 
             // Upload photo
-            this._upload.upload(inputNode.files[0], this.user);
+            this._upload.uploadAvatar(inputNode.files[0], this.user);
         }
     }
 
@@ -72,7 +69,7 @@ export class InfoComponent implements OnDestroy
      * Delete photo
      */
     deletePhoto() {
-        this._upload.delete(this.user);
+        this._upload.deleteAvatar(this.user);
     }
 
     /**
@@ -83,7 +80,7 @@ export class InfoComponent implements OnDestroy
         this.isBlockDisabled = true;
 
         // Block user
-        this._userService.blockUser(this.user.id)
+        this._userService.blockUser(this.user.userId)
             .pipe(
                 takeUntil(this._unsubscribeAll)
             )
@@ -104,7 +101,7 @@ export class InfoComponent implements OnDestroy
         this.isBlockDisabled = true;
 
         // Unblock user
-        this._userService.unblockUser(this.user.id)
+        this._userService.unblockUser(this.user.userId)
             .pipe(
                 takeUntil(this._unsubscribeAll)
             )

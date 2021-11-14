@@ -68,7 +68,7 @@ export class BlockedUserComponent implements OnInit
         this.isBlocking = true;
 
         // Unblock user
-        this._userService.unblockUser(this.blockedUser.id)
+        this._userService.unblockUser(this.blockedUser.userId)
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 switchMap(() => this._userService.getBlockedUsers())

@@ -3,6 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { MatDrawer } from '@angular/material/sidenav';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { User } from "../../../core/user/user.types";
 import { UserService } from "../../../core/user/user.service";
@@ -32,7 +33,8 @@ export class SettingsComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _translateService: TranslateService,
-        private _userService: UserService
+        private _userService: UserService,
+        private _splashScreen: FuseSplashScreenService
     )
     {
     }
@@ -109,6 +111,10 @@ export class SettingsComponent implements OnInit, OnDestroy
 
         // Get current user
         this.user = this._userService.getCurrentUser();
+
+        // Splash screen
+        this._splashScreen.show();
+        setTimeout(() => this._splashScreen.hide(), 1000);
 
         // Get blocked users
         this._userService.getBlockedUsers()

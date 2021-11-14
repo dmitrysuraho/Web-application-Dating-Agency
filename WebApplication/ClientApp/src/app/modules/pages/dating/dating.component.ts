@@ -4,8 +4,13 @@ import {
     OnInit
 } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { registerLocaleData } from "@angular/common";
+import  localeRu  from "@angular/common/locales/ru-BY";
+import  localeEn  from "@angular/common/locales/en-GB";
+import { Observable, Subject } from "rxjs";
+import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { UserService } from "../../../core/user/user.service";
+import { User } from "../../../core/user/user.types";
 
 @Component({
     selector       : 'dating',
@@ -13,6 +18,7 @@ import { UserService } from "../../../core/user/user.service";
 })
 export class DatingComponent implements OnInit, OnDestroy
 {
+    user: Observable<User>
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -21,7 +27,8 @@ export class DatingComponent implements OnInit, OnDestroy
     constructor(
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
-        private _userService: UserService
+        private _userService: UserService,
+        private _splashScreen: FuseSplashScreenService
     )
     {
     }
@@ -35,6 +42,15 @@ export class DatingComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Register locale data
+        registerLocaleData(localeRu);
+        registerLocaleData(localeEn);
+
+        // Splash screen
+        this._splashScreen.show();
+        setTimeout(() => this._splashScreen.hide(), 1000);
+
+        this.user = this._userService.getCurrentUser();
     }
 
     /**
