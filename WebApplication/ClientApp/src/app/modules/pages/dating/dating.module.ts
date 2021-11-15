@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
+import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { FuseCardModule } from "@fuse/components/card";
@@ -20,7 +21,8 @@ import { datingRoutes } from "./dating.routing";
         FuseCardModule,
         CarouselModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
+        TranslateModule
     ]
 })
 export class DatingModule

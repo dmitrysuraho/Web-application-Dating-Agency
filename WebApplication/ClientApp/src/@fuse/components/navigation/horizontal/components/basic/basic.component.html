@@ -14,6 +14,15 @@
             [routerLinkActiveOptions]="isActiveMatchOptions"
             [matTooltip]="item.tooltip || ''">
             <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
+            <button
+                *ngIf="item.id === 'dating'"
+                class="flex items-center ml-2"
+                mat-icon-button
+                (click)="openDatingSettings()">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_outline:adjustments'"></mat-icon>
+            </button>
         </div>
     </ng-container>
 

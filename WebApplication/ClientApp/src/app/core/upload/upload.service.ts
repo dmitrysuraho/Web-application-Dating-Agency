@@ -107,16 +107,13 @@ export class UploadService implements OnDestroy {
                     .pipe(
                         switchMap((image: string) => {
                             // Add image to user gallery
-                            user.gallery.push(image);
+                            user.gallery = [image, ...user.gallery];
                             return this._userService.addToGallery(image)
                         }),
                         takeUntil(this._unsubscribeAll),
                         catchError((error) => {
                             console.log(error);
-                            if (error.status !== 409) {
-                                this._route.navigateByUrl('internal-error');
-                            }
-                            this._fireStorage.refFromURL(user.gallery.pop()).delete();
+                            this._route.navigateByUrl('internal-error');
                             return of(null);
                         })
                     )

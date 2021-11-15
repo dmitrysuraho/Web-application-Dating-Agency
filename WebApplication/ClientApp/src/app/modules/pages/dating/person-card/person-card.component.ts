@@ -6,12 +6,14 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, Subject } from "rxjs";
+import { fuseAnimations } from "@fuse/animations";
 import { UserService } from "../../../../core/user/user.service";
 import { User } from "../../../../core/user/user.types";
 
 @Component({
     selector       : 'person-card',
     templateUrl    : './person-card.component.html',
+    animations     : [fuseAnimations]
 })
 export class PersonCardComponent implements OnInit, OnDestroy
 {
@@ -61,6 +63,20 @@ export class PersonCardComponent implements OnInit, OnDestroy
         }
     }
 
+    /**
+     * Get age
+     */
+    get getAge(): number {
+        let age: number;
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const dob = new Date(this.user.birthday);
+        const dobNow = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+        age = today.getFullYear() - dob.getFullYear();
+        if (today < dobNow) age--;
+        return age;
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
@@ -70,6 +86,7 @@ export class PersonCardComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+
     }
 
     /**
@@ -90,7 +107,12 @@ export class PersonCardComponent implements OnInit, OnDestroy
      * Ignore
      */
     ignore(): void {
+        // Set user in null
+        this.user = null;
 
+        // Get the next user
+        this._userService.getUserById('1')
+            .subscribe((user) => this.user = user);
     }
 
     /**

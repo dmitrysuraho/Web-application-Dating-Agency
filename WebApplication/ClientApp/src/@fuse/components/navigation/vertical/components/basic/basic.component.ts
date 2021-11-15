@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IsActiveMatchOptions } from '@angular/router';
+import { MatDialog } from "@angular/material/dialog";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
+import { DatingSettingsDialogComponent } from "@fuse/components/navigation/dating-settings-dialog/dating-settings-dialog.component";
 
 @Component({
     selector       : 'fuse-vertical-navigation-basic-item',
@@ -27,7 +29,8 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseNavigationService: FuseNavigationService,
-        private _fuseUtilsService: FuseUtilsService
+        private _fuseUtilsService: FuseUtilsService,
+        private _dialog: MatDialog
     )
     {
         // Set the equivalent of {exact: false} as default for active match options.
@@ -78,5 +81,17 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Dating settings
+     */
+    openDatingSettings(): void {
+        // Open dialog
+        this._dialog.open(DatingSettingsDialogComponent);
     }
 }

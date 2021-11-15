@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Кого ты ищешь?</h2>
+<mat-dialog-content>
+    <form class="flex flex-col">
+        <!-- Sex -->
+        <mat-button-toggle-group>
+            <mat-button-toggle value="male">Мужчин</mat-button-toggle>
+            <mat-button-toggle value="female">Девушек</mat-button-toggle>
+            <mat-button-toggle value="all">Всех</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <!-- Age -->
+        <mat-slider
+            [min]="18"
+            [max]="80"
+            [thumbLabel]="true">
+        </mat-slider>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="flex justify-end mt-3">
+    <button
+        mat-button
+        mat-dialog-close
+        [color]="'accent'">
+        Close
+    </button>
+    <button
+        mat-flat-button
+        mat-dialog-close
+        [color]="'primary'"
+        (click)="save()">
+        Save
+    </button>
+</mat-dialog-actions>

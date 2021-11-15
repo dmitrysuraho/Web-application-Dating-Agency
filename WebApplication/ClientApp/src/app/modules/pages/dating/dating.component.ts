@@ -14,7 +14,7 @@ import { User } from "../../../core/user/user.types";
 
 @Component({
     selector       : 'dating',
-    templateUrl    : './dating.component.html',
+    templateUrl    : './dating.component.html'
 })
 export class DatingComponent implements OnInit, OnDestroy
 {

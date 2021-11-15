@@ -7,6 +7,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MatSliderModule } from "@angular/material/slider";
 import { FuseScrollbarModule } from '@fuse/directives/scrollbar/public-api';
 import { FuseHorizontalNavigationBasicItemComponent } from '@fuse/components/navigation/horizontal/components/basic/basic.component';
 import { FuseHorizontalNavigationBranchItemComponent } from '@fuse/components/navigation/horizontal/components/branch/branch.component';
@@ -20,6 +23,7 @@ import { FuseVerticalNavigationDividerItemComponent } from '@fuse/components/nav
 import { FuseVerticalNavigationGroupItemComponent } from '@fuse/components/navigation/vertical/components/group/group.component';
 import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navigation/vertical/components/spacer/spacer.component';
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
+import { DatingSettingsDialogComponent } from "@fuse/components/navigation/dating-settings-dialog/dating-settings-dialog.component";
 
 @NgModule({
     declarations: [
@@ -34,7 +38,8 @@ import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/ver
         FuseVerticalNavigationDividerItemComponent,
         FuseVerticalNavigationGroupItemComponent,
         FuseVerticalNavigationSpacerItemComponent,
-        FuseVerticalNavigationComponent
+        FuseVerticalNavigationComponent,
+        DatingSettingsDialogComponent
     ],
     imports: [
         CommonModule,
@@ -45,7 +50,10 @@ import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/ver
         MatMenuModule,
         MatTooltipModule,
         FuseScrollbarModule,
-        TranslateModule
+        TranslateModule,
+        MatDialogModule,
+        MatButtonToggleModule,
+        MatSliderModule
     ],
     exports     : [
         FuseHorizontalNavigationComponent,

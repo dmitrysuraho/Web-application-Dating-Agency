@@ -7,13 +7,24 @@
     <!-- Item with an internal link -->
     <ng-container *ngIf="item.link && !item.externalLink && !item.function && !item.disabled">
         <a
-            class="fuse-vertical-navigation-item"
-            [ngClass]="{'fuse-vertical-navigation-item-active-forced': item.active}"
+            class="flex justify-between fuse-vertical-navigation-item"
+            [ngClass]="{'fuse-vertical-navigation-item-active-forced': item.active, 'py-0.5': item.id === 'dating'}"
             [routerLink]="[item.link]"
             [routerLinkActive]="'fuse-vertical-navigation-item-active'"
             [routerLinkActiveOptions]="isActiveMatchOptions"
             [matTooltip]="item.tooltip || ''">
-            <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
+            <div class="flex items-center">
+                <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
+            </div>
+            <button
+                *ngIf="item.id === 'dating'"
+                class="flex items-center ml-2"
+                mat-icon-button
+                (click)="openDatingSettings()">
+                <mat-icon
+                    class="icon-size-6"
+                    [svgIcon]="'heroicons_outline:adjustments'"></mat-icon>
+            </button>
         </a>
     </ng-container>
 
