@@ -2,8 +2,9 @@ import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from "@ngx-translate/core";
 import { DateAdapter, MAT_DATE_LOCALE } from "@angular/material/core";
-import { FuseAlertType } from "@fuse/components/alert";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { FuseAlertType } from "@fuse/components/alert";
+import { fuseAnimations } from "@fuse/animations";
 import { of, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { User } from "../../../../core/user/user.types";
@@ -13,9 +14,8 @@ import { UserService } from "../../../../core/user/user.service";
     selector       : 'settings-account',
     templateUrl    : './account.component.html',
     encapsulation  : ViewEncapsulation.None,
-    providers: [
-        { provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }
-    ]
+    providers      : [{ provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }],
+    animations     : [fuseAnimations]
 })
 export class SettingsAccountComponent implements OnInit, OnDestroy
 {

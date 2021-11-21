@@ -1,6 +1,6 @@
 <div
     *ngIf="firebaseUser | async as firebaseUser"
-    class="w-full max-w-3xl m-auto">
+    class="w-full max-w-3xl">
 
     <!-- Form -->
     <form
@@ -16,8 +16,9 @@
         <fuse-alert
             class="mt-8"
             *ngIf="showAlert"
+            @zoomIn
             [appearance]="'outline'"
-            [showIcon]="false"
+            [showIcon]="true"
             [type]="alert.type">
             {{ alert.message }}
         </fuse-alert>
@@ -121,7 +122,7 @@
     </form>
 
     <ng-template #notPasswordProvider>
-        <div class="w-full flex flex-col items-center">
+        <div class="w-full flex flex-col">
             <div class="text-l">
                 {{ 'profile.settings.security.sign-in-with' | translate }}
                 <span class="font-bold">{{ firebaseUser?.providerData[0].providerId }}:</span>

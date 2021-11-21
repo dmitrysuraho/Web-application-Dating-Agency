@@ -15,7 +15,7 @@ namespace WebApplication.Models
 
         public List<Gallery> GetGalleries(User user)
         {
-            return _context.Galleries.Where(prop => prop.UserId == user.UserId).OrderByDescending(prop => prop.GalleryId).ToList();
+            return _context.Galleries.Where(prop => prop.UserId == user.UserId).ToList();
         }
 
         public bool AddImage(User user, Gallery gallery)

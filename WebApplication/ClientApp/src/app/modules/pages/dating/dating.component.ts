@@ -7,18 +7,22 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { registerLocaleData } from "@angular/common";
 import  localeRu  from "@angular/common/locales/ru-BY";
 import  localeEn  from "@angular/common/locales/en-GB";
-import { Observable, Subject } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
+import { fuseAnimations } from "@fuse/animations";
 import { UserService } from "../../../core/user/user.service";
 import { User } from "../../../core/user/user.types";
 
 @Component({
     selector       : 'dating',
-    templateUrl    : './dating.component.html'
+    templateUrl    : './dating.component.html',
+    animations     : [fuseAnimations]
 })
 export class DatingComponent implements OnInit, OnDestroy
 {
-    user: Observable<User>
+    user: Observable<User>;
+    isNotFound: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -50,7 +54,14 @@ export class DatingComponent implements OnInit, OnDestroy
         this._splashScreen.show();
         setTimeout(() => this._splashScreen.hide(), 1000);
 
-        this.user = this._userService.getCurrentUser();
+        // Get candidate
+        this.user = this._userService.getDatingUser()
+            .pipe(
+                catchError(() => {
+                    this.isNotFound = true;
+                    return of(null);
+                })
+            );
     }
 
     /**
@@ -61,5 +72,13 @@ export class DatingComponent implements OnInit, OnDestroy
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    notFoundError(): void {
+        this.isNotFound = true;
     }
 }

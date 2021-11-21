@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { AuthService } from "./core/auth/auth.service";
-import {takeUntil} from "rxjs/operators";
-import {Subject} from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { User } from "./core/user/user.types";
+import { UserService } from "./core/user/user.service";
 
 @Component({
     selector   : 'app-root',
@@ -18,7 +20,8 @@ export class AppComponent
      */
     constructor(
         private _translateService: TranslateService,
-        private _authService: AuthService
+        private _authService: AuthService,
+        private _userService: UserService
     )
     {
     }
@@ -47,5 +50,23 @@ export class AppComponent
         } else {
             this._translateService.use('ru');
         }
+
+        // Set default dating settings
+        this._userService.user$
+            .subscribe((user: User) => {
+                // Set sex
+                if (!localStorage.getItem('sex')) {
+                    if (user.sex) {
+                        localStorage.setItem('sex', user.sex === 'Male' ? 'Female' : 'Male');
+                    } else {
+                        localStorage.setItem('sex', 'All');
+                    }
+                }
+
+                // Set age
+                if (!localStorage.getItem('age')) {
+                    localStorage.setItem('age', '18-30');
+                }
+            });
     }
 }

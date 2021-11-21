@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+
 namespace WebApplication.Models
 {
     public class DatingRepository
@@ -10,10 +13,43 @@ namespace WebApplication.Models
             _context = context;
         }
 
-        public User GetDatingUser()
+        public User GetDatingUser(int currentId, string sex, int minAge, int maxAge)
         {
-            
-            return null;
+            return _context.Users
+                .Where(
+                    prop => prop.UserId != currentId &&
+                    (sex != "All" ? prop.Sex == sex : prop.Sex == "Male" || prop.Sex == "Female") &&
+                    prop.Birthday <= _GetDateFromMinAge(minAge) &&
+                    prop.Birthday >= _GetDateFromMaxAge(maxAge) &&
+                    _context.Blacklists.FirstOrDefault(p => (p.UserId == currentId && p.BlockedUser == prop.UserId) ||
+                                                            (p.UserId == prop.UserId && p.BlockedUser == currentId)) == null &&
+                    _context.Datings.FirstOrDefault(p => p.UserId == currentId && p.Candidate == prop.UserId) == null)
+                .FirstOrDefault();
+        }
+
+        public bool Dating(User user, Dating dating)
+        {
+            if (_context.Datings.Where(prop => prop.UserId == user.UserId && prop.Candidate == dating.Candidate).FirstOrDefault() != null) return false;
+            _context.Datings.Add(new Dating
+            {
+                Candidate = dating.Candidate,
+                IsIgnore = dating.IsIgnore,
+                IsLike = dating.IsLike,
+                IsFavorite = dating.IsFavorite,
+                User = user
+            });
+            _context.SaveChanges();
+            return true;
+        }
+
+        private DateTime _GetDateFromMinAge(int age)
+        {
+            return new DateTime(DateTime.Now.Year - age, 12, 31, 23, 59, 59);
+        }
+
+        private DateTime _GetDateFromMaxAge(int age)
+        {
+            return new DateTime(DateTime.Now.Year - age, 1, 1);
         }
     }
 }

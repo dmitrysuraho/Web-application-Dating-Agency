@@ -22,7 +22,7 @@
                 class="mt-8 -mb-4"
                 *ngIf="showAlert"
                 [appearance]="'outline'"
-                [showIcon]="false"
+                [showIcon]="true"
                 [type]="alert.type"
                 [@shake]="alert.type === 'error'">
                 {{alert.message}}
@@ -94,7 +94,7 @@
                 <!-- Actions -->
                 <div class="inline-flex items-end justify-between w-full mt-1.5">
                     <a
-                        class="text-md font-medium text-primary-500 hover:underline"
+                        class="font-medium text-primary-500 hover:underline"
                         [routerLink]="['/forgot-password']">
                         {{ 'sign-in.forgot-password' | translate }}
                     </a>

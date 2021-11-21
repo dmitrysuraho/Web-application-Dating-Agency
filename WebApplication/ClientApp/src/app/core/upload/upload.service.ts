@@ -107,8 +107,8 @@ export class UploadService implements OnDestroy {
                     .pipe(
                         switchMap((image: string) => {
                             // Add image to user gallery
-                            user.gallery = [image, ...user.gallery];
-                            return this._userService.addToGallery(image)
+                            user.gallery.push(image);
+                            return this._userService.addToGallery(image);
                         }),
                         takeUntil(this._unsubscribeAll),
                         catchError((error) => {

@@ -16,7 +16,6 @@ export class GalleryComponent
 
     isScreenSmall: boolean;
     isScreenLarge: boolean;
-
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**

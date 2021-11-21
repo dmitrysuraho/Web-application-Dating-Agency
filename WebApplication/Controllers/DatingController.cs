@@ -15,21 +15,61 @@ namespace WebApplication.Controllers
         private readonly UsersRepository _usersRepository;
         private readonly DatingRepository _datingRepository;
         private readonly GalleriesRepository _galleriesRepository;
-        private readonly BlacklistsRepository _blacklistsRepository;
 
         public DatingController(ApplicationContext context)
         {
             _usersRepository = new UsersRepository(context);
             _datingRepository = new DatingRepository(context);
             _galleriesRepository = new GalleriesRepository(context);
-            _blacklistsRepository = new BlacklistsRepository(context);
         }
 
         [TypeFilter(typeof(AuthFilter))]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string sex, int minAge, int maxAge)
         {
-            return null;
+            User currentUser = _GetCurrentUser();
+            User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge);
+            if (candidate == null)
+            {
+                return NotFound(new { message = "Candidate is not found" });
+            }
+            else
+            {
+                return _JsonResult(candidate, _GalleryResult(_galleriesRepository.GetGalleries(candidate)));
+            }
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [HttpPost]
+        public IActionResult Post(string sex, int minAge, int maxAge, [FromBody] Dating dating)
+        {
+            User currentUser = _GetCurrentUser();
+            if (!_datingRepository.Dating(currentUser, dating))
+            {
+                return Conflict(new { message = "You has already granded that candidate" });
+            }
+            else
+            {
+                User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge);
+                if (candidate == null)
+                {
+                    return NotFound(new { message = "Candidate is not found" });
+                }
+                else
+                {
+                    return _JsonResult(candidate, _GalleryResult(_galleriesRepository.GetGalleries(candidate)));
+                }
+            }
+        }
+
+        private string[] _GalleryResult(List<Gallery> galleries)
+        {
+            List<string> result = new List<string>();
+            foreach (Gallery gallery in galleries)
+            {
+                result.Add(gallery.Image);
+            }
+            return result.ToArray();
         }
 
         private User _GetCurrentUser()

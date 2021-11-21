@@ -26,6 +26,7 @@
         <button
             class="fuse-mat-button-rounded"
             mat-button
+            [disabled]="isBlocking"
             [color]="'primary'"
             (click)="unblock()">
             <mat-icon

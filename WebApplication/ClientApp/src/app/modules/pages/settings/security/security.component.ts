@@ -2,8 +2,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from "@ngx-translate/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
-import { takeUntil } from "rxjs/operators";
-import {Observable, Subject} from "rxjs";
+import { catchError, takeUntil } from "rxjs/operators";
+import { Observable, of, Subject } from "rxjs";
+import { fuseAnimations } from "@fuse/animations";
 import { FuseAlertType } from "@fuse/components/alert";
 import { UserService } from "../../../../core/user/user.service";
 import firebase from "firebase/compat";
@@ -12,7 +13,8 @@ import FirebaseUser = firebase.User;
 @Component({
     selector       : 'settings-security',
     templateUrl    : './security.component.html',
-    encapsulation  : ViewEncapsulation.None
+    encapsulation  : ViewEncapsulation.None,
+    animations     : [fuseAnimations]
 })
 export class SettingsSecurityComponent implements OnInit
 {
@@ -108,7 +110,25 @@ export class SettingsSecurityComponent implements OnInit
         // Change password
         this._userService.changePassword(this.securityForm.get('newPassword').value)
             .pipe(
-                takeUntil(this._unsubscribeAll)
+                takeUntil(this._unsubscribeAll),
+                catchError(() => {
+                    // Enable the form
+                    this.securityForm.enable();
+
+                    // Reset form
+                    this.securityForm.reset();
+
+                    // Set the alert
+                    this.alert = {
+                        type   : 'error',
+                        message: this._translateService.instant('common.alert.error-change-password')
+                    };
+
+                    // Show the alert
+                    this.showAlert = true;
+
+                    return of(null);
+                })
             )
             .subscribe(() => {
 

@@ -1,4 +1,4 @@
-<div class="w-full max-w-3xl m-auto">
+<div class="w-full max-w-3xl">
 
     <!-- Form -->
     <form [formGroup]="accountForm">
@@ -13,8 +13,9 @@
         <fuse-alert
             class="my-8"
             *ngIf="showAlert"
+            @zoomIn
             [appearance]="'outline'"
-            [showIcon]="false"
+            [showIcon]="true"
             [type]="alert.type">
             {{ alert.message }}
         </fuse-alert>
@@ -28,8 +29,8 @@
                     <mat-select
                         id="sex"
                         [formControlName]="'sex'">
-                        <mat-option value="Мужской">{{ 'sign-up.sex.man' | translate }}</mat-option>
-                        <mat-option value="Женский">{{ 'sign-up.sex.woman' | translate }}</mat-option>
+                        <mat-option value="Male">{{ 'sign-up.sex.man' | translate }}</mat-option>
+                        <mat-option value="Female">{{ 'sign-up.sex.woman' | translate }}</mat-option>
                     </mat-select>
                     <mat-icon
                         class="icon-size-5"

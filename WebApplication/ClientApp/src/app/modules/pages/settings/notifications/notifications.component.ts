@@ -2,15 +2,17 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, Subject } from "rxjs";
-import { FuseAlertType } from "@fuse/components/alert";
 import { takeUntil, tap } from "rxjs/operators";
+import { FuseAlertType } from "@fuse/components/alert";
+import { fuseAnimations } from "@fuse/animations";
 import { Notification } from 'app/core/user/notification.types';
 import { UserService } from "../../../../core/user/user.service";
 
 @Component({
     selector       : 'settings-notifications',
     templateUrl    : './notifications.component.html',
-    encapsulation  : ViewEncapsulation.None
+    encapsulation  : ViewEncapsulation.None,
+    animations     : [fuseAnimations]
 })
 export class SettingsNotificationsComponent implements OnInit
 {

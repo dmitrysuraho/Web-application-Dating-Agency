@@ -95,7 +95,7 @@ export class AuthService implements OnDestroy
     signOut(): void
     {
         this._angularFireAuth.signOut()
-            .then(() => localStorage.removeItem('accessToken'));
+            .then(() => localStorage.clear());
     }
 
     /**

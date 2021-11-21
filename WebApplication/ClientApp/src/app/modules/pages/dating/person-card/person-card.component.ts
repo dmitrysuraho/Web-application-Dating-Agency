@@ -1,14 +1,20 @@
 import {
-    Component, Input,
+    Component,
+    EventEmitter,
+    Input,
     OnDestroy,
-    OnInit
+    OnInit,
+    Output
 } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, Subject } from "rxjs";
+import { of, Subject } from "rxjs";
+import { catchError, switchMap, takeUntil } from "rxjs/operators";
 import { fuseAnimations } from "@fuse/animations";
+import { FuseMediaWatcherService } from "@fuse/services/media-watcher";
 import { UserService } from "../../../../core/user/user.service";
 import { User } from "../../../../core/user/user.types";
+import { Dating } from "../../../../core/user/dating.types";
 
 @Component({
     selector       : 'person-card',
@@ -20,7 +26,15 @@ export class PersonCardComponent implements OnInit, OnDestroy
     @Input()
     user: User;
 
+    @Output()
+    onNotFound: EventEmitter<void> = new EventEmitter<void>();
+
+    isScreenLarge: boolean;
+    isScreenMedium: boolean;
+    isScreenSmall: boolean;
+    isScreenXSmall: boolean
     currentLang: string;
+    isBlocking: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -30,7 +44,8 @@ export class PersonCardComponent implements OnInit, OnDestroy
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _userService: UserService,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _fuseMediaWatcherService: FuseMediaWatcherService
     )
     {
     }
@@ -86,7 +101,17 @@ export class PersonCardComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Subscribe to media changes
+        this._fuseMediaWatcherService.onMediaChange$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(({matchingAliases}) => {
+                this.isScreenLarge = matchingAliases.includes('lg');
+                this.isScreenMedium = !matchingAliases.includes('lg');
+                this.isScreenSmall = !matchingAliases.includes('md');
+                this.isScreenXSmall = !matchingAliases.includes('sm');
 
+                console.log(matchingAliases)
+            });
     }
 
     /**
@@ -104,21 +129,58 @@ export class PersonCardComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Ignore
+     * Grande ang find new candidate
      */
-    ignore(): void {
-        // Set user in null
+    dating(event: string): void {
+        // Set dating object
+        const dating: Dating = {
+            candidate: this.user.userId,
+            isLike: event === 'like',
+            isIgnore: event === 'ignore',
+            isFavorite: event === 'favorite'
+        };
+
+        // Set candidate in null
         this.user = null;
 
-        // Get the next user
-        this._userService.getUserById('1')
-            .subscribe((user) => this.user = user);
+        // Dating and get new candidate
+        this._userService.dating(dating)
+            .pipe(
+                takeUntil(this._unsubscribeAll),
+                catchError(() => {
+                    this.onNotFound.emit();
+                    return of(null);
+                })
+            )
+            .subscribe((user: User) => this.user = user);
     }
 
     /**
-     * Like
+     * Block candidate and find new
      */
-    like(): void {
+    block(): void {
+        // Set blocking
+        this.isBlocking = true;
 
+        // Block and find new
+        this._userService.blockUser(this.user.userId)
+            .pipe(
+                switchMap(() => {
+                    // Unset blocking
+                    this.isBlocking = false;
+
+                    // Set candidate in null
+                    this.user = null;
+
+                    // Find new candidate
+                    return this._userService.getDatingUser();
+                }),
+                takeUntil(this._unsubscribeAll),
+                catchError(() => {
+                    this.onNotFound.emit();
+                    return of(null);
+                })
+            )
+            .subscribe((user: User) => this.user = user);
     }
 }

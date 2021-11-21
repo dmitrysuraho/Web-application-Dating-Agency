@@ -21,7 +21,7 @@
                 class="mt-8 -mb-4"
                 *ngIf="showAlert"
                 [appearance]="'outline'"
-                [showIcon]="false"
+                [showIcon]="true"
                 [type]="alert.type"
                 [@shake]="alert.type === 'error'">
                 {{alert.message}}
@@ -38,8 +38,8 @@
                         id="sex"
                         [placeholder]="'common.placeholder.sex' | translate"
                         [formControlName]="'sex'">
-                        <mat-option value="Мужской">{{ 'sign-up.sex.man' | translate }}</mat-option>
-                        <mat-option value="Женский">{{ 'sign-up.sex.woman' | translate }}</mat-option>
+                        <mat-option value="Male">{{ 'sign-up.sex.man' | translate }}</mat-option>
+                        <mat-option value="Female">{{ 'sign-up.sex.woman' | translate }}</mat-option>
                     </mat-select>
                     <mat-icon
                         class="icon-size-5"

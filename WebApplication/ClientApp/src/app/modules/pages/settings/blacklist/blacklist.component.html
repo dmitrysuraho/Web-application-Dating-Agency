@@ -1,4 +1,4 @@
-<div class="w-full max-w-3xl text-center m-auto">
+<div class="w-full max-w-3xl">
 
     <!-- Blocked users -->
     <ng-container *ngFor="let blockedUser of blockedUsers; let i = index">
@@ -7,7 +7,15 @@
                       (onBlockedUsers)="updateBlockedUsers($event)"></blocked-user>
     </ng-container>
 
-    <!-- If no blockedUsers -->
-    <span *ngIf="blockedUsers.length === 0"
-          [innerHTML]="'profile.settings.blacklist.no-blocked-users' | translate"></span>
+    <!-- If no blocked users -->
+    <fuse-alert
+        *ngIf="blockedUsers.length === 0"
+        [type]="'info'"
+        [appearance]="'outline'"
+        @zoomIn>
+            <span
+                class="font-semibold"
+                fuseAlertTitle>{{ 'profile.settings.blacklist.no-blocked-users.title' | translate }}</span>
+        <span>{{ 'profile.settings.blacklist.no-blocked-users.description' | translate }}</span>
+    </fuse-alert>
 </div>

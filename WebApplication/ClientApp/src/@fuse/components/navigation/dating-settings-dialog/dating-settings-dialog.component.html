@@ -1,33 +1,47 @@
-<h2 mat-dialog-title>Кого ты ищешь?</h2>
 <mat-dialog-content>
-    <form class="flex flex-col">
+    <div class="flex flex-col">
         <!-- Sex -->
-        <mat-button-toggle-group>
-            <mat-button-toggle value="male">Мужчин</mat-button-toggle>
-            <mat-button-toggle value="female">Девушек</mat-button-toggle>
-            <mat-button-toggle value="all">Всех</mat-button-toggle>
+        <span class="text-center font-semibold">{{ 'navigation.dating-settings.looking-for' | translate }}</span>
+        <mat-button-toggle-group
+            class="flex flex-col mt-4"
+            [(ngModel)]="sex">
+            <mat-button-toggle
+                value="All">{{ 'navigation.dating-settings.all' | translate }}</mat-button-toggle>
+            <mat-button-toggle
+                class="mt-2"
+                value="Male">{{ 'navigation.dating-settings.male' | translate }}</mat-button-toggle>
+            <mat-button-toggle
+                class="mt-2 border"
+                value="Female">{{ 'navigation.dating-settings.female' | translate }}</mat-button-toggle>
         </mat-button-toggle-group>
 
+        <hr class="w-full border-t my-6">
+
         <!-- Age -->
-        <mat-slider
-            [min]="18"
-            [max]="80"
-            [thumbLabel]="true">
-        </mat-slider>
-    </form>
+        <span class="text-center font-semibold">{{ 'navigation.dating-settings.age' | translate }}</span>
+        <div class="relative h-20">
+            <lib-ngx-mat-range-slider
+                [minColor]="'accent'"
+                [maxColor]="'primary'"
+                [min]="18"
+                [max]="100"
+                [value]="{min: minAge, max: maxAge}"
+                (output)="onAgeChange($event)"></lib-ngx-mat-range-slider>
+        </div>
+    </div>
 </mat-dialog-content>
-<mat-dialog-actions class="flex justify-end mt-3">
+<mat-dialog-actions class="flex flex-row justify-center">
     <button
         mat-button
         mat-dialog-close
-        [color]="'accent'">
-        Close
+        [color]="'primary'">
+        {{ 'navigation.dating-settings.close' | translate }}
     </button>
     <button
         mat-flat-button
         mat-dialog-close
         [color]="'primary'"
         (click)="save()">
-        Save
+        {{ 'navigation.dating-settings.save' | translate }}
     </button>
 </mat-dialog-actions>

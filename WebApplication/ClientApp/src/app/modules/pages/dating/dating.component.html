@@ -1,5 +1,22 @@
 <div
-    *ngIf="user | async as user"
-    class="flex justify-center items-center w-full">
-    <person-card [user]="user"></person-card>
+    *ngIf="!isNotFound; else notFound"
+    class="flex justify-center items-center w-full p-4">
+    <person-card
+        *ngIf="user | async as user"
+        [user]="user"
+        (onNotFound)="notFoundError()"></person-card>
 </div>
+
+<ng-template #notFound>
+    <div class="m-auto p-6">
+        <fuse-alert
+            [type]="'error'"
+            [appearance]="'outline'"
+            @zoomIn>
+            <span
+                class="font-semibold"
+                fuseAlertTitle>{{ 'dating.no-candidates.title' | translate }}</span>
+            <span>{{ 'dating.no-candidates.description' | translate }}</span>
+        </fuse-alert>
+    </div>
+</ng-template>

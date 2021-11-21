@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
+import { NgxMatRangeSliderModule } from "ngx-mat-range-slider";
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -53,7 +55,9 @@ import { DatingSettingsDialogComponent } from "@fuse/components/navigation/datin
         TranslateModule,
         MatDialogModule,
         MatButtonToggleModule,
-        MatSliderModule
+        MatSliderModule,
+        NgxMatRangeSliderModule,
+        FormsModule
     ],
     exports     : [
         FuseHorizontalNavigationComponent,

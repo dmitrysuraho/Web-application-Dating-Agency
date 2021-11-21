@@ -54,6 +54,7 @@
             *ngIf="!user?.isBlocked && !user?.isYouBlocked"
             class="fuse-mat-button-rounded"
             mat-button
+            [disabled]="isBlockDisabled"
             [color]="'primary'">
             <mat-icon
                 class="icon-size-5"

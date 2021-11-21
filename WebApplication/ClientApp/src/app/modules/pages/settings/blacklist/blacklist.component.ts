@@ -1,12 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { Subject } from "rxjs";
+import { fuseAnimations } from "@fuse/animations";
 import { UserService } from "../../../../core/user/user.service";
 import { User } from "../../../../core/user/user.types";
 
 @Component({
     selector       : 'settings-blacklist',
-    templateUrl    : './blacklist.component.html'
+    templateUrl    : './blacklist.component.html',
+    animations     : [fuseAnimations]
 })
 export class SettingsBlacklistComponent implements OnInit
 {

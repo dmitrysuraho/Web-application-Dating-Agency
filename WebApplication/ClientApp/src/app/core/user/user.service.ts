@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Observable, ReplaySubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { User } from 'app/core/user/user.types';
 import { Notification } from 'app/core/user/notification.types';
+import { Dating } from './dating.types';
 
 @Injectable({
     providedIn: 'root'
@@ -95,9 +96,7 @@ export class UserService
     changePassword(newPassword: string): Observable<any> {
         return this._angularFireAuth.authState
             .pipe(
-                tap((user) => {
-                    user.updatePassword(newPassword);
-                })
+                switchMap((user) => user.updatePassword(newPassword))
             );
     }
 
@@ -146,6 +145,27 @@ export class UserService
      * Find user for dating
      */
     getDatingUser(): Observable<User> {
-        return this._httpClient.get<User>('api/dating');
+        return this._httpClient.get<User>('api/dating' + this._getQuery());
+    }
+
+    /**
+     * Grand candidate and get another candidate
+     */
+    dating(dating: Dating): Observable<User> {
+        return this._httpClient.post<User>('api/dating' + this._getQuery(), dating);
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Create query for dating request
+     */
+    private _getQuery(): string {
+        const sex: string = localStorage.getItem('sex');
+        let minAge: string, maxAge: string;
+        [minAge, maxAge] = localStorage.getItem('age').split('-');
+        return `?sex=${sex}&minAge=${minAge}&maxAge=${maxAge}`;
     }
 }
