@@ -23,6 +23,7 @@
     <Folder Include="Models\Blacklist\" />
     <Folder Include="Models\Gallery\" />
     <Folder Include="Models\Dating\" />
+    <Folder Include="Models\Posts\" />
   </ItemGroup>
   
   <ItemGroup>
@@ -35,6 +36,7 @@
     <None Remove="Models\Blacklist\" />
     <None Remove="Models\Gallery\" />
     <None Remove="Models\Dating\" />
+    <None Remove="Models\Posts\" />
   </ItemGroup>
 <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->

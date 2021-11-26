@@ -17,7 +17,8 @@ import { ProfileComponent } from 'app/modules/pages/profile/profile.component';
 import { InfoComponent } from "./info/info.component";
 import { DescriptionComponent } from "./description/description.component";
 import { GalleryComponent } from "./gallery/gallery.component";
-import { CreatePostComponent } from "./create-post/create-post.component";
+import { PostsComponent } from "./posts/posts.component";
+import { PostComponent } from "./posts/post/post.component";
 import { profileRoutes } from 'app/modules/pages/profile/profile.routing';
 
 @NgModule({
@@ -26,7 +27,8 @@ import { profileRoutes } from 'app/modules/pages/profile/profile.routing';
         InfoComponent,
         DescriptionComponent,
         GalleryComponent,
-        CreatePostComponent
+        PostsComponent,
+        PostComponent
     ],
     imports: [
         RouterModule.forChild(profileRoutes),

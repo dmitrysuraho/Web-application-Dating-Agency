@@ -1,0 +1,21 @@
+<div class="flex flex-wrap justify-center">
+    <favorite-person
+        *ngFor="let favoriteUser of favoriteUsers; let i = index"
+        class="m-4"
+        [favoriteUser]="favoriteUser"
+        (onDeleteFavorite)="onDeleteFavorite(i)"></favorite-person>
+</div>
+
+<div
+    *ngIf="!favoriteUsers?.length"
+    class="m-auto p-6">
+    <fuse-alert
+        [type]="'info'"
+        [appearance]="'outline'"
+        @zoomIn>
+            <span
+                class="font-semibold"
+                fuseAlertTitle>{{ 'favorites.no-favorites.title' | translate }}</span>
+        <span>{{ 'favorites.no-favorites.description' | translate }}</span>
+    </fuse-alert>
+</div>

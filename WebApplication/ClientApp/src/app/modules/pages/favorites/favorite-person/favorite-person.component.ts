@@ -1,37 +1,31 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject} from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { UserService } from "../../../../../core/user/user.service";
-import { User } from "../../../../../core/user/user.types";
+import { Subject } from "rxjs";
+import { User } from "../../../../core/user/user.types";
+import { UserService } from "../../../../core/user/user.service";
 
 @Component({
-    selector       : 'blocked-user',
-    templateUrl    : './blocked-user.component.html',
-    encapsulation  : ViewEncapsulation.None
+    selector       : 'favorite-person',
+    templateUrl    : './favorite-person.component.html',
 })
-export class BlockedUserComponent implements OnInit
-{
-    @Input()
-    blockedUser: User;
+export class FavoritePersonComponent implements OnDestroy{
 
     @Input()
-    isUpDivider: boolean;
+    favoriteUser: User;
 
     @Output()
-    onBlockedUsers: EventEmitter<void> = new EventEmitter<void>();
+    onDeleteFavorite: EventEmitter<void> = new EventEmitter<void>();
 
-    isBlocking: boolean;
+    isDeleting: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
     constructor(
-        private _userService: UserService,
-        private _translateService: TranslateService,
-        private _router: Router
+        private _router: Router,
+        private _userService: UserService
     )
     {
     }
@@ -41,16 +35,10 @@ export class BlockedUserComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * On init
-     */
-    ngOnInit(): void
-    {
-    }
-
-    /**
      * On destroy
      */
-    ngOnDestroy() {
+    ngOnDestroy(): void
+    {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -61,20 +49,17 @@ export class BlockedUserComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Unblock
+     * Delete favorite
      */
-    unblock(): void {
-        // Set blocking
-        this.isBlocking = true;
-
-        // Unblock user
-        this._userService.unblockUser(this.blockedUser.userId)
+    deleteFavorite(): void {
+        this.isDeleting = true;
+        this._userService.deleteFavorite(this.favoriteUser.userId)
             .pipe(
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe(() => {
-                this.onBlockedUsers.emit();
-                this.isBlocking = false;
+                this.onDeleteFavorite.emit();
+                this.isDeleting = false;
             });
     }
 

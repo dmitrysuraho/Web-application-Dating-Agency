@@ -32,7 +32,7 @@ namespace WebApplication.Controllers
         public IActionResult GetUsers()
         {
             User user = _GetCurrentUser();
-            return _JsonResult(user, _GalleryResult(_galleriesRepository.GetGalleries(user)), true);
+            return _JsonResult(user, _galleriesRepository.GetGalleries(user), true);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -50,7 +50,7 @@ namespace WebApplication.Controllers
             {
                 return _JsonResult(
                     user,
-                    _GalleryResult(_galleriesRepository.GetGalleries(user)),
+                    _galleriesRepository.GetGalleries(user),
                     user.Uid == currentUser.Uid,
                     _blacklistsRepository.IsUserBlocked(currentUser.UserId, id),
                     _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
@@ -146,16 +146,6 @@ namespace WebApplication.Controllers
                 _blacklistsRepository.RemoveFromBlackList(currentUser, id);
                 return _JsonResult(unblockUser, null, false, false, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
             }
-        }
-
-        private string[] _GalleryResult(List<Gallery> galleries)
-        {
-            List<string> result = new List<string>();
-            foreach(Gallery gallery in galleries)
-            {
-                result.Add(gallery.Image);
-            }
-            return result.ToArray();
         }
 
         private User _GetCurrentUser()

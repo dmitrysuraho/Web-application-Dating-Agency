@@ -78,8 +78,6 @@ export class SettingsComponent implements OnInit, OnDestroy
         // Set layout
         if (localStorage.getItem('layout') === 'classy' || !localStorage.getItem('layout')) {
             this.setLayout('classy');
-        } else if (localStorage.getItem('layout') === 'compact') {
-            this.setLayout('compact');
         } else {
             this.setLayout('modern');
         }

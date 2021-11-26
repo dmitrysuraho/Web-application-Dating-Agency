@@ -1,0 +1,89 @@
+<!-- Create Post -->
+<fuse-card
+    *ngIf="user?.isCurrentUser"
+    class="flex flex-col lg:max-w-140 md:max-w-140 sm:max-w-140 lg:min-w-140 w-full p-6 my-8 lg:mt-0">
+    <div class="text-xl font-semibold">{{ 'profile.create-post.title' | translate }}</div>
+    <div class="flex flex-col sm:flex-row items-start mt-5">
+        <div class="flex items-center mb-6 sm:mb-0">
+            <img
+                *ngIf="user.photo"
+                class="w-12 min-w-12 h-12 rounded-full mr-4"
+                [src]="user.photo"
+                alt="Card cover image">
+            <mat-icon
+                *ngIf="!user.photo"
+                class="w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+        </div>
+        <div class="flex flex-col w-full">
+            <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript">
+                        <textarea
+                            matInput
+                            matTextareaAutosize
+                            #whatNew
+                            [disabled]="isCreating"
+                            [(ngModel)]="description"
+                            [placeholder]="'profile.create-post.placeholder' | translate"
+                            [rows]="3"
+                            [maxLength]="150"></textarea>
+            </mat-form-field>
+            <div
+                *ngIf="whatNew.value.length"
+                class="text-right mt-1 text-md text-hint">{{ whatNew.value.length }} / 150</div>
+            <img
+                *ngIf="srcFile"
+                class="mt-2 rounded-2xl"
+                alt="Post image"
+                [src]="srcFile">
+        </div>
+    </div>
+    <div class="flex items-center justify-between mt-2 -mx-3">
+        <button
+            class="px-3"
+            mat-button
+            [disabled]="isCreating"
+            [routerLink]="['./']"
+            (click)="!srcFile ? fileInput.click() : deleteImage()">
+            <mat-icon
+                class="icon-size-5 mr-2"
+                [svgIcon]="'heroicons_solid:photograph'"></mat-icon>
+            <span>{{ (!srcFile ? 'profile.create-post.add-image' : 'profile.create-post.delete-image') | translate }}</span>
+        </button>
+        <button
+            class="px-3"
+            mat-button
+            [disabled]="isCreating"
+            [color]="'primary'"
+            (click)="createPost()">
+            <span *ngIf="!isCreating">{{ 'profile.create-post.create' | translate }}</span>
+            <mat-progress-spinner
+                *ngIf="isCreating"
+                [diameter]="24"
+                [mode]="'indeterminate'"></mat-progress-spinner>
+        </button>
+        <input hidden
+               #fileInput
+               type="file"
+               id="postImage"
+               accept="image/jpeg, image/png"
+               (change)="addImage()">
+    </div>
+</fuse-card>
+
+<!-- Posts -->
+<post
+    *ngFor="let post of posts; let i = index"
+    [post]="post"
+    [user]="user"
+    [position]="i"
+    (onDeletePost)="onDeletePost($event)"></post>
+
+<!-- No posts -->
+<fuse-card
+    *ngIf="!posts?.length"
+    class="flex flex-col justify-center items-center lg:max-w-140 md:max-w-140 sm:max-w-140 lg:min-w-140 w-full p-6 my-8 lg:mt-0">
+    <mat-icon
+        class="icon-size-24 mr-2"
+        [svgIcon]="'heroicons_solid:newspaper'"></mat-icon>
+    <div>{{ 'profile.posts.no-posts' | translate }}</div>
+</fuse-card>

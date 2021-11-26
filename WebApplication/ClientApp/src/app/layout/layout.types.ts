@@ -3,5 +3,4 @@ export type Layout =
     // Horizontal
     | 'modern'
     // Vertical
-    | 'classy'
-    | 'compact';
+    | 'classy';

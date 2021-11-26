@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 
@@ -40,6 +41,27 @@ namespace WebApplication.Models
             });
             _context.SaveChanges();
             return true;
+        }
+
+        public object[] GetFavorites(int userId)
+        {
+            return _context.Users
+                .Where(prop => _context.Datings.FirstOrDefault(p => p.UserId == userId && prop.UserId == p.Candidate && p.IsFavorite == true) != null)
+                .Select(prop => new { prop.UserId, prop.Name, prop.Photo }).ToArray();
+        }
+
+        public bool DeleteFavorite(int currentId, int id)
+        {
+            Dating favorite = _context.Datings.FirstOrDefault(prop => prop.UserId == currentId && prop.Candidate == id && prop.IsFavorite == true);
+            if (favorite != null)
+            {
+                favorite.IsFavorite = false;
+                favorite.IsLike = false;
+                favorite.IsIgnore = true;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         private DateTime _GetDateFromMinAge(int age)

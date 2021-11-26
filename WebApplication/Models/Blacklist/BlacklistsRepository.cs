@@ -13,22 +13,10 @@ namespace WebApplication.Models
             _context = context;
         }
 
-        public List<object> GetBlacklists(int currentUserId)
+        public object[] GetBlacklists(int currentUserId)
         {
-            var blacklists = _context.Blacklists
-                .Where(prop => prop.UserId == currentUserId).ToList();
-            List<object> blockedUsers = new List<object>();
-            foreach(var blacklist in blacklists)
-            {
-                User blockedUser = _context.Users.Find(blacklist.BlockedUser);
-                blockedUsers.Add(new
-                {
-                    userId = blockedUser.UserId,
-                    name = blockedUser.Name,
-                    photo = blockedUser.Photo
-                });
-            }
-            return blockedUsers;
+            return _context.Users.Where(prop => _context.Blacklists.FirstOrDefault(p => p.UserId == currentUserId && p.BlockedUser == prop.UserId) != null)
+                .Select(prop => new { prop.UserId, prop.Name, prop.Photo }).ToArray();
         }
 
         public bool IsUserBlocked(int currentUserId, int userId)
@@ -54,6 +42,24 @@ namespace WebApplication.Models
                 BlockedUser = userId,
                 User = user
             });
+            Dating dating = _context.Datings.FirstOrDefault(prop => prop.UserId == user.UserId && prop.Candidate == userId);
+            if (dating != null)
+            {
+                dating.IsFavorite = false;
+                dating.IsLike = false;
+                dating.IsIgnore = true;
+            }
+            else
+            {
+                _context.Datings.Add(new Dating
+                {
+                    Candidate = userId,
+                    IsIgnore = true,
+                    IsLike = false,
+                    IsFavorite = false,
+                    User = user
+                });
+            }
             _context.SaveChanges();
         }
 

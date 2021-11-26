@@ -48,7 +48,7 @@ export class ProfileComponent implements OnInit, OnDestroy
         registerLocaleData(localeRu);
         registerLocaleData(localeEn);
 
-        // Get current user
+        // Get user
         this.user = this._activatedRoute.params
             .pipe(
                 switchMap((params: HttpParams) => {

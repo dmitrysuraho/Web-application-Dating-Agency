@@ -1,20 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { Component } from "@angular/core";
+import { User } from "../../../core/user/user.types";
 import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { FuseSplashScreenService } from "@fuse/services/splash-screen";
+import { UserService } from "../../../core/user/user.service";
 import { fuseAnimations } from "@fuse/animations";
-import { UserService } from "../../../../core/user/user.service";
-import { User } from "../../../../core/user/user.types";
 
 @Component({
-    selector       : 'settings-blacklist',
-    templateUrl    : './blacklist.component.html',
+    selector       : 'favorites',
+    templateUrl    : './favorites.component.html',
     animations     : [fuseAnimations]
 })
-export class SettingsBlacklistComponent implements OnInit
-{
-    @Input()
-    blockedUsers: User[];
+export class FavoritesComponent {
 
+    favoriteUsers: User[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -22,7 +21,7 @@ export class SettingsBlacklistComponent implements OnInit
      */
     constructor(
         private _userService: UserService,
-        private _translateService: TranslateService
+        private _splashScreen: FuseSplashScreenService
     )
     {
     }
@@ -36,12 +35,23 @@ export class SettingsBlacklistComponent implements OnInit
      */
     ngOnInit(): void
     {
+        // Splash screen ang get favorites
+        this._splashScreen.show();
+        this._userService.getFavorites()
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((favorites: User[]) => {
+                this.favoriteUsers = favorites;
+                this._splashScreen.hide()
+            });
     }
 
     /**
      * On destroy
      */
-    ngOnDestroy() {
+    ngOnDestroy(): void
+    {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -52,11 +62,11 @@ export class SettingsBlacklistComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Update blocked users
+     * On delete favorite
      *
      * @param position
      */
-    updateBlockedUsers(position: number): void {
-        this.blockedUsers.splice(position, 1);
+    onDeleteFavorite(position: number): void {
+        this.favoriteUsers.splice(position, 1);
     }
 }

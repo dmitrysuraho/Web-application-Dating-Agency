@@ -56,11 +56,7 @@ export class AppComponent
             .subscribe((user: User) => {
                 // Set sex
                 if (!localStorage.getItem('sex')) {
-                    if (user.sex) {
-                        localStorage.setItem('sex', user.sex === 'Male' ? 'Female' : 'Male');
-                    } else {
-                        localStorage.setItem('sex', 'All');
-                    }
+                    localStorage.setItem('sex', 'All');
                 }
 
                 // Set age

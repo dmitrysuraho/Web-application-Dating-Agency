@@ -1,5 +1,4 @@
 <div *ngIf="user"
-     @zoomIn
      @zoomOut>
     <fuse-card
         class="flex lg:w-240 lg:h-140"
@@ -18,8 +17,9 @@
             </carousel>
             <img
                 *ngIf="!user?.gallery.length"
-                class="w-full h-full object-cover"
-                src="assets/images/defaults/default-placeholder.png">
+                class="object-cover"
+                src="assets/images/defaults/default-placeholder.png"
+                [ngClass]="{ 'w-full h-full ': isScreenLarge, 'w-120 h-80': !isScreenLarge && !isScreenSmall, 'w-100 h-50': isScreenSmall }">
         </div>
         <div
             class="flex flex-col justify-between m-8 mb-4"

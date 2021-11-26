@@ -1,10 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { Router } from "@angular/router";
-import { of, Subject } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import { catchError, switchMap, takeUntil, tap } from "rxjs/operators";
 import { UserService } from "../user/user.service";
 import { User } from "../user/user.types";
+import { Post } from "../user/post.types";
 
 @Injectable({
     providedIn: 'root'
@@ -43,6 +44,9 @@ export class UploadService implements OnDestroy {
 
     /**
      * Upload avatar
+     *
+     * @param file
+     * @param user
      */
     uploadAvatar(file: File, user: User): void {
         // Create path
@@ -91,8 +95,32 @@ export class UploadService implements OnDestroy {
     }
 
     /**
+     * Delete avatar
+     *
+     * @param user
+     */
+    deleteAvatar(user: User): void {
+        this._fireStorage.refFromURL(user?.photo).delete()
+            .pipe(
+                switchMap(() => {
+                    user.photo = '';
+                    return this._userService.updateCurrentUser(user);
+                }),
+                takeUntil(this._unsubscribeAll),
+                catchError((error) => {
+                    console.log(error);
+                    this._route.navigateByUrl('internal-error');
+                    return of(null);
+                })
+            )
+            .subscribe(() => this._userService.user = user);
+    }
+
+    /**
      * Upload gallery image
      *
+     * @param file
+     * @param user
      */
     uploadGallery(file: File, user: User): void {
         // Create path
@@ -126,22 +154,56 @@ export class UploadService implements OnDestroy {
     }
 
     /**
-     * Delete avatar
+     * Upload post image
+     *
+     * @param description
+     * @param file
+     * @param user
      */
-    deleteAvatar(user: User): void {
-        this._fireStorage.refFromURL(user?.photo).delete()
-            .pipe(
-                switchMap(() => {
-                    user.photo = '';
-                    return this._userService.updateCurrentUser(user);
-                }),
-                takeUntil(this._unsubscribeAll),
-                catchError((error) => {
-                    console.log(error);
-                    this._route.navigateByUrl('internal-error');
-                    return of(null);
-                })
+    uploadPost(description: string, file: File, user: User): Promise<Observable<Post>> {
+        // Create path
+        const path: string = `images/${user.userId}/posts/${Date.now()}.${file.type.substr(6)}`;
+
+        // Upload file to storage
+        return this._fireStorage.upload(path, file)
+            .then(() =>
+                // Get image url
+                this._fireStorage.ref(path)
+                    .getDownloadURL()
+                    .pipe(
+                        switchMap((image: string) => this._userService.createPost({description: description, image: image})),
+                        catchError((error) => {
+                            console.log(error);
+                            this._route.navigateByUrl('internal-error');
+                            return of(null);
+                        })
+                    )
             )
-            .subscribe(() => this._userService.user = user);
+            .catch((error) => {
+                console.log(error);
+                this._route.navigateByUrl('internal-error');
+            });
+    }
+
+    /**
+     * Delete post
+     *
+     * @param id
+     * @param image
+     */
+    deletePost(id: string, image: string): Observable<any> {
+        if (image) {
+            return this._fireStorage.refFromURL(image).delete()
+                .pipe(
+                    switchMap(() => this._userService.deletePost(id)),
+                    catchError((error) => {
+                        console.log(error);
+                        this._route.navigateByUrl('internal-error');
+                        return of(null);
+                    })
+                );
+        } else {
+            return this._userService.deletePost(id);
+        }
     }
 }

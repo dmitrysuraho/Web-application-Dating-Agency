@@ -1,0 +1,44 @@
+<fuse-card
+    class="flex flex-col lg:max-w-140 md:max-w-140 sm:max-w-140 lg:min-w-140 w-full"
+    [ngClass]="{ 'mt-8 lg:mt-0': !user?.isCurrentUser && position === 0, 'mt-4': position !== 0 }">
+    <div class="flex items-center mx-6 sm:mx-8 my-4">
+        <img
+            *ngIf="user.photo"
+            class="w-10 min-w-10 h-10 rounded-full mr-4"
+            [src]="user.photo"
+            alt="Card cover image">
+        <mat-icon
+            *ngIf="!user.photo"
+            class="w-10 min-w-10 h-10 rounded-full mr-4 bg-gray-200"
+            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+        <div class="flex flex-col">
+            <span class="font-semibold leading-none">{{ user.name }}</span>
+        </div>
+        <button
+            *ngIf="user?.isCurrentUser"
+            class="ml-auto -mr-4"
+            mat-icon-button
+            [disabled]="isDeleting"
+            (click)="deletePost()">
+            <mat-icon
+                *ngIf="!isDeleting"
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+            <mat-progress-spinner
+                *ngIf="isDeleting"
+                [diameter]="24"
+                [mode]="'indeterminate'"></mat-progress-spinner>
+        </button>
+    </div>
+    <div class="mx-6 sm:mx-8 mb-4">
+        {{ post.description }}
+    </div>
+    <div
+        *ngIf="post?.image"
+        class="relative mx-6 sm:mx-8 mb-4">
+        <img
+            class="h-80 object-cover rounded-2xl"
+            alt="Card cover image"
+            [src]="post.image">
+    </div>
+</fuse-card>

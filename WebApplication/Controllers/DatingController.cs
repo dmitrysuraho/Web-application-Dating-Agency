@@ -35,7 +35,31 @@ namespace WebApplication.Controllers
             }
             else
             {
-                return _JsonResult(candidate, _GalleryResult(_galleriesRepository.GetGalleries(candidate)));
+                return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate));
+            }
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("favorites")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            User currentUser = _GetCurrentUser();
+            return Json(_datingRepository.GetFavorites(currentUser.UserId));
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("favorites/{id:int}")]
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            if (_datingRepository.DeleteFavorite(_GetCurrentUser().UserId, id))
+            {
+                return Json(new { message = "Favorite is deleted" });
+            }
+            else
+            {
+                return NotFound(new { message = "This user is not favorite" });
             }
         }
 
@@ -57,19 +81,9 @@ namespace WebApplication.Controllers
                 }
                 else
                 {
-                    return _JsonResult(candidate, _GalleryResult(_galleriesRepository.GetGalleries(candidate)));
+                    return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate));
                 }
             }
-        }
-
-        private string[] _GalleryResult(List<Gallery> galleries)
-        {
-            List<string> result = new List<string>();
-            foreach (Gallery gallery in galleries)
-            {
-                result.Add(gallery.Image);
-            }
-            return result.ToArray();
         }
 
         private User _GetCurrentUser()

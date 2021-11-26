@@ -6,6 +6,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { User } from 'app/core/user/user.types';
 import { Notification } from 'app/core/user/notification.types';
 import { Dating } from './dating.types';
+import { Post } from "./post.types";
 
 @Injectable({
     providedIn: 'root'
@@ -150,9 +151,50 @@ export class UserService
 
     /**
      * Grand candidate and get another candidate
+     *
+     * @param dating
      */
     dating(dating: Dating): Observable<User> {
         return this._httpClient.post<User>('api/dating' + this._getQuery(), dating);
+    }
+
+    /**
+     * Get posts
+     */
+    getPosts(id: string): Observable<Post[]> {
+        return this._httpClient.get<Post[]>('api/posts/' + id);
+    }
+
+    /**
+     * Create post
+     *
+     * @param post
+     */
+    createPost(post: Post): Observable<Post> {
+        return this._httpClient.post<Post>('api/posts', post);
+    }
+
+    /**
+     * Delete post
+     *
+     * @param id
+     */
+    deletePost(id: string): Observable<any> {
+        return this._httpClient.delete('api/posts/' + id);
+    }
+
+    /**
+     * Get favorites
+     */
+    getFavorites(): Observable<User[]> {
+        return this._httpClient.get<User[]>('api/dating/favorites');
+    }
+
+    /**
+     * Delete favorite
+     */
+    deleteFavorite(id: string): Observable<any> {
+        return this._httpClient.delete('api/dating/favorites/' + id);
     }
 
     // -----------------------------------------------------------------------------------------------------

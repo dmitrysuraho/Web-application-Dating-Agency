@@ -139,15 +139,6 @@ export class SettingsComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Update blocked users
-     *
-     * @param blockedUsers
-     */
-    updateBlockedUsers(blockedUsers: User[]): void {
-        this.blockedUsers = blockedUsers;
-    }
-
-    /**
      * Navigate to the panel
      *
      * @param panel

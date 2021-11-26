@@ -91,9 +91,7 @@
                         </ng-container>
                         <!-- Blacklist -->
                         <ng-container *ngSwitchCase="'blacklist'">
-                            <settings-blacklist
-                                [blockedUsers]="blockedUsers"
-                                (onBlockedUsers)="updateBlockedUsers($event)"></settings-blacklist>
+                            <settings-blacklist [blockedUsers]="blockedUsers"></settings-blacklist>
                         </ng-container>
                         <!-- Appearance -->
                         <ng-container *ngSwitchCase="'appearance'">

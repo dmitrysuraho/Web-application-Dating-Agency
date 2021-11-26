@@ -78,6 +78,9 @@ export class DatingComponent implements OnInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Not found error
+     */
     notFoundError(): void {
         this.isNotFound = true;
     }

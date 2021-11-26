@@ -30,9 +30,7 @@ export class PersonCardComponent implements OnInit, OnDestroy
     onNotFound: EventEmitter<void> = new EventEmitter<void>();
 
     isScreenLarge: boolean;
-    isScreenMedium: boolean;
     isScreenSmall: boolean;
-    isScreenXSmall: boolean
     currentLang: string;
     isBlocking: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -106,11 +104,7 @@ export class PersonCardComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
                 this.isScreenLarge = matchingAliases.includes('lg');
-                this.isScreenMedium = !matchingAliases.includes('lg');
-                this.isScreenSmall = !matchingAliases.includes('md');
-                this.isScreenXSmall = !matchingAliases.includes('sm');
-
-                console.log(matchingAliases)
+                this.isScreenSmall = !matchingAliases.includes('sm');
             });
     }
 
@@ -130,6 +124,8 @@ export class PersonCardComponent implements OnInit, OnDestroy
 
     /**
      * Grande ang find new candidate
+     *
+     * @param event
      */
     dating(event: string): void {
         // Set dating object
