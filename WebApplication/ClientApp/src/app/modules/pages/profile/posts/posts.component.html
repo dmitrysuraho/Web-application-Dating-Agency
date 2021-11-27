@@ -72,7 +72,7 @@
 
 <!-- Posts -->
 <post
-    *ngFor="let post of posts; let i = index"
+    *ngFor="let post of user.posts; let i = index"
     [post]="post"
     [user]="user"
     [position]="i"
@@ -80,7 +80,7 @@
 
 <!-- No posts -->
 <fuse-card
-    *ngIf="!posts?.length"
+    *ngIf="!user.posts?.length"
     class="flex flex-col justify-center items-center lg:max-w-140 md:max-w-140 sm:max-w-140 lg:min-w-140 w-full p-6 my-8 lg:mt-0">
     <mat-icon
         class="icon-size-24 mr-2"

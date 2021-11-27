@@ -35,7 +35,7 @@ namespace WebApplication.Controllers
             }
             else
             {
-                return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate));
+                return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate.UserId));
             }
         }
 
@@ -81,7 +81,7 @@ namespace WebApplication.Controllers
                 }
                 else
                 {
-                    return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate));
+                    return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate.UserId));
                 }
             }
         }

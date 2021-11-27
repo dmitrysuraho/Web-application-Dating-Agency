@@ -30,7 +30,7 @@ export class PersonCardComponent implements OnInit, OnDestroy
     onNotFound: EventEmitter<void> = new EventEmitter<void>();
 
     isScreenLarge: boolean;
-    isScreenSmall: boolean;
+    isScreenXSmall: boolean;
     currentLang: string;
     isBlocking: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -104,7 +104,7 @@ export class PersonCardComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
                 this.isScreenLarge = matchingAliases.includes('lg');
-                this.isScreenSmall = !matchingAliases.includes('sm');
+                this.isScreenXSmall = !matchingAliases.includes('sm');
             });
     }
 

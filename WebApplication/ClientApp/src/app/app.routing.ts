@@ -73,6 +73,7 @@ export const appRoutes: Route[] = [
             {path: 'profile', loadChildren: () => import('app/modules/pages/profile/profile.module').then(m => m.ProfileModule)},
             {path: 'profile/:id', loadChildren: () => import('app/modules/pages/profile/profile.module').then(m => m.ProfileModule)},
             {path: 'dating', loadChildren: () => import('app/modules/pages/dating/dating.module').then(m => m.DatingModule)},
+            {path: 'chat', loadChildren: () => import('app/modules/pages/chat/chat.module').then(m => m.ChatModule)},
             {path: 'favorites', loadChildren: () => import('app/modules/pages/favorites/favorites.module').then(m => m.FavoritesModule)},
             {path: 'calendar', loadChildren: () => import('app/modules/pages/calendar/calendar.module').then(m => m.CalendarModule)},
             {path: 'settings', loadChildren: () => import('app/modules/pages/settings/settings.module').then(m => m.SettingsModule)},

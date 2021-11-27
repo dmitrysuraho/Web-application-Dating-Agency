@@ -15,7 +15,6 @@ export class PostsComponent implements OnInit, OnDestroy {
     @Input()
     user: User;
 
-    posts: Post[];
     srcFile: string;
     description: string;
     image: any;
@@ -39,12 +38,6 @@ export class PostsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Get posts
-        this._userService.getPosts(this.user.userId)
-            .pipe(
-                takeUntil(this._unsubscribeAll)
-            )
-            .subscribe((posts: Post[]) => this.posts = posts);
     }
 
     /**
@@ -109,7 +102,7 @@ export class PostsComponent implements OnInit, OnDestroy {
      * On delete post
      */
     onDeletePost(position: number): void {
-        this.posts.splice(position, 1);
+        this.user.posts.splice(position, 1);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -127,7 +120,7 @@ export class PostsComponent implements OnInit, OnDestroy {
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe((post: Post) => {
-                this.posts.unshift(post);
+                this.user.posts.unshift(post);
                 this.isCreating = false;
                 this.srcFile = null;
                 this.description = '';

@@ -13,9 +13,9 @@ namespace WebApplication.Models
             _context = context;
         }
 
-        public string[] GetGalleries(User user)
+        public string[] GetGalleries(int userId)
         {
-            return _context.Galleries.Where(prop => prop.UserId == user.UserId)
+            return _context.Galleries.Where(prop => prop.UserId == userId)
                 .Select(prop => prop.Image).ToArray();
         }
 

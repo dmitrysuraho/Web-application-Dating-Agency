@@ -13,11 +13,6 @@ namespace WebApplication.Models
             _context = context;
         }
 
-        public Post FindPostById(int id)
-        {
-            return _context.Posts.Find(id);
-        }
-
         public object[] GetPostsByUserId(int id)
         {
             return _context.Posts
@@ -41,7 +36,7 @@ namespace WebApplication.Models
 
         public void DeletePost(int id)
         {
-            _context.Posts.Remove(FindPostById(id));
+            _context.Posts.Remove(_context.Posts.Find(id));
             _context.SaveChanges();
         }
     }

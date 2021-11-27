@@ -159,13 +159,6 @@ export class UserService
     }
 
     /**
-     * Get posts
-     */
-    getPosts(id: string): Observable<Post[]> {
-        return this._httpClient.get<Post[]>('api/posts/' + id);
-    }
-
-    /**
      * Create post
      *
      * @param post

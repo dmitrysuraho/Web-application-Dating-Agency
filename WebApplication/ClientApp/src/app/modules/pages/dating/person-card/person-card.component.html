@@ -1,5 +1,4 @@
-<div *ngIf="user"
-     @zoomOut>
+<div *ngIf="user">
     <fuse-card
         class="flex lg:w-240 lg:h-140"
         [ngClass]="{ 'flex-col': !isScreenLarge }">
@@ -19,15 +18,17 @@
                 *ngIf="!user?.gallery.length"
                 class="object-cover"
                 src="assets/images/defaults/default-placeholder.png"
-                [ngClass]="{ 'w-full h-full ': isScreenLarge, 'w-120 h-80': !isScreenLarge && !isScreenSmall, 'w-100 h-50': isScreenSmall }">
+                [ngClass]="{ 'w-full h-full ': isScreenLarge, 'w-120 h-80': !isScreenLarge && !isScreenXSmall, 'w-100 h-50': isScreenXSmall }">
         </div>
         <div
-            class="flex flex-col justify-between m-8 mb-4"
+            class="flex flex-col justify-between m-4 sm:m-8 md:m-8 lg:m-8"
             [ngStyle]="{ 'flex': '40%' }">
             <div>
                 <div class="flex justify-between items-center">
                     <div class="flex flex-row text-2xl items-center font-semibold leading-tight">
-                        <div class="w-max self-center">{{ user.name }}</div>
+                        <div
+                            class="self-center break-all"
+                            [ngClass]="{ '': isScreenXSmall }">{{ user.name }}</div>
                         <button
                             class="ml-1"
                             mat-icon-button
@@ -89,7 +90,7 @@
                         *ngIf="user?.region"
                         class="flex items-center mt-2">
                         <span class="font-semibold">{{ 'dating.person-card.location' | translate }}&#160;</span>
-                        <span class="leading-none">{{ user.region }}</span>
+                        <span class="leading-none break-all">{{ user.region }}</span>
                     </div>
                 </div>
             </div>

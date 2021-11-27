@@ -117,6 +117,7 @@ export class SettingsAccountComponent implements OnInit, OnDestroy
             .subscribe((user: User) => {
                 // Re-set current user data
                 this.user = user;
+                this._userService.user = user;
 
                 // Re-enable the form
                 this.accountForm.enable();

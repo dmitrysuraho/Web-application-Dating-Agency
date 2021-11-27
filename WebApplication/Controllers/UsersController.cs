@@ -17,6 +17,7 @@ namespace WebApplication.Controllers
         private readonly ILogger<UsersController> _logger;
         private readonly UsersRepository _usersRepository;
         private readonly GalleriesRepository _galleriesRepository;
+        private readonly PostsRepository _postsRepository;
         private readonly BlacklistsRepository _blacklistsRepository;
 
         public UsersController(ILogger<UsersController> logger, ApplicationContext context)
@@ -24,6 +25,7 @@ namespace WebApplication.Controllers
             _logger = logger;
             _usersRepository = new UsersRepository(context);
             _galleriesRepository = new GalleriesRepository(context);
+            _postsRepository = new PostsRepository(context);
             _blacklistsRepository = new BlacklistsRepository(context);
         }
 
@@ -32,7 +34,7 @@ namespace WebApplication.Controllers
         public IActionResult GetUsers()
         {
             User user = _GetCurrentUser();
-            return _JsonResult(user, _galleriesRepository.GetGalleries(user), true);
+            return _JsonResult(user, _galleriesRepository.GetGalleries(user.UserId), _postsRepository.GetPostsByUserId(user.UserId), true);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -50,7 +52,8 @@ namespace WebApplication.Controllers
             {
                 return _JsonResult(
                     user,
-                    _galleriesRepository.GetGalleries(user),
+                    _galleriesRepository.GetGalleries(user.UserId),
+                    _postsRepository.GetPostsByUserId(user.UserId),
                     user.Uid == currentUser.Uid,
                     _blacklistsRepository.IsUserBlocked(currentUser.UserId, id),
                     _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
@@ -90,7 +93,7 @@ namespace WebApplication.Controllers
             else
             {
                 User updatedUser = _usersRepository.UpdateUser(user);
-                return _JsonResult(updatedUser, null, true);
+                return _JsonResult(updatedUser, null, null, true);
             }
         }
 
@@ -122,7 +125,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.AddToBlacklist(currentUser, id);
-                return _JsonResult(blockUser, null, false, true, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
+                return _JsonResult(blockUser, null, null, false, true, true);
             }
         }
 
@@ -144,7 +147,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.RemoveFromBlackList(currentUser, id);
-                return _JsonResult(unblockUser, null, false, false, _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
+                return _JsonResult(unblockUser, null, null, false, false, false);
             }
         }
 
@@ -156,7 +159,7 @@ namespace WebApplication.Controllers
             return _usersRepository.FindUserByUid(uid);
         }
 
-        private IActionResult _JsonResult(User user, string[] galleries, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null)
+        private IActionResult _JsonResult(User user, string[] galleries, object[] posts, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null)
         {
             return Json(new
             {
@@ -170,6 +173,7 @@ namespace WebApplication.Controllers
                 email = isCurrentUser ? user.Email : "",
                 phone = isCurrentUser ? user.Phone: "",
                 gallery = galleries,
+                posts = posts,
                 isCurrentUser = isCurrentUser,
                 isBlocked = isBlocked,
                 isYouBlocked = isYouBlocked

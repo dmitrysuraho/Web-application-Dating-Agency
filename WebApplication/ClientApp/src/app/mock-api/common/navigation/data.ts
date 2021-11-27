@@ -20,6 +20,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/dating'
     },
     {
+        id   : 'chat',
+        title: 'navigation.chat',
+        type : 'basic',
+        icon : 'heroicons_outline:mail',
+        link : '/chat'
+    },
+    {
         id   : 'favorites',
         title: 'navigation.favorites',
         type : 'basic',
@@ -55,6 +62,13 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:fire',
         link : '/dating'
+    },
+    {
+        id   : 'chat',
+        title: 'navigation.chat',
+        type : 'basic',
+        icon : 'heroicons_outline:mail',
+        link : '/chat'
     },
     {
         id   : 'favorites',

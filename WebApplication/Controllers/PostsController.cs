@@ -22,14 +22,6 @@ namespace WebApplication.Controllers
         }
 
         [TypeFilter(typeof(AuthFilter))]
-        [Route("{id:int}")]
-        [HttpGet]
-        public IActionResult Get(int id)
-        {
-            return Json(_postsRepository.GetPostsByUserId(id));
-        }
-
-        [TypeFilter(typeof(AuthFilter))]
         [HttpPost]
         public IActionResult Post([FromBody] Post post)
         {
