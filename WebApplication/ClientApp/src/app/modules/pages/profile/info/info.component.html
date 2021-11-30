@@ -55,7 +55,8 @@
             class="fuse-mat-button-rounded"
             mat-button
             [disabled]="isBlockDisabled"
-            [color]="'primary'">
+            [color]="'primary'"
+            (click)="user?.isCurrentUser ? navigate('chat') : writeMessage()">
             <mat-icon
                 class="icon-size-5"
                 [svgIcon]="'heroicons_solid:mail'"></mat-icon>

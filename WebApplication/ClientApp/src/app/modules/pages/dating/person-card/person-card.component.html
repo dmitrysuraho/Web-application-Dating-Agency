@@ -1,119 +1,125 @@
-<div *ngIf="user">
-    <fuse-card
-        class="flex lg:w-240 lg:h-140"
-        [ngClass]="{ 'flex-col': !isScreenLarge }">
-        <div [ngStyle]="{ 'flex': '60%' }">
-            <carousel
-                *ngIf="user?.gallery.length"
-                [isAnimated]="true"
-                [showIndicators]="false">
-                <slide *ngFor="let image of user?.gallery">
-                    <img
-                        class="w-full h-full object-cover"
-                        alt="slide"
-                        [src]="image">
-                </slide>
-            </carousel>
-            <img
-                *ngIf="!user?.gallery.length"
-                class="object-cover"
-                src="assets/images/defaults/default-placeholder.png"
-                [ngClass]="{ 'w-full h-full ': isScreenLarge, 'w-120 h-80': !isScreenLarge && !isScreenXSmall, 'w-100 h-50': isScreenXSmall }">
-        </div>
-        <div
-            class="flex flex-col justify-between m-4 sm:m-8 md:m-8 lg:m-8"
-            [ngStyle]="{ 'flex': '40%' }">
-            <div>
-                <div class="flex justify-between items-center">
-                    <div class="flex flex-row text-2xl items-center font-semibold leading-tight">
-                        <div
-                            class="self-center break-all"
-                            [ngClass]="{ '': isScreenXSmall }">{{ user.name }}</div>
+<fuse-card
+    *ngIf="user; else spinner"
+    class="flex lg:w-240 lg:h-140"
+    [ngClass]="{ 'flex-col': !isScreenLarge }">
+    <div
+        [ngStyle]="{ 'flex': '60%' }">
+        <carousel
+            *ngIf="user?.gallery.length"
+            [isAnimated]="true"
+            [showIndicators]="false">
+            <slide *ngFor="let image of user?.gallery">
+                <img
+                    class="w-full h-full object-cover"
+                    alt="slide"
+                    [src]="image">
+            </slide>
+        </carousel>
+        <img
+            *ngIf="!user?.gallery.length"
+            class="object-cover"
+            src="assets/images/defaults/default-placeholder.png"
+            [ngClass]="{ 'w-full h-full ': isScreenLarge, 'w-120 h-80': !isScreenLarge && !isScreenXSmall, 'w-100 h-50': isScreenXSmall }">
+    </div>
+    <div
+        class="flex flex-col justify-between m-4 sm:m-8 md:m-8 lg:m-8"
+        [ngStyle]="{ 'flex': '40%' }">
+        <div>
+            <div class="flex justify-between items-center">
+                <div class="flex flex-row text-2xl items-center font-semibold leading-tight">
+                    <div
+                        class="self-center break-all"
+                        [ngClass]="{ '': isScreenXSmall }">{{ user.name }}</div>
+                    <button
+                        class="ml-1"
+                        mat-icon-button
+                        [disabled]="isBlocking"
+                        [matMenuTriggerFor]="listCard09Menu">
+                        <mat-icon
+                            *ngIf="!isBlocking"
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-progress-spinner
+                            *ngIf="isBlocking"
+                            class="ml-2"
+                            [diameter]="24"
+                            [mode]="'indeterminate'"></mat-progress-spinner>
+                    </button>
+                    <mat-menu #listCard09Menu="matMenu">
                         <button
-                            class="ml-1"
-                            mat-icon-button
-                            [disabled]="isBlocking"
-                            [matMenuTriggerFor]="listCard09Menu">
+                            mat-menu-item
+                            (click)="block()">
                             <mat-icon
-                                *ngIf="!isBlocking"
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
-                            <mat-progress-spinner
-                                *ngIf="isBlocking"
-                                class="ml-2"
-                                [diameter]="24"
-                                [mode]="'indeterminate'"></mat-progress-spinner>
+                                class="icon-size-5 mr-2"
+                                [svgIcon]="'heroicons_solid:exclamation'"></mat-icon>
+                            <span>{{ 'dating.person-card.block' | translate }}</span>
                         </button>
-                        <mat-menu #listCard09Menu="matMenu">
-                            <button
-                                mat-menu-item
-                                (click)="block()">
-                                <mat-icon
-                                    class="icon-size-5 mr-2"
-                                    [svgIcon]="'heroicons_solid:exclamation'"></mat-icon>
-                                <span>{{ 'dating.person-card.block' | translate }}</span>
-                            </button>
-                        </mat-menu>
-                    </div>
-                    <div>
-                        <button
-                            class="w-10 h-10"
-                            mat-fab
-                            [color]="'warn'"
-                            (click)="dating('favorite')">
-                            <mat-icon
-                                class="icon-size-6"
-                                [svgIcon]="'heroicons_solid:star'"></mat-icon>
-                        </button>
-                    </div>
+                    </mat-menu>
                 </div>
-                <hr class="w-full border-t my-6">
+                <div>
+                    <button
+                        class="w-10 h-10"
+                        mat-fab
+                        [color]="'warn'"
+                        (click)="dating('favorite')">
+                        <mat-icon
+                            class="icon-size-6"
+                            [svgIcon]="'heroicons_solid:star'"></mat-icon>
+                    </button>
+                </div>
+            </div>
+            <hr class="w-full border-t my-6">
+            <div
+                *ngIf="user?.about"
+                class="mb-6">
+                {{ user.about }}
+            </div>
+            <div class="flex flex-col">
                 <div
-                    *ngIf="user?.about"
-                    class="mb-6">
-                    {{ user.about }}
+                    *ngIf="user?.sex"
+                    class="flex items-center">
+                    <span class="font-semibold">{{ 'dating.person-card.sex' | translate }}&#160;</span>
+                    <span class="leading-none">{{ getSex }}</span>
                 </div>
-                <div class="flex flex-col">
-                    <div
-                        *ngIf="user?.sex"
-                        class="flex items-center">
-                        <span class="font-semibold">{{ 'dating.person-card.sex' | translate }}&#160;</span>
-                        <span class="leading-none">{{ getSex }}</span>
-                    </div>
-                    <div
-                        *ngIf="user.birthday.toString() !== '0001-01-01T00:00:00'"
-                        class="flex items-center mt-2">
-                        <span class="font-semibold">{{ 'dating.person-card.age' | translate }}&#160;</span>
-                        <span class="leading-none">{{ getAge }}</span>
-                    </div>
-                    <div
-                        *ngIf="user?.region"
-                        class="flex items-center mt-2">
-                        <span class="font-semibold">{{ 'dating.person-card.location' | translate }}&#160;</span>
-                        <span class="leading-none break-all">{{ user.region }}</span>
-                    </div>
+                <div
+                    *ngIf="user.birthday.toString() !== '0001-01-01T00:00:00'"
+                    class="flex items-center mt-2">
+                    <span class="font-semibold">{{ 'dating.person-card.age' | translate }}&#160;</span>
+                    <span class="leading-none">{{ getAge }}</span>
                 </div>
-            </div>
-            <div class="flex justify-center mt-6">
-                <button
-                    class="mr-1"
-                    mat-fab
-                    [color]="'accent'"
-                    (click)="dating('ignore')">
-                    <mat-icon
-                        class="icon-size-8"
-                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                </button>
-                <button
-                    class="ml-1"
-                    mat-fab
-                    [color]="'primary'"
-                    (click)="dating('like')">
-                    <mat-icon
-                        class="icon-size-8"
-                        [svgIcon]="'heroicons_solid:heart'"></mat-icon>
-                </button>
+                <div
+                    *ngIf="user?.region"
+                    class="flex items-center mt-2">
+                    <span class="font-semibold">{{ 'dating.person-card.location' | translate }}&#160;</span>
+                    <span class="leading-none break-all">{{ user.region }}</span>
+                </div>
             </div>
         </div>
-    </fuse-card>
-</div>
+        <div class="flex justify-center mt-6">
+            <button
+                class="mr-1"
+                mat-fab
+                [color]="'accent'"
+                (click)="dating('ignore')">
+                <mat-icon
+                    class="icon-size-8"
+                    [svgIcon]="'heroicons_solid:x'"></mat-icon>
+            </button>
+            <button
+                class="ml-1"
+                mat-fab
+                [color]="'primary'"
+                (click)="dating('like')">
+                <mat-icon
+                    class="icon-size-8"
+                    [svgIcon]="'heroicons_solid:heart'"></mat-icon>
+            </button>
+        </div>
+    </div>
+</fuse-card>
+
+<ng-template #spinner>
+    <mat-progress-spinner
+        [diameter]="56"
+        [mode]="'indeterminate'"></mat-progress-spinner>
+</ng-template>

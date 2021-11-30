@@ -34,6 +34,7 @@
     "@fullcalendar/moment": "4.4.2",
     "@fullcalendar/rrule": "4.4.2",
     "@fullcalendar/timegrid": "4.4.2",
+    "@microsoft/signalr": "^6.0.0",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "apexcharts": "3.28.1",

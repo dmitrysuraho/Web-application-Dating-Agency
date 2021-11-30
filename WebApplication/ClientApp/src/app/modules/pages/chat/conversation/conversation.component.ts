@@ -1,15 +1,23 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { Chat } from '../chat.types';
+import { Chat, Message } from '../chat.types';
 import { ChatService } from '../chat.service';
+import { User } from "../../../../core/user/user.types";
+import { UserService } from "../../../../core/user/user.service";
 
 @Component({
     selector       : 'chat-conversation',
-    templateUrl    : './conversation.component.html',
-    encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl    : './conversation.component.html'
 })
 export class ConversationComponent implements OnInit, OnDestroy
 {
@@ -17,16 +25,18 @@ export class ConversationComponent implements OnInit, OnDestroy
     chat: Chat;
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = false;
+    user: User;
+    message: Message = { messageText: '' };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
     constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
         private _chatService: ChatService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _ngZone: NgZone
+        private _ngZone: NgZone,
+        private _userService: UserService
     )
     {
     }
@@ -52,14 +62,8 @@ export class ConversationComponent implements OnInit, OnDestroy
                 // Set the height to 'auto' so we can correctly read the scrollHeight
                 this.messageInput.nativeElement.style.height = 'auto';
 
-                // Detect the changes so the height is applied
-                this._changeDetectorRef.detectChanges();
-
                 // Get the scrollHeight and subtract the vertical padding
                 this.messageInput.nativeElement.style.height = `${this.messageInput.nativeElement.scrollHeight}px`;
-
-                // Detect the changes one more time to apply the final height
-                this._changeDetectorRef.detectChanges();
             });
         });
     }
@@ -78,28 +82,31 @@ export class ConversationComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((chat: Chat) => {
                 this.chat = chat;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
             });
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
-
                 // Set the drawerMode if the given breakpoint is active
-                if ( matchingAliases.includes('lg') )
-                {
-                    this.drawerMode = 'side';
-                }
-                else
-                {
-                    this.drawerMode = 'over';
-                }
+                 this.drawerMode = matchingAliases.includes('lg') ? 'side' : 'over';
+            });
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
+        // Current user
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => {
+                this.user = user;
+            });
+
+        // Subscribe to receive message
+        this._chatService.receiveMessage()
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe( (receivedMessage: Message) => {
+                receivedMessage.isMine = receivedMessage.userId === this.user.userId;
+                if (this.chat && this.chat.chatId === receivedMessage.chatId) this.chat.messages.push(receivedMessage);
             });
     }
 
@@ -118,41 +125,34 @@ export class ConversationComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Open the contact info
-     */
-    openContactInfo(): void
-    {
-        // Open the drawer
-        this.drawerOpened = true;
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
      * Reset the chat
      */
     resetChat(): void
     {
+        // Reset the chat
         this._chatService.resetChat();
 
         // Close the contact info in case it's opened
         this.drawerOpened = false;
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
     }
 
     /**
-     * Toggle mute notifications
+     * Send message
      */
-    toggleMuteNotifications(): void
-    {
-        // Toggle the muted
-        this.chat.muted = !this.chat.muted;
+    send(): void {
+        if(this.message.messageText) {
+            // Create message
+            this.message = {
+                messageText: this.message.messageText,
+                chatId: this.chat.chatId,
+                userId: this.user.userId,
+                createdAt: Date.now().toString()
+            };
 
-        // Update the chat on the server
-        this._chatService.updateChat(this.chat.id, this.chat).subscribe();
+            // Send message
+            this._chatService.sendMessage(this.message, this.chat.member.userId);
+            this.message = { messageText: '' };
+        }
     }
 
     /**

@@ -2,11 +2,14 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication.Core.Hubs;
+using WebApplication.Core.Providers;
 using WebApplication.Models;
 
 namespace WebApplication
@@ -36,6 +39,10 @@ namespace WebApplication
             {
                 Credential = GoogleCredential.FromFile("dating-agency-3088f-firebase-adminsdk-3xtx4-39ef4ceffe.json"),
             });
+
+            services.AddSignalR();
+
+            services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -57,6 +64,7 @@ namespace WebApplication
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chatsocket");
             });
 
             app.UseSpa(spa =>
