@@ -112,16 +112,16 @@ export class SettingsComponent implements OnInit, OnDestroy
         // Get current user
         this.user = this._userService.getCurrentUser();
 
-        // Splash screen
-        this._splashScreen.show();
-        setTimeout(() => this._splashScreen.hide(), 1000);
-
         // Get blocked users
         this._userService.getBlockedUsers()
             .pipe(
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe((users: User[]) => this.blockedUsers = users);
+
+        // Splash screen
+        this._splashScreen.show();
+        setTimeout(() => this._splashScreen.hide(), 1500);
     }
 
     /**

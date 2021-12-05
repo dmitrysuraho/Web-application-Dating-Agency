@@ -31,5 +31,14 @@ namespace WebApplication.Models
             _context.SaveChanges();
             return true;
         }
+
+        public bool DeleteImage(string image, int id)
+        {
+            Gallery gallery = _context.Galleries.FirstOrDefault(prop => prop.Image.Contains(image) && prop.UserId == id);
+            if (gallery == null) return false;
+            _context.Galleries.Remove(gallery);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }

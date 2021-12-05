@@ -49,6 +49,15 @@ namespace WebApplication.Controllers
         }
 
         [TypeFilter(typeof(AuthFilter))]
+        [Route("{id:int}")]
+        [HttpPut]
+        public IActionResult Put(int id)
+        {
+
+            return Json(new { message = "Messages are read" });
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
         [HttpPost]
         public IActionResult Post([FromBody] int id)
         {

@@ -6,6 +6,7 @@ import { catchError, switchMap, takeUntil, tap } from "rxjs/operators";
 import { UserService } from "../user/user.service";
 import { User } from "../user/user.types";
 import { Post } from "../user/post.types";
+import { GalleryDialogComponent } from "../../modules/pages/profile/gallery/gallery-dialog/gallery-dialog.component";
 
 @Injectable({
     providedIn: 'root'
@@ -151,6 +152,18 @@ export class UploadService implements OnDestroy {
                 console.log(error);
                 this._route.navigateByUrl('internal-error');
             });
+    }
+
+    /**
+     * Delete image from gallery
+     *
+     * @param image
+     */
+    deleteGallery(image: string): Observable<any> {
+        return this._fireStorage.refFromURL(image).delete()
+            .pipe(
+                switchMap(() => this._userService.deleteFromGallery(image))
+            );
     }
 
     /**

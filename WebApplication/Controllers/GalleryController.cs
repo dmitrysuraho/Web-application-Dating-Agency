@@ -33,7 +33,20 @@ namespace WebApplication.Controllers
             {
                 return Conflict(new { message = "You can't add more then 6 images" });
             }
-            
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [HttpDelete]
+        public IActionResult Delete(string image)
+        {
+            if (_galleriesRepository.DeleteImage(image, _GetCurrentUser().UserId))
+            {
+                return Json(new { message = "Image is successfully deleted" });
+            }
+            else
+            {
+                return NotFound(new { message = "Image is not found" });
+            }
         }
 
         private User _GetCurrentUser()

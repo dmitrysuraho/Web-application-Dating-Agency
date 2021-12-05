@@ -1,13 +1,12 @@
-<div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+<div class="relative flex flex-col h-full w-full flex-auto bg-card dark:bg-default">
 
     <ng-container *ngIf="chat; else selectChatOrStartNew">
-
         <mat-drawer-container
-            class="flex-auto h-full"
+            class="absolute flex-auto h-full w-full"
             [hasBackdrop]="false">
 
             <!-- Drawer content -->
-            <mat-drawer-content class="flex flex-col overflow-hidden">
+            <mat-drawer-content class="flex flex-col">
 
                 <!-- Header -->
                 <div class="flex flex-0 items-center h-18 px-4 md:px-6 border-b bg-gray-50 dark:bg-transparent">
@@ -41,24 +40,24 @@
                         <div class="ml-4 text-lg font-medium leading-5 truncate">{{chat.member.name}}</div>
                     </div>
 
-                    <button
-                        class="ml-auto"
-                        mat-icon-button
-                        [matMenuTriggerFor]="conversationHeaderMenu">
-                        <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
-                        <mat-menu #conversationHeaderMenu>
-                            <button mat-menu-item>
-                                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                Delete chat
-                            </button>
-                        </mat-menu>
-                    </button>
+                    <!--                    <button-->
+                    <!--                        class="ml-auto"-->
+                    <!--                        mat-icon-button-->
+                    <!--                        [matMenuTriggerFor]="conversationHeaderMenu">-->
+                    <!--                        <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>-->
+                    <!--                        <mat-menu #conversationHeaderMenu>-->
+                    <!--                            <button mat-menu-item>-->
+                    <!--                                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>-->
+                    <!--                                Delete chat-->
+                    <!--                            </button>-->
+                    <!--                        </mat-menu>-->
+                    <!--                    </button>-->
                 </div>
 
                 <!-- Conversation -->
                 <div
                     *ngIf="chat?.messages.length; else writeFirst"
-                    class="flex overflow-y-auto flex-col-reverse h-full">
+                    class="flex overflow-y-scroll flex-col-reverse h-full">
                     <div class="flex flex-col flex-auto flex-shrink p-6 bg-card dark:bg-transparent">
                         <ng-container *ngFor="let message of chat.messages; let i = index; let first = first; let last = last; trackBy: trackByFn">
                             <!-- Start of the day -->
@@ -69,6 +68,15 @@
                                         {{message.createdAt | date: 'longDate'}}
                                     </div>
                                     <div class="flex-auto border-b"></div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="i === (chat.messages.length - unreadCount)">
+                                <div class="flex items-center justify-center my-3 -mx-6">
+                                    <div class="flex-auto border-b border-primary"></div>
+                                    <div class="flex-0 mx-4 text-sm font-medium leading-5 text-primary">
+                                        New messages
+                                    </div>
+                                    <div class="flex-auto border-b border-primary"></div>
                                 </div>
                             </ng-container>
                             <div
@@ -93,8 +101,8 @@
                                     </ng-container>
                                     <!-- Message -->
                                     <div
-                                        class="min-w-4 leading-5"
-                                        [innerHTML]="message.messageText">
+                                        class="min-w-4 leading-5">
+                                        {{ message.messageText }}
                                     </div>
                                 </div>
                                 <!-- Time -->
@@ -114,9 +122,10 @@
                 </div>
 
                 <!-- Message field -->
-                <div
+                <form
                     *ngIf="!chat.member.isBlocked && !chat.member.isYouBlocked"
-                    class="flex items-end p-4 border-t bg-gray-50 dark:bg-transparent">
+                    class="flex items-end p-4 border-t bg-gray-50 dark:bg-transparent"
+                    [formGroup]="sendForm">
                     <div class="flex items-center h-11 my-px">
                         <button mat-icon-button>
                             <mat-icon [svgIcon]="'heroicons_outline:emoji-happy'"></mat-icon>
@@ -131,27 +140,27 @@
                         <textarea
                             class="min-h-5 my-0 resize-none"
                             style="margin: 11px 0 !important; padding: 0 !important;"
-                            [rows]="1"
                             [placeholder]="'Write a message...'"
-                            [(ngModel)]="message.messageText"
+                            [formControlName]="'send'"
+                            [rows]="1"
+                            (keydown.enter)="send($event)"
                             matInput
                             #messageInput></textarea>
                     </mat-form-field>
                     <div class="flex items-center h-11 my-px ml-4">
                         <button
                             mat-icon-button
-                            (click)="send()">
+                            (click)="send(null)">
                             <mat-icon
                                 class="transform rotate-90"
                                 [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
                         </button>
                     </div>
-                </div>
+                </form>
 
             </mat-drawer-content>
 
         </mat-drawer-container>
-
     </ng-container>
 
     <!-- Select chat or start new template -->

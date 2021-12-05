@@ -8,6 +8,7 @@ import { FuseNavigationService } from '@fuse/components/navigation/navigation.se
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import { DatingSettingsDialogComponent } from "@fuse/components/navigation/dating-settings-dialog/dating-settings-dialog.component";
+import { ChatService } from "../../../../../../app/modules/pages/chat/chat.service";
 
 @Component({
     selector       : 'fuse-vertical-navigation-basic-item',
@@ -30,7 +31,8 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseNavigationService: FuseNavigationService,
         private _fuseUtilsService: FuseUtilsService,
-        private _dialog: MatDialog
+        private _dialog: MatDialog,
+        private _chatService: ChatService
     )
     {
         // Set the equivalent of {exact: false} as default for active match options.
@@ -93,5 +95,12 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
     openDatingSettings(): void {
         // Open dialog
         this._dialog.open(DatingSettingsDialogComponent);
+    }
+
+    /**
+     * Reset chat
+     */
+    resetChat(): void {
+        this._chatService.resetChat();
     }
 }

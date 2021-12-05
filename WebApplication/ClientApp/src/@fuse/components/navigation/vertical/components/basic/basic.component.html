@@ -2,7 +2,8 @@
 <div
     class="fuse-vertical-navigation-item-wrapper"
     [class.fuse-vertical-navigation-item-has-subtitle]="!!item.subtitle"
-    [ngClass]="item.classes?.wrapper">
+    [ngClass]="item.classes?.wrapper"
+    (click)="resetChat()">
 
     <!-- Item with an internal link -->
     <ng-container *ngIf="item.link && !item.externalLink && !item.function && !item.disabled">

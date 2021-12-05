@@ -90,7 +90,7 @@
             class="px-3"
             mat-button
             [color]="'primary'"
-            [routerLink]="['./']">
+            (click)="openGallery()">
             {{ 'profile.gallery.see-images' | translate }}
         </button>
     </div>

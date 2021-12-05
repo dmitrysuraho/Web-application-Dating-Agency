@@ -2,8 +2,11 @@ import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core
 import { Router } from "@angular/router";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { User } from "../../../../core/user/user.types";
 import { UserService } from "../../../../core/user/user.service";
+import {Chat} from "../../chat/chat.types";
+import { ChatService } from "../../chat/chat.service";
 
 @Component({
     selector       : 'favorite-person',
@@ -25,7 +28,9 @@ export class FavoritePersonComponent implements OnDestroy{
      */
     constructor(
         private _router: Router,
-        private _userService: UserService
+        private _userService: UserService,
+        private _chatService: ChatService,
+        private _splashScreen: FuseSplashScreenService
     )
     {
     }
@@ -60,6 +65,24 @@ export class FavoritePersonComponent implements OnDestroy{
             .subscribe(() => {
                 this.onDeleteFavorite.emit();
                 this.isDeleting = false;
+            });
+    }
+
+    /**
+     * Write message
+     */
+    writeMessage(): void {
+        // Show spinner
+        this._splashScreen.show();
+
+        // Write message
+        this._chatService.writeMessage(this.favoriteUser.userId)
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((chat: Chat) => {
+                // Navigate to chat
+                this._router.navigateByUrl('chat?id=' + chat.chatId);
             });
     }
 

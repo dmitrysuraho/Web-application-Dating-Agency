@@ -14,15 +14,24 @@ namespace WebApplication.Core.Hubs
         {
             using (ApplicationContext _context = new ApplicationContext())
             {
-                await Clients.Users(_GetCurrentUserId(_context), id).SendAsync("ReceiveMessage", message);
+                int currentId = _GetCurrentUserId(_context);
+                _context.Messages.Add(message);
+                _context.Statuses.Add(new Status
+                {
+                    IsRead = false,
+                    Message = message,
+                    UserId = currentId
+                });
+                _context.SaveChanges();
+                await Clients.Users(currentId.ToString(), id).SendAsync("ReceiveMessage", message);
             }
         }
 
-        private string _GetCurrentUserId(ApplicationContext context)
+        private int _GetCurrentUserId(ApplicationContext context)
         {
             string token = Context.GetHttpContext().Request.Query["access_token"];
             string uid = FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token).Result.Uid;
-            return context.Users.FirstOrDefault(prop => prop.Uid == uid).UserId.ToString();
+            return context.Users.FirstOrDefault(prop => prop.Uid == uid).UserId;
         }
     }
 }

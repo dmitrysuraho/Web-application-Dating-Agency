@@ -1,16 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
+import { takeUntil} from "rxjs/operators";
+import { Subject } from "rxjs";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
+import { ChatService } from "./chat.service";
 
 @Component({
     selector       : 'chat',
     templateUrl    : './chat.component.html'
 })
-export class ChatComponent implements OnInit
+export class ChatComponent implements OnInit, OnDestroy
 {
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
+
     /**
      * Constructor
      */
-    constructor(private _splashScreen: FuseSplashScreenService)
+    constructor(
+        private _splashScreen: FuseSplashScreenService,
+        private _chatService: ChatService,
+        private _activatedRoute: ActivatedRoute)
     {
     }
 
@@ -22,8 +31,27 @@ export class ChatComponent implements OnInit
      * On init
      */
     ngOnInit(): void {
-        // Splash screen
+        // Show spinner
         this._splashScreen.show();
-        setTimeout(() => this._splashScreen.hide(), 1000);
+
+        // Reset chat
+        this._chatService.resetChat();
+
+        // Get chats
+        this._chatService.getChats()
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe(() => this._splashScreen.hide());
+    }
+
+    /**
+     * On destroy
+     */
+    ngOnDestroy(): void
+    {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
     }
 }

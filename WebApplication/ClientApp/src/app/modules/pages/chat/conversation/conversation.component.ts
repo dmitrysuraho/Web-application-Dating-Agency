@@ -1,12 +1,14 @@
 import {
     Component,
     ElementRef,
-    HostListener,
+    HostListener, Input,
     NgZone,
     OnDestroy,
     OnInit,
     ViewChild
 } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
@@ -21,12 +23,18 @@ import { UserService } from "../../../../core/user/user.service";
 })
 export class ConversationComponent implements OnInit, OnDestroy
 {
-    @ViewChild('messageInput') messageInput: ElementRef;
+    @Input()
     chat: Chat;
-    drawerMode: 'over' | 'side' = 'side';
-    drawerOpened: boolean = false;
+
+    @Input()
+    unreadCount: number;
+
+    @Input()
     user: User;
-    message: Message = { messageText: '' };
+
+    @ViewChild('messageInput') messageInput: ElementRef;
+    sendForm: FormGroup;
+    message: Message;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -36,7 +44,10 @@ export class ConversationComponent implements OnInit, OnDestroy
         private _chatService: ChatService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _ngZone: NgZone,
-        private _userService: UserService
+        private _userService: UserService,
+        private _formBuilder: FormBuilder,
+        private _activatedRoute: ActivatedRoute,
+        private _route: Router
     )
     {
     }
@@ -56,7 +67,6 @@ export class ConversationComponent implements OnInit, OnDestroy
     {
         // This doesn't need to trigger Angular's change detection by itself
         this._ngZone.runOutsideAngular(() => {
-
             setTimeout(() => {
 
                 // Set the height to 'auto' so we can correctly read the scrollHeight
@@ -77,36 +87,19 @@ export class ConversationComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Chat
-        this._chatService.chat$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((chat: Chat) => {
-                this.chat = chat;
-            });
-
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
-                // Set the drawerMode if the given breakpoint is active
-                 this.drawerMode = matchingAliases.includes('lg') ? 'side' : 'over';
-            });
-
-        // Current user
-        this._userService.user$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: User) => {
-                this.user = user;
-            });
+        // Create the form
+        this.sendForm = this._formBuilder.group({
+            send: ['']
+        });
 
         // Subscribe to receive message
         this._chatService.receiveMessage()
             .pipe(
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe( (receivedMessage: Message) => {
-                receivedMessage.isMine = receivedMessage.userId === this.user.userId;
-                if (this.chat && this.chat.chatId === receivedMessage.chatId) this.chat.messages.push(receivedMessage);
+            .subscribe( (message: Message) => {
+                message.isMine = message.userId === this.user.userId;
+                if (this.chat && this.chat.chatId === message.chatId) this.chat.messages.push(message);
             });
     }
 
@@ -132,18 +125,31 @@ export class ConversationComponent implements OnInit, OnDestroy
         // Reset the chat
         this._chatService.resetChat();
 
-        // Close the contact info in case it's opened
-        this.drawerOpened = false;
+        this.chat = null;
+
+        // Navigate to chat
+        this._route.navigateByUrl('chat');
     }
 
     /**
      * Send message
+     *
+     * @param event
      */
-    send(): void {
-        if(this.message.messageText) {
+    send(event: Event): void {
+        // Don't process enter event
+        if (event) {
+            event.preventDefault();
+        }
+
+        // Get control value
+        const value: string = this.sendForm.get('send').value;
+
+        // Check input if empty
+        if(value && value.trim()) {
             // Create message
             this.message = {
-                messageText: this.message.messageText,
+                messageText: value,
                 chatId: this.chat.chatId,
                 userId: this.user.userId,
                 createdAt: Date.now().toString()
@@ -151,8 +157,13 @@ export class ConversationComponent implements OnInit, OnDestroy
 
             // Send message
             this._chatService.sendMessage(this.message, this.chat.member.userId);
-            this.message = { messageText: '' };
         }
+
+        // Reset form
+        this.sendForm.reset();
+
+        // Resize form
+        this._resizeMessageInput();
     }
 
     /**

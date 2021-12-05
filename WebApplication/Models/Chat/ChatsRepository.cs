@@ -42,7 +42,19 @@ namespace WebApplication.Models
                 .Select(prop => new
                 {
                     chatId = prop.ChatId,
-                    member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == prop.ChatId) != null),             
+                    member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == prop.ChatId) != null),
+                    lastMessage = _context.Messages.OrderByDescending(p => p.CreatedAt).FirstOrDefault(p => p.ChatId == prop.ChatId),
+                    messages = _context.Messages.Where(p => p.ChatId == prop.ChatId)
+                                    .Select(prop => new
+                                    {
+                                        messageId = prop.MessageId,
+                                        messageText = prop.MessageText,
+                                        chatId = prop.ChatId,
+                                        userId = prop.UserId,
+                                        isMine = prop.UserId == currentId,
+                                        createdAt = prop.CreatedAt
+                                    }).ToArray(),
+                    unreadCount = _context.Messages.Count(p => p.UserId != currentId && p.ChatId == prop.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId) != null)
                 })
                 .ToArray();
         }
@@ -55,7 +67,9 @@ namespace WebApplication.Models
             {
                 chatId = chatId,
                 member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == chatId) != null),
-                messages = GetMessages(currentId, chatId)
+                messages = GetMessages(currentId, chatId),
+                lastMessage = _context.Messages.OrderByDescending(p => p.CreatedAt).FirstOrDefault(p => p.ChatId == chat.ChatId),
+                unreadCount = _context.Messages.Count(p => p.UserId != currentId && p.ChatId == chat.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId) != null)
             };
         }
 

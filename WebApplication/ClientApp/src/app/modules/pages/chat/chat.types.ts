@@ -5,6 +5,8 @@ export interface Chat
     chatId: string;
     member?: User;
     messages?: Message[];
+    lastMessage?: Message;
+    unreadCount?: number;
 }
 
 export interface Message

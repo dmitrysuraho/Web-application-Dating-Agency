@@ -1,9 +1,11 @@
 import { Component, Input } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { FuseMediaWatcherService } from "@fuse/services/media-watcher";
 import { User } from "../../../../core/user/user.types";
 import { UploadService } from "../../../../core/upload/upload.service";
-import { FuseMediaWatcherService } from "../../../../../@fuse/services/media-watcher";
+import { GalleryDialogComponent } from "./gallery-dialog/gallery-dialog.component";
 
 @Component({
     selector       : 'gallery',
@@ -23,7 +25,8 @@ export class GalleryComponent
      */
     constructor(
         private _upload: UploadService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private _dialog: MatDialog
     )
     {
     }
@@ -80,5 +83,15 @@ export class GalleryComponent
             // Upload photo
             this._upload.uploadGallery(inputNode.files[0], this.user);
         }
+    }
+
+    /**
+     * Look gallery
+     */
+    openGallery(): void {
+        // Open dialog
+        this._dialog.open(GalleryDialogComponent, {
+            data: { user: this.user },
+        });
     }
 }

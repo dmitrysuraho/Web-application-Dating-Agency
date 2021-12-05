@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit, OnDestroy
 
         // Splash screen
         this._splashScreen.show();
-        setTimeout(() => this._splashScreen.hide(), 1000);
+        setTimeout(() => this._splashScreen.hide(), 1500);
     }
 
     /**

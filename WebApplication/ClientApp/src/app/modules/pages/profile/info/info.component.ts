@@ -133,10 +133,7 @@ export class InfoComponent implements OnDestroy
             )
             .subscribe((chat: Chat) => {
                 // Navigate to chat
-                this._router.navigate(['chat', chat.chatId]);
-
-                // Hide spinner
-                this._splashScreen.hide();
+                this._router.navigateByUrl('chat?id=' + chat.chatId);
             });
     }
 

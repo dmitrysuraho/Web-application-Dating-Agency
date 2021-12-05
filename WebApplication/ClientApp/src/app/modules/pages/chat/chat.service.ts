@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { Chat, Message } from './chat.types';
 import { AuthService } from "../../../core/auth/auth.service";
 
@@ -11,13 +11,13 @@ import { AuthService } from "../../../core/auth/auth.service";
 })
 export class ChatService
 {
-    private _chat: BehaviorSubject<Chat> = new BehaviorSubject(null);
     private _chats: BehaviorSubject<Chat[]> = new BehaviorSubject(null);
-    private  connection: any = new signalR.HubConnectionBuilder()
+    private _resetChat: Subject<void> = new Subject();
+    private  _connection: any = new signalR.HubConnectionBuilder()
         .withUrl("chatsocket", { accessTokenFactory: () => this._authService.accessToken })
         .configureLogging(signalR.LogLevel.Information)
         .build();
-    private sharedObj = new Subject<Message>();
+    private _receiveMessage = new Subject<Message>();
 
     /**
      * Constructor
@@ -28,13 +28,13 @@ export class ChatService
     )
     {
         // Connection SignalR
-        this.connection.onclose(async () => {
-            await this.connection.start();
+        this._connection.onclose(async () => {
+            await this._connection.start();
         });
-        this.connection.on("ReceiveMessage", (message: Message) => {
-            this.sharedObj.next(message);
+        this._connection.on("ReceiveMessage", (message: Message) => {
+            this._receiveMessage.next(message);
         });
-        this.connection.start();
+        this._connection.start();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -42,19 +42,18 @@ export class ChatService
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Getter for chat
-     */
-    get chat$(): Observable<Chat>
-    {
-        return this._chat.asObservable();
-    }
-
-    /**
      * Getter for chats
      */
     get chats$(): Observable<Chat[]>
     {
         return this._chats.asObservable();
+    }
+
+    /**
+     * Getter for reset chat
+     */
+    get resetChat$(): Observable<void> {
+        return this._resetChat.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -79,18 +78,17 @@ export class ChatService
      */
     getChatById(id: string): Observable<Chat>
     {
-        return this._httpClient.get<Chat>('api/chats/' + id)
+        return this._chats
             .pipe(
-                tap((chat: Chat) => this._chat.next(chat))
+                switchMap((chats: Chat[]) => of(chats.find((chat: Chat) => chat.chatId == id)))
             );
     }
 
     /**
-     * Reset the selected chat
+     * Reset chat
      */
-    resetChat(): void
-    {
-        this._chat.next(null);
+    resetChat(): void {
+        this._resetChat.next();
     }
 
     /**
@@ -109,13 +107,22 @@ export class ChatService
      * @param userId
      */
     sendMessage(message: Message, userId: string): void {
-        this.connection.invoke('Send', message, userId.toString());
+        this._connection.invoke('Send', message, userId.toString());
     }
 
     /**
      * Receive mapped object
      */
     receiveMessage(): Observable<Message> {
-        return this.sharedObj.asObservable();
+        return this._receiveMessage.asObservable();
+    }
+
+    /**
+     * Read messages
+     *
+     * @param id
+     */
+    readMessages(id: string): Observable<any> {
+        return this._httpClient.put('api/chats/' + id, null);
     }
 }

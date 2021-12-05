@@ -90,6 +90,16 @@ export class UserService
     }
 
     /**
+     * Delete image from gallery
+     *
+     * @param image
+     */
+    deleteFromGallery(image: string): Observable<any> {
+        const query: string = image.split('?')[0].split('%2F').pop();
+        return this._httpClient.delete('api/gallery?image=' + query);
+    }
+
+    /**
      * Change password
      *
      * @param newPassword

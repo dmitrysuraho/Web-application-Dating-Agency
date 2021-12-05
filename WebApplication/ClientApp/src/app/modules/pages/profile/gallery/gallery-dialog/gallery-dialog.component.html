@@ -1,0 +1,31 @@
+<div mat-dialog-content>
+    <carousel
+        [isAnimated]="false"
+        [showIndicators]="false"
+        [interval]="0">
+        <slide *ngFor="let image of data.user.gallery; let i = index">
+            <img
+                class="w-full h-full object-cover"
+                alt="slide"
+                [src]="image">
+            <div
+                *ngIf="data.user.isCurrentUser"
+                class="w-auto h-auto carousel-caption d-md-block bottom-0">
+                <button
+                    mat-icon-button
+                    [disabled]="isDeleting"
+                    [color]="'warn'"
+                    (click)="deleteImage(i, image)">
+                    <mat-icon
+                        *ngIf="!isDeleting"
+                        class="icon-size-6 sm:icon-size-10 md:icon-size-10 lg:icon-size-10"
+                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                    <mat-progress-spinner
+                        *ngIf="isDeleting"
+                        [diameter]="24"
+                        [mode]="'indeterminate'"></mat-progress-spinner>
+                </button>
+            </div>
+        </slide>
+    </carousel>
+</div>

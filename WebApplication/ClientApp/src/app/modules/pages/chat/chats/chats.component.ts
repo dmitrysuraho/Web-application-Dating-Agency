@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { Chat } from '../chat.types';
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { of, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { Chat, Message } from '../chat.types';
 import { ChatService } from '../chat.service';
 import { User } from "../../../../core/user/user.types";
 import { UserService } from "../../../../core/user/user.service";
@@ -13,8 +14,8 @@ import { UserService } from "../../../../core/user/user.service";
 export class ChatsComponent implements OnInit, OnDestroy
 {
     chats: Chat[];
-    drawerOpened: boolean = false;
     filteredChats: Chat[];
+    unreadCount: number;
     user: User;
     selectedChat: Chat;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -24,7 +25,9 @@ export class ChatsComponent implements OnInit, OnDestroy
      */
     constructor(
         private _chatService: ChatService,
-        private _userService: UserService
+        private _userService: UserService,
+        private _activatedRoute: ActivatedRoute,
+        private _route: Router
     )
     {
     }
@@ -38,15 +41,35 @@ export class ChatsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Chats
+        // Get and select chat
         this._chatService.chats$
             .pipe(
-                takeUntil(this._unsubscribeAll)
+                switchMap((chats: Chat[]) => {
+                    if (chats) {
+                        this.chats = chats;
+                        this.filteredChats = chats;
+                        return this._activatedRoute.queryParamMap
+                            .pipe(
+                                switchMap((params: ParamMap) => {
+                                    if (params.get('id')) {
+                                        const chat: Chat = chats.find((chat: Chat) => chat.chatId == params.get('id'));
+                                        if (!chat) {
+                                            this._route.navigateByUrl('not-found');
+                                            return of(null);
+                                        }
+                                        else {
+                                            this.selectChat(chat);
+                                            return of(chat);
+                                        }
+                                    }
+                                    return of(null);
+                                })
+                            )
+                    }
+                    return of(null);
+                })
             )
-            .subscribe((chats: Chat[]) => {
-                this.chats = chats;
-                this.filteredChats = chats;
-            });
+            .subscribe();
 
         // Current user
         this._userService.user$
@@ -55,11 +78,25 @@ export class ChatsComponent implements OnInit, OnDestroy
                 this.user = user;
             });
 
-        // Selected chat
-        this._chatService.chat$
+        // Reset chat
+        this._chatService.resetChat$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((chat: Chat) => {
-                this.selectedChat = chat;
+            .subscribe(() => {
+                this.selectedChat = null;
+            });
+
+        // Receive message
+        this._chatService.receiveMessage()
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((message: Message) => {
+                this.chats = this.chats.map((chat: Chat) => {
+                   if (chat.chatId == message.chatId) {
+                       chat.lastMessage = message;
+                   }
+                   return chat;
+                });
             });
     }
 
@@ -76,6 +113,28 @@ export class ChatsComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Select chat
+     *
+     * @param chat
+     */
+    selectChat(chat: Chat): void {
+        // Select chat
+        this.selectedChat = chat;
+
+        // Set count of unread messages
+        this.unreadCount = chat.unreadCount;
+
+        if (chat.unreadCount > 0) {
+            // Read all messages
+            this._chatService.readMessages(chat.chatId)
+                .pipe(
+                    takeUntil(this._unsubscribeAll)
+                )
+                .subscribe(() => chat.unreadCount = 0);
+        }
+    }
 
     /**
      * Filter the chats
