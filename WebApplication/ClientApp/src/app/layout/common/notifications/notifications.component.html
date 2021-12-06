@@ -29,7 +29,7 @@
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
                 </button>
             </div>
-            <div class="text-lg font-medium leading-10">{{ 'notification.title' | translate }}</div>
+            <div class="text-lg font-medium leading-10">{{ 'notifications.title' | translate }}</div>
             <div class="ml-auto">
                 <button
                     mat-icon-button
@@ -150,8 +150,8 @@
                             class="text-primary-500-700"
                             [svgIcon]="'heroicons_outline:bell'"></mat-icon>
                     </div>
-                    <div class="mt-5 text-2xl font-semibold tracking-tight">No notifications</div>
-                    <div class="w-full max-w-60 mt-1 text-md text-center text-secondary">When you have notifications, they will appear here.</div>
+                    <div class="mt-5 text-2xl font-semibold tracking-tight">{{ 'notifications.no-notifications.title' | translate }}</div>
+                    <div class="w-full max-w-60 mt-1 text-md text-center text-secondary">{{ 'notifications.no-notifications.description' | translate }}</div>
                 </div>
             </ng-container>
 

@@ -21,7 +21,7 @@ namespace WebApplication.Models
 
         public bool IsUserBlocked(int currentUserId, int userId)
         {
-            Blacklist blacklist =_context.Blacklists.FirstOrDefault(prop => prop.UserId == currentUserId && prop.BlockedUser == userId);
+            Blacklist blacklist = _context.Blacklists.FirstOrDefault(prop => prop.UserId == currentUserId && prop.BlockedUser == userId);
             if (blacklist == null) return false;
             else return true;
         }

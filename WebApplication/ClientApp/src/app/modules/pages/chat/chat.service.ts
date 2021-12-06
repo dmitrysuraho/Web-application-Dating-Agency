@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Chat, Message } from './chat.types';
 import { AuthService } from "../../../core/auth/auth.service";
 
@@ -13,7 +13,7 @@ export class ChatService
 {
     private _chats: BehaviorSubject<Chat[]> = new BehaviorSubject(null);
     private _resetChat: Subject<void> = new Subject();
-    private  _connection: any = new signalR.HubConnectionBuilder()
+    private _connection: any = new signalR.HubConnectionBuilder()
         .withUrl("chatsocket", { accessTokenFactory: () => this._authService.accessToken })
         .configureLogging(signalR.LogLevel.Information)
         .build();
@@ -78,10 +78,7 @@ export class ChatService
      */
     getChatById(id: string): Observable<Chat>
     {
-        return this._chats
-            .pipe(
-                switchMap((chats: Chat[]) => of(chats.find((chat: Chat) => chat.chatId == id)))
-            );
+        return this._httpClient.get<Chat>('api/chats/' + id);
     }
 
     /**

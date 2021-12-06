@@ -20,7 +20,7 @@ namespace WebApplication.Core.Hubs
                 {
                     IsRead = false,
                     Message = message,
-                    UserId = currentId
+                    UserId = int.Parse(id)
                 });
                 _context.SaveChanges();
                 await Clients.Users(currentId.ToString(), id).SendAsync("ReceiveMessage", message);

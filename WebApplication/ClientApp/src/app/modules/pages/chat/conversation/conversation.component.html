@@ -1,6 +1,6 @@
 <div class="relative flex flex-col h-full w-full flex-auto bg-card dark:bg-default">
 
-    <ng-container *ngIf="chat; else selectChatOrStartNew">
+    <ng-container *ngIf="!isGettingChat; else spinner">
         <mat-drawer-container
             class="absolute flex-auto h-full w-full"
             [hasBackdrop]="false">
@@ -65,16 +65,16 @@
                                 <div class="flex items-center justify-center my-3 -mx-6">
                                     <div class="flex-auto border-b"></div>
                                     <div class="flex-0 mx-4 text-sm font-medium leading-5 text-secondary">
-                                        {{message.createdAt | date: 'longDate'}}
+                                        {{message.createdAt | date: 'longDate' : '' : getLang}}
                                     </div>
                                     <div class="flex-auto border-b"></div>
                                 </div>
                             </ng-container>
-                            <ng-container *ngIf="i === (chat.messages.length - unreadCount)">
+                            <ng-container *ngIf="i === (chat.messages.length - chat.unreadCount)">
                                 <div class="flex items-center justify-center my-3 -mx-6">
                                     <div class="flex-auto border-b border-primary"></div>
                                     <div class="flex-0 mx-4 text-sm font-medium leading-5 text-primary">
-                                        New messages
+                                        {{ 'chat.new-messages' | translate }}
                                     </div>
                                     <div class="flex-auto border-b border-primary"></div>
                                 </div>
@@ -140,7 +140,7 @@
                         <textarea
                             class="min-h-5 my-0 resize-none"
                             style="margin: 11px 0 !important; padding: 0 !important;"
-                            [placeholder]="'Write a message...'"
+                            [placeholder]="'chat.write-message' | translate"
                             [formControlName]="'send'"
                             [rows]="1"
                             (keydown.enter)="send($event)"
@@ -163,13 +163,12 @@
         </mat-drawer-container>
     </ng-container>
 
-    <!-- Select chat or start new template -->
-    <ng-template #selectChatOrStartNew>
-        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
-            <mat-icon
-                class="icon-size-24"
-                [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
-            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Select a conversation or start a new chat</div>
+    <!-- Spinner -->
+    <ng-template #spinner>
+        <div class="flex justify-center items-center w-full h-full">
+            <mat-progress-spinner
+                [diameter]="56"
+                [mode]="'indeterminate'"></mat-progress-spinner>
         </div>
     </ng-template>
 
@@ -179,7 +178,7 @@
             <mat-icon
                 class="icon-size-24"
                 [svgIcon]="'iconsmind:pencil'"></mat-icon>
-            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Don't be shy, write!</div>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.dont-be-shy' | translate }}</div>
         </div>
     </ng-template>
 

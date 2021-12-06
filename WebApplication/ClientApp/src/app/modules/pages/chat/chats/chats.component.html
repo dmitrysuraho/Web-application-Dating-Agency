@@ -9,7 +9,9 @@
 
             <!-- Chats list -->
             <ng-container *ngIf="chats && chats.length > 0; else noChats">
-                <div class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-100 lg:max-w-100 bg-card dark:bg-transparent">
+                <div
+                    class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-100 lg:max-w-100 bg-card dark:bg-transparent"
+                    [ngClass]="{ 'hidden lg:flex' : selectedChat }">
 
                     <!-- Header -->
                     <div class="flex flex-col flex-0 py-4 px-8 border-b bg-gray-50 dark:bg-transparent">
@@ -45,7 +47,7 @@
                                 <input
                                     matInput
                                     [autocomplete]="'off'"
-                                    [placeholder]="'Search'"
+                                    [placeholder]="'chat.search' | translate"
                                     (input)="filterChats(searchField.value)"
                                     #searchField>
                             </mat-form-field>
@@ -64,7 +66,7 @@
                                     [queryParams]="{'id': chat.chatId}"
                                     (click)="selectChat(chat)">
                                     <div class="relative flex flex-0 items-center justify-center w-10 h-10">
-                                        <ng-container *ngIf="chat.unreadCount > 0">
+                                        <ng-container *ngIf="chat.unreadCount">
                                             <div
                                                 class="absolute bottom-0 right-0 flex-0 w-2 h-2 -ml-0.5 rounded-full ring-2 ring-bg-card dark:ring-gray-900 bg-primary dark:bg-primary-500 text-on-primary"
                                                 [class.ring-primary-50]="selectedChat && selectedChat.chatId === chat.chatId"></div>
@@ -86,9 +88,9 @@
                                         <div
                                             *ngIf="chat?.lastMessage"
                                             class="leading-5 truncate text-secondary"
-                                            [class.text-primary]="chat.unreadCount > 0"
-                                            [class.dark:text-primary-500]="chat.unreadCount > 0">
-                                            <span *ngIf="chat.lastMessage.userId === user.userId">You:</span>
+                                            [class.text-primary]="chat.unreadCount"
+                                            [class.dark:text-primary-500]="chat.unreadCount">
+                                            <span *ngIf="chat.lastMessage.userId === user.userId">{{ 'chat.you' | translate }}</span>
                                             {{chat.lastMessage.messageText}}
                                         </div>
                                     </div>
@@ -103,12 +105,12 @@
 
             <!-- Conversation -->
             <ng-container *ngIf="chats && chats.length > 0">
-                <chat-conversation
-                    class="hidden lg:block w-full border-l"
-                    [ngClass]="{ 'block': selectedChat, 'hidden lg:block': !selectedChat }"
-                    [chat]="selectedChat"
-                    [unreadCount]="unreadCount"
-                    [user]="user"></chat-conversation>
+                <ng-container *ngIf="selectedChat; else selectChatOrStartNew">
+                    <chat-conversation
+                        class="hidden lg:block w-full border-l"
+                        [ngClass]="{ 'block': selectedChat, 'hidden lg:block': !selectedChat }"
+                        [user]="user"></chat-conversation>
+                </ng-container>
             </ng-container>
 
         </mat-drawer-content>
@@ -123,6 +125,16 @@
         <mat-icon
             class="icon-size-24"
             [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
-        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">No chats</div>
+        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.no-chats' | translate }}</div>
+    </div>
+</ng-template>
+
+<!-- Select chat or start new template -->
+<ng-template #selectChatOrStartNew>
+    <div class="flex flex-col flex-auto hidden lg:flex items-center justify-center bg-gray-100 dark:bg-transparent">
+        <mat-icon
+            class="icon-size-24"
+            [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
+        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.select' | translate }}</div>
     </div>
 </ng-template>

@@ -53,7 +53,8 @@ namespace WebApplication.Controllers
         [HttpPut]
         public IActionResult Put(int id)
         {
-
+            User currentUser = _GetCurrentUser();
+            _chatsRepository.ReadMessages(currentUser.UserId, id);
             return Json(new { message = "Messages are read" });
         }
 

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
-import { of, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Chat, Message } from '../chat.types';
 import { ChatService } from '../chat.service';
 import { User } from "../../../../core/user/user.types";
@@ -13,9 +13,12 @@ import { UserService } from "../../../../core/user/user.service";
 })
 export class ChatsComponent implements OnInit, OnDestroy
 {
+    @Input()
     chats: Chat[];
+
+    @Input()
     filteredChats: Chat[];
-    unreadCount: number;
+
     user: User;
     selectedChat: Chat;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -41,33 +44,19 @@ export class ChatsComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Get and select chat
+        // If selected chat
         this._chatService.chats$
             .pipe(
-                switchMap((chats: Chat[]) => {
-                    if (chats) {
-                        this.chats = chats;
-                        this.filteredChats = chats;
-                        return this._activatedRoute.queryParamMap
-                            .pipe(
-                                switchMap((params: ParamMap) => {
-                                    if (params.get('id')) {
-                                        const chat: Chat = chats.find((chat: Chat) => chat.chatId == params.get('id'));
-                                        if (!chat) {
-                                            this._route.navigateByUrl('not-found');
-                                            return of(null);
-                                        }
-                                        else {
-                                            this.selectChat(chat);
-                                            return of(chat);
-                                        }
-                                    }
-                                    return of(null);
-                                })
-                            )
-                    }
-                    return of(null);
-                })
+                switchMap((chats: Chat[]) =>
+                    this._activatedRoute.queryParamMap
+                        .pipe(
+                            tap((params: ParamMap) => {
+                                if (params.get('id')) {
+                                    this.selectChat(chats?.find((chat: Chat) => chat.chatId == params.get('id')));
+                                }
+                            })
+                        )),
+                takeUntil(this._unsubscribeAll)
             )
             .subscribe();
 
@@ -87,15 +76,18 @@ export class ChatsComponent implements OnInit, OnDestroy
 
         // Receive message
         this._chatService.receiveMessage()
-            .pipe(
-                takeUntil(this._unsubscribeAll)
-            )
+            .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((message: Message) => {
                 this.chats = this.chats.map((chat: Chat) => {
-                   if (chat.chatId == message.chatId) {
-                       chat.lastMessage = message;
-                   }
-                   return chat;
+                    if (chat.chatId == message.chatId) {
+                        chat.lastMessage = message;
+                    }
+                    if (chat.chatId != this.selectedChat?.chatId &&
+                        chat.chatId == message.chatId &&
+                        message.userId != this.user.userId) {
+                        chat.unreadCount++;
+                    }
+                    return chat;
                 });
             });
     }
@@ -123,17 +115,8 @@ export class ChatsComponent implements OnInit, OnDestroy
         // Select chat
         this.selectedChat = chat;
 
-        // Set count of unread messages
-        this.unreadCount = chat.unreadCount;
-
-        if (chat.unreadCount > 0) {
-            // Read all messages
-            this._chatService.readMessages(chat.chatId)
-                .pipe(
-                    takeUntil(this._unsubscribeAll)
-                )
-                .subscribe(() => chat.unreadCount = 0);
-        }
+        // Read all messages
+        if (chat) this.selectedChat.unreadCount = 0;
     }
 
     /**

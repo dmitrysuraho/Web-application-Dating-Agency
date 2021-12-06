@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication.Models
 {
@@ -44,17 +46,7 @@ namespace WebApplication.Models
                     chatId = prop.ChatId,
                     member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == prop.ChatId) != null),
                     lastMessage = _context.Messages.OrderByDescending(p => p.CreatedAt).FirstOrDefault(p => p.ChatId == prop.ChatId),
-                    messages = _context.Messages.Where(p => p.ChatId == prop.ChatId)
-                                    .Select(prop => new
-                                    {
-                                        messageId = prop.MessageId,
-                                        messageText = prop.MessageText,
-                                        chatId = prop.ChatId,
-                                        userId = prop.UserId,
-                                        isMine = prop.UserId == currentId,
-                                        createdAt = prop.CreatedAt
-                                    }).ToArray(),
-                    unreadCount = _context.Messages.Count(p => p.UserId != currentId && p.ChatId == prop.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId) != null)
+                    unreadCount = _context.Messages.Count(p => p.ChatId == prop.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId && s.UserId == currentId && s.IsRead == false) != null)
                 })
                 .ToArray();
         }
@@ -68,8 +60,7 @@ namespace WebApplication.Models
                 chatId = chatId,
                 member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == chatId) != null),
                 messages = GetMessages(currentId, chatId),
-                lastMessage = _context.Messages.OrderByDescending(p => p.CreatedAt).FirstOrDefault(p => p.ChatId == chat.ChatId),
-                unreadCount = _context.Messages.Count(p => p.UserId != currentId && p.ChatId == chat.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId) != null)
+                unreadCount = _context.Messages.Count(p => p.ChatId == chat.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId && s.UserId == currentId && s.IsRead == false) != null)
             };
         }
 
@@ -85,6 +76,25 @@ namespace WebApplication.Models
                                         isMine = prop.UserId == currentId,
                                         createdAt = prop.CreatedAt
                                     }).ToArray();
+        }
+
+        public void ReadMessages(int currentId, int chatId)
+        {
+            List<Status> statuses = _context.Statuses.Include(i => i.Message).ToList();
+            foreach (Status status in statuses)
+            {
+                if (status.Message.ChatId == chatId && status.IsRead == false && status.UserId == currentId)
+                {
+                    status.IsRead = true;
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        public object IsUserBlocked(int currentId, int chatId)
+        {
+            //return _context.Blacklists.FirstOrDefault(prop => prop.UserId == currentUserId && prop.BlockedUser == userId)
+            return null;
         }
 
         public bool IsChatCreator(int userId, int chatId)

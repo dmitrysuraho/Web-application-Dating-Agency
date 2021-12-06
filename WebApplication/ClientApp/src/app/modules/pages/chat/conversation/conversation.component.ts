@@ -1,21 +1,24 @@
 import {
     Component,
     ElementRef,
-    HostListener, Input,
+    HostListener,
+    Input,
     NgZone,
     OnDestroy,
     OnInit,
     ViewChild
 } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { of, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Chat, Message } from '../chat.types';
 import { ChatService } from '../chat.service';
 import { User } from "../../../../core/user/user.types";
 import { UserService } from "../../../../core/user/user.service";
+import { FuseSplashScreenService } from "../../../../../@fuse/services/splash-screen";
 
 @Component({
     selector       : 'chat-conversation',
@@ -24,15 +27,13 @@ import { UserService } from "../../../../core/user/user.service";
 export class ConversationComponent implements OnInit, OnDestroy
 {
     @Input()
-    chat: Chat;
-
-    @Input()
-    unreadCount: number;
+    isGettingChat: boolean;
 
     @Input()
     user: User;
 
     @ViewChild('messageInput') messageInput: ElementRef;
+    chat: Chat;
     sendForm: FormGroup;
     message: Message;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -47,9 +48,22 @@ export class ConversationComponent implements OnInit, OnDestroy
         private _userService: UserService,
         private _formBuilder: FormBuilder,
         private _activatedRoute: ActivatedRoute,
-        private _route: Router
+        private _route: Router,
+        private _splashScreen: FuseSplashScreenService,
+        private _translateService: TranslateService
     )
     {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Accessors
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Get lang
+     */
+    get getLang(): string {
+        return this._translateService.currentLang === 'ru' ? 'ru-BY' : 'en-GB';
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -92,15 +106,38 @@ export class ConversationComponent implements OnInit, OnDestroy
             send: ['']
         });
 
+        // Get chat and read all messages
+        this._activatedRoute.queryParamMap
+            .pipe(
+                switchMap((params: ParamMap) => {
+                    this.isGettingChat = true;
+                    return this._chatService.getChatById(params.get('id'));
+                }),
+                switchMap((chat: Chat) => {
+                    this.chat = chat;
+                    return this._chatService.readMessages(chat.chatId);
+                }),
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((chat: Chat) => {
+                this.isGettingChat = false;
+            });
+
         // Subscribe to receive message
         this._chatService.receiveMessage()
             .pipe(
+                switchMap((message: Message) => {
+                    message.isMine = message.userId === this.user.userId;
+                    if (this.chat && this.chat.chatId === message.chatId) {
+                        if (this.chat.unreadCount) this.chat.unreadCount++;
+                        this.chat.messages.push(message);
+                        return this._chatService.readMessages(this.chat.chatId);
+                    }
+                    return of();
+                }),
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe( (message: Message) => {
-                message.isMine = message.userId === this.user.userId;
-                if (this.chat && this.chat.chatId === message.chatId) this.chat.messages.push(message);
-            });
+            .subscribe();
     }
 
     /**

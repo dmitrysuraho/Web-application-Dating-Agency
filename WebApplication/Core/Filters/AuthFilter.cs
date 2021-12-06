@@ -24,7 +24,7 @@ namespace WebApplication.Core.Filters
             string authHeader = request.Headers["Authorization"];
             if (string.IsNullOrEmpty(authHeader))
             {
-                _getError(context, 401, "Unauthorize");
+                _GetError(context, 401, "Unauthorize");
             }
             else
             {
@@ -34,17 +34,17 @@ namespace WebApplication.Core.Filters
                     string uid = FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token).Result.Uid;
                     if (_usersRepository.FindUserByUid(uid) == null)
                     {
-                        _getError(context, 403, "Forbidden");
+                        _GetError(context, 403, "Forbidden");
                     }
                 }
                 catch(Exception error)
                 {
-                    _getError(context, 401, error.Message);
+                    _GetError(context, 401, error.Message);
                 }
             }
         }
 
-        private void _getError(AuthorizationFilterContext context, int statusCode, string message)
+        private void _GetError(AuthorizationFilterContext context, int statusCode, string message)
         {
             context.HttpContext.Response.StatusCode = statusCode;
             context.Result = new JsonResult(new { message = message });

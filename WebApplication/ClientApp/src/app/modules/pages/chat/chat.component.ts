@@ -1,9 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
+import {registerLocaleData} from "@angular/common";
+import localeRu from "@angular/common/locales/ru-BY";
+import localeEn from "@angular/common/locales/en-GB";
 import { takeUntil} from "rxjs/operators";
 import { Subject } from "rxjs";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { ChatService } from "./chat.service";
+import { Chat } from "./chat.types";
 
 @Component({
     selector       : 'chat',
@@ -11,6 +15,7 @@ import { ChatService } from "./chat.service";
 })
 export class ChatComponent implements OnInit, OnDestroy
 {
+    chats: Chat[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -31,6 +36,10 @@ export class ChatComponent implements OnInit, OnDestroy
      * On init
      */
     ngOnInit(): void {
+        // Register locale data
+        registerLocaleData(localeRu);
+        registerLocaleData(localeEn);
+
         // Show spinner
         this._splashScreen.show();
 
@@ -42,7 +51,10 @@ export class ChatComponent implements OnInit, OnDestroy
             .pipe(
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe(() => this._splashScreen.hide());
+            .subscribe((chats: Chat[]) => {
+                this.chats = chats;
+                this._splashScreen.hide();
+            });
     }
 
     /**
