@@ -8,7 +8,7 @@ import { registerLocaleData } from "@angular/common";
 import  localeRu  from "@angular/common/locales/ru-BY";
 import  localeEn  from "@angular/common/locales/en-GB";
 import { Observable, of, Subject } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { catchError, takeUntil } from "rxjs/operators";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { fuseAnimations } from "@fuse/animations";
 import { UserService } from "../../../core/user/user.service";
@@ -21,6 +21,7 @@ import { User } from "../../../core/user/user.types";
 })
 export class DatingComponent implements OnInit, OnDestroy
 {
+    currentUser: User;
     user: Observable<User>;
     isNotFound: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -54,9 +55,17 @@ export class DatingComponent implements OnInit, OnDestroy
         this._splashScreen.show();
         setTimeout(() => this._splashScreen.hide(), 1000);
 
+        // Get current user
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => {
+                this.currentUser = user;
+            });
+
         // Get candidate
         this.user = this._userService.getDatingUser()
             .pipe(
+                takeUntil(this._unsubscribeAll),
                 catchError(() => {
                     this.isNotFound = true;
                     return of(null);

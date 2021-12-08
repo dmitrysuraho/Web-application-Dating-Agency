@@ -65,6 +65,7 @@ namespace WebApplication
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chatsocket");
+                endpoints.MapHub<NoticeHub>("/noticesocket");
             });
 
             app.UseSpa(spa =>

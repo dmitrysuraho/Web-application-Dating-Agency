@@ -15,6 +15,7 @@ import { FuseMediaWatcherService } from "@fuse/services/media-watcher";
 import { UserService } from "../../../../core/user/user.service";
 import { User } from "../../../../core/user/user.types";
 import { Dating } from "../../../../core/user/dating.types";
+import { NotificationsService } from "../../../../layout/common/notifications/notifications.service";
 
 @Component({
     selector       : 'person-card',
@@ -23,6 +24,9 @@ import { Dating } from "../../../../core/user/dating.types";
 })
 export class PersonCardComponent implements OnInit, OnDestroy
 {
+    @Input()
+    currentUser: User;
+
     @Input()
     user: User;
 
@@ -43,7 +47,8 @@ export class PersonCardComponent implements OnInit, OnDestroy
         private _activatedRoute: ActivatedRoute,
         private _userService: UserService,
         private _translateService: TranslateService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private _notificationsService: NotificationsService
     )
     {
     }
@@ -136,6 +141,15 @@ export class PersonCardComponent implements OnInit, OnDestroy
             isFavorite: event === 'favorite'
         };
 
+        if (event !== 'ignore') {
+            this._notificationsService.sendNotice({
+                sender: this.currentUser.userId,
+                action: event,
+                isRead: false,
+                time: Date.now().toString()
+            }, this.user.userId);
+        }
+
         // Set candidate in null
         this.user = null;
 
@@ -148,7 +162,9 @@ export class PersonCardComponent implements OnInit, OnDestroy
                     return of(null);
                 })
             )
-            .subscribe((user: User) => this.user = user);
+            .subscribe((user: User) => {
+                this.user = user;
+            });
     }
 
     /**

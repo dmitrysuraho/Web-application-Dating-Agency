@@ -27,15 +27,14 @@ import { FuseSplashScreenService } from "../../../../../@fuse/services/splash-sc
 export class ConversationComponent implements OnInit, OnDestroy
 {
     @Input()
-    isGettingChat: boolean;
-
-    @Input()
     user: User;
 
     @ViewChild('messageInput') messageInput: ElementRef;
     chat: Chat;
     sendForm: FormGroup;
     message: Message;
+    isGettingChat: boolean;
+    isSending: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -119,17 +118,21 @@ export class ConversationComponent implements OnInit, OnDestroy
                 }),
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe((chat: Chat) => {
+            .subscribe(() => {
                 this.isGettingChat = false;
             });
 
         // Subscribe to receive message
         this._chatService.receiveMessage()
             .pipe(
-                switchMap((message: Message) => {
+                switchMap(([message, user, chat]: [Message, User, Chat]) => {
                     message.isMine = message.userId === this.user.userId;
                     if (this.chat && this.chat.chatId === message.chatId) {
                         if (this.chat.unreadCount) this.chat.unreadCount++;
+                        if (message.userId == this.user.userId) {
+                            this.isSending = false;
+                            this.sendForm.enable();
+                        }
                         this.chat.messages.push(message);
                         return this._chatService.readMessages(this.chat.chatId);
                     }
@@ -184,6 +187,12 @@ export class ConversationComponent implements OnInit, OnDestroy
 
         // Check input if empty
         if(value && value.trim()) {
+            // Set sending
+            this.isSending = true;
+
+            // Disable form
+            this.sendForm.disable();
+
             // Create message
             this.message = {
                 messageText: value,
@@ -192,8 +201,18 @@ export class ConversationComponent implements OnInit, OnDestroy
                 createdAt: Date.now().toString()
             };
 
+            // Sender
+            const user: User = !this.chat.messages.length ?
+                                {
+                                    userId: this.user.userId,
+                                    name: this.user.name,
+                                    photo: this.user.photo
+                                } : null;
+
+            const chat: Chat = !this.chat.messages.length ? this.chat : null;
+
             // Send message
-            this._chatService.sendMessage(this.message, this.chat.member.userId);
+            this._chatService.sendMessage(this.message, this.chat.member.userId, user, chat);
         }
 
         // Reset form

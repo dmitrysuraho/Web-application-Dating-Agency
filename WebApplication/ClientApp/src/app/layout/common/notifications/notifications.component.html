@@ -33,7 +33,7 @@
             <div class="ml-auto">
                 <button
                     mat-icon-button
-                    [matTooltip]="'Mark all as read'"
+                    [matTooltip]="'notifications.make-all-as-read' | translate"
                     [disabled]="unreadCount === 0"
                     (click)="markAllAsRead()">
                     <mat-icon
@@ -46,29 +46,19 @@
         <!-- Content -->
         <div class="relative flex flex-col flex-auto sm:max-h-120 divide-y overflow-y-auto bg-card">
             <!-- Notifications -->
-            <ng-container *ngFor="let notification of notifications; trackBy: trackByFn">
+            <ng-container *ngFor="let notification of notifications; let i = index; trackBy: trackByFn">
                 <div
                     class="flex group hover:bg-gray-50 dark:hover:bg-black dark:hover:bg-opacity-5"
-                    [ngClass]="{'unread': !notification.read}">
+                    [ngClass]="{'unread': !notification.isRead}">
 
                     <!-- Notification with a link -->
                     <ng-container *ngIf="notification.link">
-                        <!-- Normal links -->
-                        <ng-container *ngIf="!notification.useRouter">
-                            <a
-                                class="flex flex-auto py-5 pl-6 cursor-pointer"
-                                [href]="notification.link">
-                                <ng-container *ngTemplateOutlet="notificationContent"></ng-container>
-                            </a>
-                        </ng-container>
                         <!-- Router links -->
-                        <ng-container *ngIf="notification.useRouter">
-                            <a
-                                class="flex flex-auto py-5 pl-6 cursor-pointer"
-                                [routerLink]="notification.link">
-                                <ng-container *ngTemplateOutlet="notificationContent"></ng-container>
-                            </a>
-                        </ng-container>
+                        <span
+                            class="flex flex-auto py-5 pl-6 cursor-pointer"
+                            (click)="navigate(notification)">
+                            <ng-container *ngTemplateOutlet="notificationContent"></ng-container>
+                        </span>
                     </ng-container>
 
                     <!-- Notification without a link -->
@@ -84,19 +74,19 @@
                         <button
                             class="w-6 h-6 min-h-6"
                             mat-icon-button
-                            (click)="toggleRead(notification)"
-                            [matTooltip]="notification.read ? 'Mark as unread' : 'Mark as read'">
+                            [matTooltip]="(notification.isRead ? 'notifications.make-as-unread' : 'notifications.make-as-unread') | translate"
+                            (click)="toggleRead(notification)">
                             <span
                                 class="w-2 h-2 rounded-full"
-                                [ngClass]="{'bg-gray-400 dark:bg-gray-500 sm:opacity-0 sm:group-hover:opacity-100': notification.read,
-                                            'bg-primary': !notification.read}"></span>
+                                [ngClass]="{'bg-gray-400 dark:bg-gray-500 sm:opacity-0 sm:group-hover:opacity-100': notification.isRead,
+                                            'bg-primary': !notification.isRead}"></span>
                         </button>
                         <!-- Remove -->
                         <button
                             class="w-6 h-6 min-h-6 sm:opacity-0 sm:group-hover:opacity-100"
                             mat-icon-button
-                            (click)="delete(notification)"
-                            [matTooltip]="'Remove'">
+                            [matTooltip]="'notifications.remove' | translate"
+                            (click)="delete(notification, i)">
                             <mat-icon
                                 class="icon-size-4"
                                 [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -108,35 +98,24 @@
                 <!-- Notification content template -->
                 <ng-template #notificationContent>
                     <!-- Icon -->
-                    <ng-container *ngIf="notification.icon && !notification.image">
-                        <div class="flex flex-shrink-0 items-center justify-center w-8 h-8 mr-4 rounded-full bg-gray-100 dark:bg-gray-700">
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="notification.icon">
-                            </mat-icon>
-                        </div>
-                    </ng-container>
-                    <!-- Image -->
-                    <ng-container *ngIf="notification.image">
-                        <img
-                            class="flex-shrink-0 w-8 h-8 mr-4 rounded-full overflow-hidden object-cover object-center"
-                            [src]="notification.image"
-                            [alt]="'Notification image'">
-                    </ng-container>
+                    <div class="flex flex-shrink-0 items-center justify-center w-8 h-8 mr-4 rounded-full bg-gray-100 dark:bg-gray-700">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="notification.icon">
+                        </mat-icon>
+                    </div>
                     <!-- Title, description & time -->
                     <div class="flex flex-col flex-auto">
                         <ng-container *ngIf="notification.title">
                             <div
-                                class="font-semibold line-clamp-1"
+                                class="font-semibold"
                                 [innerHTML]="notification.title"></div>
                         </ng-container>
                         <ng-container *ngIf="notification.description">
-                            <div
-                                class="line-clamp-2"
-                                [innerHTML]="notification.description"></div>
+                            <div [innerHTML]="notification.description"></div>
                         </ng-container>
                         <div class="mt-2 text-sm leading-none text-secondary">
-                            {{notification.time | date:'MMM dd, h:mm a'}}
+                            {{notification.time | date:'MMM dd, h:mm a' : '' : getLang}}
                         </div>
                     </div>
                 </ng-template>

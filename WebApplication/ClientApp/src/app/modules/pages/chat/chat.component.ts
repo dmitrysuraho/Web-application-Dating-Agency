@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
-import {registerLocaleData} from "@angular/common";
+import { registerLocaleData } from "@angular/common";
 import localeRu from "@angular/common/locales/ru-BY";
 import localeEn from "@angular/common/locales/en-GB";
 import { takeUntil} from "rxjs/operators";
@@ -52,7 +52,16 @@ export class ChatComponent implements OnInit, OnDestroy
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe((chats: Chat[]) => {
-                this.chats = chats;
+                this.chats = chats.filter((chat: Chat) => chat?.lastMessage)
+                    .sort(function(a,b) {
+                        if (a.lastMessage.createdAt > b.lastMessage.createdAt) {
+                            return -1;
+                        }
+                        if (a.lastMessage.createdAt < b.lastMessage.createdAt) {
+                            return 1;
+                        }
+                        return 0;
+                    });
                 this._splashScreen.hide();
             });
     }

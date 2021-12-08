@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Chat, Message } from './chat.types';
 import { AuthService } from "../../../core/auth/auth.service";
+import { User } from "../../../core/user/user.types";
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,7 @@ export class ChatService
         .withUrl("chatsocket", { accessTokenFactory: () => this._authService.accessToken })
         .configureLogging(signalR.LogLevel.Information)
         .build();
-    private _receiveMessage = new Subject<Message>();
+    private _receiveMessage = new Subject<[Message, User, Chat]>();
 
     /**
      * Constructor
@@ -31,8 +32,8 @@ export class ChatService
         this._connection.onclose(async () => {
             await this._connection.start();
         });
-        this._connection.on("ReceiveMessage", (message: Message) => {
-            this._receiveMessage.next(message);
+        this._connection.on("ReceiveMessage", (message: Message, user: User, chat: Chat) => {
+            this._receiveMessage.next([message, user, chat]);
         });
         this._connection.start();
     }
@@ -82,6 +83,22 @@ export class ChatService
     }
 
     /**
+     * Set chat
+     *
+     * @param chat
+     */
+    setChat(chat: Chat): Observable<Chat[]> {
+        return this._chats
+            .pipe(
+                tap((chats: Chat[]) => {
+                    if (!chats.find((c: Chat) => c.chatId == chat.chatId)) {
+                        chats.unshift(chat)
+                    }
+                })
+            );
+    }
+
+    /**
      * Reset chat
      */
     resetChat(): void {
@@ -98,19 +115,21 @@ export class ChatService
     }
 
     /**
-     * Broadcast message
+     * Send message
      *
      * @param message
      * @param userId
+     * @param user
+     * @param chat
      */
-    sendMessage(message: Message, userId: string): void {
-        this._connection.invoke('Send', message, userId.toString());
+    sendMessage(message: Message, userId: string, user: User, chat: Chat): void {
+        this._connection.invoke('Send', message, userId.toString(), user, chat);
     }
 
     /**
      * Receive mapped object
      */
-    receiveMessage(): Observable<Message> {
+    receiveMessage(): Observable<[Message, User, Chat]> {
         return this._receiveMessage.asObservable();
     }
 

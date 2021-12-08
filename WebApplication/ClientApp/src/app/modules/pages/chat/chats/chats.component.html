@@ -8,7 +8,7 @@
         <mat-drawer-content class="flex overflow-hidden">
 
             <!-- Chats list -->
-            <ng-container *ngIf="chats && chats.length > 0; else noChats">
+            <ng-container *ngIf="chats && chats.length > 0 || selectedChat; else noChats">
                 <div
                     class="relative flex flex-auto flex-col w-full min-w-0 lg:min-w-100 lg:max-w-100 bg-card dark:bg-transparent"
                     [ngClass]="{ 'hidden lg:flex' : selectedChat }">
@@ -56,7 +56,7 @@
 
                     <!-- Chats -->
                     <div class="flex-auto overflow-y-auto">
-                        <ng-container *ngIf="filteredChats.length > 0; else noChats">
+                        <ng-container *ngIf="filteredChats && filteredChats.length; else noChats">
                             <ng-container *ngFor="let chat of filteredChats; trackBy: trackByFn">
                                 <div
                                     class="z-20 flex items-center py-5 px-8 cursor-pointer border-b"
@@ -104,13 +104,11 @@
             </ng-container>
 
             <!-- Conversation -->
-            <ng-container *ngIf="chats && chats.length > 0">
-                <ng-container *ngIf="selectedChat; else selectChatOrStartNew">
-                    <chat-conversation
-                        class="hidden lg:block w-full border-l"
-                        [ngClass]="{ 'block': selectedChat, 'hidden lg:block': !selectedChat }"
-                        [user]="user"></chat-conversation>
-                </ng-container>
+            <ng-container *ngIf="selectedChat; else selectConversation">
+                <chat-conversation
+                    class="hidden lg:block w-full border-l"
+                    [ngClass]="{ 'block': selectedChat, 'hidden lg:block': !selectedChat }"
+                    [user]="user"></chat-conversation>
             </ng-container>
 
         </mat-drawer-content>
@@ -121,20 +119,24 @@
 
 <!-- No chats template -->
 <ng-template #noChats>
-    <div class="flex flex-auto flex-col items-center justify-center h-full">
-        <mat-icon
-            class="icon-size-24"
-            [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
-        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.no-chats' | translate }}</div>
-    </div>
+    <ng-container *ngIf="(!filteredChats || !filteredChats.length)">
+        <div class="flex flex-auto flex-col items-center justify-center h-full">
+            <mat-icon
+                class="icon-size-24"
+                [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.no-chats' | translate }}</div>
+        </div>
+    </ng-container>
 </ng-template>
 
 <!-- Select chat or start new template -->
-<ng-template #selectChatOrStartNew>
-    <div class="flex flex-col flex-auto hidden lg:flex items-center justify-center bg-gray-100 dark:bg-transparent">
-        <mat-icon
-            class="icon-size-24"
-            [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
-        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.select' | translate }}</div>
-    </div>
+<ng-template #selectConversation>
+    <ng-container *ngIf="chats && chats.length > 0">
+        <div class="flex flex-col flex-auto hidden lg:flex items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon
+                class="icon-size-24"
+                [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">{{ 'chat.select' | translate }}</div>
+        </div>
+    </ng-container>
 </ng-template>

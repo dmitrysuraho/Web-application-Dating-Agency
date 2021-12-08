@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { FuseAlertModule } from "@fuse/components/alert";
 import { SharedModule } from 'app/shared/shared.module';
 import { chatRoutes } from './chat.routing';
 import { ChatComponent } from './chat.component';
@@ -32,7 +33,8 @@ import { ConversationComponent } from './conversation/conversation.component';
         MatSidenavModule,
         SharedModule,
         MatProgressSpinnerModule,
-        TranslateModule
+        TranslateModule,
+        FuseAlertModule
     ]
 })
 export class ChatModule

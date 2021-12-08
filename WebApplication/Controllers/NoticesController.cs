@@ -4,23 +4,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using WebApplication.Core.Filters;
-using WebApplication.Core.Hubs;
 using WebApplication.Models;
 
 namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
-    public class ChatsController : Controller
+    public class NoticesController : Controller
     {
         private readonly UsersRepository _usersRepository;
-        private readonly ChatsRepository _chatsRepository;
+        private readonly NoticesRepository _noticesRepository;
 
-        public ChatsController(ApplicationContext context)
+        public NoticesController(ApplicationContext context)
         {
             _usersRepository = new UsersRepository(context);
-            _chatsRepository = new ChatsRepository(context);
+            _noticesRepository = new NoticesRepository(context);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -28,43 +26,34 @@ namespace WebApplication.Controllers
         public IActionResult Get()
         {
             User currentUser = _GetCurrentUser();
-            return Json(_chatsRepository.GetChats(currentUser.UserId));
+            return Json(_noticesRepository.GetNotices(currentUser.UserId));
         }
 
         [TypeFilter(typeof(AuthFilter))]
-        [Route("{id:int}")]
-        [HttpGet]
-        public IActionResult Get(int id)
+        [HttpPut]
+        public IActionResult Put()
         {
             User currentUser = _GetCurrentUser();
-            var chat = _chatsRepository.GetChat(currentUser.UserId, id);
-            if (chat == null)
-            {
-                return NotFound(new { message = "Chat is not found" });
-            }
-            else
-            {
-                return Json(chat);
-            }
+            _noticesRepository.ReadNotices(currentUser.UserId);
+            return Json(new { message = "Notices have been read" });
         }
 
         [TypeFilter(typeof(AuthFilter))]
         [Route("{id:int}")]
         [HttpPut]
-        public IActionResult Put(int id)
+        public IActionResult Put(int id, [FromBody] bool isRead)
         {
-            User currentUser = _GetCurrentUser();
-            _chatsRepository.ReadMessages(currentUser.UserId, id);
-            return Json(new { message = "Messages have been read" });
+            _noticesRepository.ReadNotice(id, isRead);
+            return Json(new { message = "Notice has been read" });
         }
 
         [TypeFilter(typeof(AuthFilter))]
-        [HttpPost]
-        public IActionResult Post([FromBody] int id)
+        [Route("{id:int}")]
+        [HttpDelete]
+        public IActionResult Delete(int id)
         {
-            User currentUser = _GetCurrentUser();
-            Chat chat = _chatsRepository.CreateOrGetChat(currentUser.UserId, id);
-            return Json(new { chatId = chat.ChatId });
+            _noticesRepository.DeleteNotice(id);
+            return Json(new { message = "Notice has been deleted" });
         }
 
         private User _GetCurrentUser()

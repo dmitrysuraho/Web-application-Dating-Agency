@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Chat, Message } from '../chat.types';
 import { ChatService } from '../chat.service';
@@ -51,8 +51,8 @@ export class ChatsComponent implements OnInit, OnDestroy
                     this._activatedRoute.queryParamMap
                         .pipe(
                             tap((params: ParamMap) => {
-                                if (params.get('id')) {
-                                    this.selectChat(chats?.find((chat: Chat) => chat.chatId == params.get('id')));
+                                if (params.get('id') && chats) {
+                                    this.selectChat(chats.find((chat: Chat) => chat.chatId == params.get('id')));
                                 }
                             })
                         )),
@@ -76,20 +76,53 @@ export class ChatsComponent implements OnInit, OnDestroy
 
         // Receive message
         this._chatService.receiveMessage()
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((message: Message) => {
-                this.chats = this.chats.map((chat: Chat) => {
-                    if (chat.chatId == message.chatId) {
-                        chat.lastMessage = message;
+            .pipe(
+                switchMap(([message, user, chat]: [Message, User, Chat]) => {
+                    if (user && chat) {
+                        if (user.userId == this.user.userId) {
+                            chat.lastMessage = message;
+                            if (message.userId != this.user.userId && (!this.selectedChat || message.chatId != this.selectedChat.chatId)) {
+                                chat.unreadCount = 1;
+                            }
+                            this.chats.unshift(chat);
+                            return this._chatService.setChat(chat);
+                        } else {
+                            const newChat: Chat = {
+                                chatId: message.chatId,
+                                member: user,
+                                lastMessage: message,
+                                unreadCount: (!this.selectedChat || message.chatId != this.selectedChat.chatId) ? 1 : 0
+                            }
+                            this.chats.unshift(newChat);
+                            return this._chatService.setChat(newChat);
+                        }
+                    } else {
+                        this.chats = this.chats.map((chat: Chat) => {
+                            if (chat.chatId == message.chatId) {
+                                chat.lastMessage = message;
+                            }
+                            if (chat.chatId != this.selectedChat?.chatId &&
+                                chat.chatId == message.chatId &&
+                                message.userId != this.user.userId) {
+                                chat.unreadCount++;
+                            }
+                            return chat;
+                        }).sort(function(a,b) {
+                            if (a.lastMessage.createdAt > b.lastMessage.createdAt) {
+                                return -1;
+                            }
+                            if (a.lastMessage.createdAt < b.lastMessage.createdAt) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+                        this.filteredChats = this.chats;
+                        return of();
                     }
-                    if (chat.chatId != this.selectedChat?.chatId &&
-                        chat.chatId == message.chatId &&
-                        message.userId != this.user.userId) {
-                        chat.unreadCount++;
-                    }
-                    return chat;
-                });
-            });
+                }),
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe();
     }
 
     /**

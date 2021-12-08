@@ -102,7 +102,7 @@
                                     <!-- Message -->
                                     <div
                                         class="min-w-4 leading-5">
-                                        {{ message.messageText }}
+                                        {{message.messageText}}
                                     </div>
                                 </div>
                                 <!-- Time -->
@@ -123,19 +123,19 @@
 
                 <!-- Message field -->
                 <form
-                    *ngIf="!chat.member.isBlocked && !chat.member.isYouBlocked"
+                    *ngIf="!chat.member.isBlocked && !chat.member.isYouBlocked; else blocked"
                     class="flex items-end p-4 border-t bg-gray-50 dark:bg-transparent"
                     [formGroup]="sendForm">
-                    <div class="flex items-center h-11 my-px">
-                        <button mat-icon-button>
-                            <mat-icon [svgIcon]="'heroicons_outline:emoji-happy'"></mat-icon>
-                        </button>
-                        <button
-                            class="ml-0.5"
-                            mat-icon-button>
-                            <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
-                        </button>
-                    </div>
+<!--                    <div class="flex items-center h-11 my-px">-->
+<!--                        <button mat-icon-button>-->
+<!--                            <mat-icon [svgIcon]="'heroicons_outline:emoji-happy'"></mat-icon>-->
+<!--                        </button>-->
+<!--                        <button-->
+<!--                            class="ml-0.5"-->
+<!--                            mat-icon-button>-->
+<!--                            <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>-->
+<!--                        </button>-->
+<!--                    </div>-->
                     <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded fuse-mat-bold w-full ml-4">
                         <textarea
                             class="min-h-5 my-0 resize-none"
@@ -150,10 +150,16 @@
                     <div class="flex items-center h-11 my-px ml-4">
                         <button
                             mat-icon-button
+                            [disabled]="isSending"
                             (click)="send(null)">
                             <mat-icon
+                                *ngIf="!isSending"
                                 class="transform rotate-90"
                                 [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
+                            <mat-progress-spinner
+                                *ngIf="isSending"
+                                [diameter]="24"
+                                [mode]="'indeterminate'"></mat-progress-spinner>
                         </button>
                     </div>
                 </form>
@@ -162,6 +168,18 @@
 
         </mat-drawer-container>
     </ng-container>
+
+    <!-- Blocked -->
+    <ng-template #blocked>
+        <fuse-alert
+            class="text-center"
+            [appearance]="'soft'"
+            [showIcon]="false"
+            [type]="'error'"
+            [isContentCentered]="true">
+            {{ 'chat.block-alert' | translate }}
+        </fuse-alert>
+    </ng-template>
 
     <!-- Spinner -->
     <ng-template #spinner>

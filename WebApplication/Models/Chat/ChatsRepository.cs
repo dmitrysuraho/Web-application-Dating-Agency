@@ -17,8 +17,8 @@ namespace WebApplication.Models
         public Chat CreateOrGetChat(int currentId, int id)
         {
             Chat chat =_context.Chats.FirstOrDefault(prop =>
-                _context.Members.FirstOrDefault(p => p.UserId == currentId && p.ChatId == prop.ChatId).ChatId ==
-                _context.Members.FirstOrDefault(p => p.UserId == id && p.ChatId == prop.ChatId).ChatId
+                _context.Members.FirstOrDefault(p => p.UserId == currentId && p.ChatId == prop.ChatId) != null &&
+                _context.Members.FirstOrDefault(p => p.UserId == id && p.ChatId == prop.ChatId) != null
             );
             if (chat == null)
             {
@@ -36,16 +36,13 @@ namespace WebApplication.Models
 
         public object[] GetChats(int currentId)
         {
-            return _context.Chats.Where(prop =>
-                    _context.Members.FirstOrDefault(p => p.UserId == currentId && p.ChatId == prop.ChatId) != null //&&
-                    //_context.Messages.FirstOrDefault(p => p.ChatId == prop.ChatId) != null &&
-                    //_context.Chats.FirstOrDefault(p => p.UserId == currentId && p.ChatId == prop.ChatId) != null
-                )
+            return _context.Chats.ToList().Where(prop =>
+                    _context.Members.FirstOrDefault(p => p.UserId == currentId && p.ChatId == prop.ChatId) != null)
                 .Select(prop => new
                 {
                     chatId = prop.ChatId,
-                    member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == prop.ChatId) != null),
-                    lastMessage = _context.Messages.OrderByDescending(p => p.CreatedAt).FirstOrDefault(p => p.ChatId == prop.ChatId),
+                    member = GetMember(currentId, prop.ChatId),
+                    lastMessage = GetLastMessage(prop.ChatId),
                     unreadCount = _context.Messages.Count(p => p.ChatId == prop.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId && s.UserId == currentId && s.IsRead == false) != null)
                 })
                 .ToArray();
@@ -58,7 +55,7 @@ namespace WebApplication.Models
             return new
             {
                 chatId = chatId,
-                member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == chatId) != null),
+                member = GetMember(currentId, chatId),
                 messages = GetMessages(currentId, chatId),
                 unreadCount = _context.Messages.Count(p => p.ChatId == chat.ChatId && _context.Statuses.FirstOrDefault(s => s.MessageId == p.MessageId && s.UserId == currentId && s.IsRead == false) != null)
             };
@@ -91,15 +88,46 @@ namespace WebApplication.Models
             _context.SaveChanges();
         }
 
-        public object IsUserBlocked(int currentId, int chatId)
+        public object GetLastMessage(int chatId)
         {
-            //return _context.Blacklists.FirstOrDefault(prop => prop.UserId == currentUserId && prop.BlockedUser == userId)
-            return null;
+            Message lastMessage = _context.Messages.OrderByDescending(p => p.CreatedAt).FirstOrDefault(p => p.ChatId == chatId);
+            if (lastMessage == null) return null;
+            return new
+            {
+                messageId = lastMessage.MessageId,
+                messageText = lastMessage.MessageText,
+                createdAt = lastMessage.CreatedAt,
+                chatId = lastMessage.ChatId,
+                userId = lastMessage.UserId
+            };
         }
 
-        public bool IsChatCreator(int userId, int chatId)
+        public object GetMember(int currentId, int chatId)
         {
-            return _context.Chats.FirstOrDefault(prop => prop.UserId == userId && prop.ChatId == chatId) != null;
+            User member = _context.Users.FirstOrDefault(p => _context.Members.FirstOrDefault(m => m.UserId == p.UserId && m.UserId != currentId && m.ChatId == chatId) != null);
+            if (member == null) return null;
+            return new
+            {
+                userId = member.UserId,
+                name = member.Name,
+                photo = member.Photo,
+                isBlocked = IsUserBlocked(currentId, member.UserId),
+                isYouBlocked = IsYouBlocked(currentId, member.UserId)
+            };
+        }
+
+        public bool IsUserBlocked(int currentId, int userId)
+        {
+            Blacklist blacklist = _context.Blacklists.FirstOrDefault(prop => prop.UserId == currentId && prop.BlockedUser == userId);
+            if (blacklist == null) return false;
+            else return true;
+        }
+
+        public bool IsYouBlocked(int currentId, int userId)
+        {
+            Blacklist blacklist = _context.Blacklists.FirstOrDefault(prop => prop.UserId == userId && prop.BlockedUser == currentId);
+            if (blacklist == null) return false;
+            else return true;
         }
     }
 }

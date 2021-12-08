@@ -1,12 +1,12 @@
-export interface Notification
+export interface Notice
 {
-    id: string;
-    icon?: string;
-    image?: string;
+    noticeId?: string;
+    sender: string;
+    action: string;
+    isRead: boolean;
+    time: string;
     title?: string;
     description?: string;
-    time: string;
+    icon?: string;
     link?: string;
-    useRouter?: boolean;
-    read: boolean;
 }

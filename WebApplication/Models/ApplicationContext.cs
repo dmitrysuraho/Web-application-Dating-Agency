@@ -9,6 +9,7 @@ namespace WebApplication.Models
         public DbSet<Gallery> Galleries { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Notice> Notices { get; set; }
         public DbSet<Blacklist> Blacklists { get; set; }
         public DbSet<Dating> Datings { get; set; }
         public DbSet<Chat> Chats { get; set; }

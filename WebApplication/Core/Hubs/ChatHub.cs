@@ -10,7 +10,7 @@ namespace WebApplication.Core.Hubs
 {
     public class ChatHub : Hub
     {
-        public async Task Send(Message message, string id)
+        public async Task Send(Message message, string id, object user, object chat)
         {
             using (ApplicationContext _context = new ApplicationContext())
             {
@@ -23,7 +23,7 @@ namespace WebApplication.Core.Hubs
                     UserId = int.Parse(id)
                 });
                 _context.SaveChanges();
-                await Clients.Users(currentId.ToString(), id).SendAsync("ReceiveMessage", message);
+                await Clients.Users(currentId.ToString(), id).SendAsync("ReceiveMessage", message, user, chat);
             }
         }
 
