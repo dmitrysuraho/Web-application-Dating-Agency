@@ -188,6 +188,7 @@
     "chat.write-message": "Введите сообщение...",
     "chat.dont-be-shy": "Не стесняйтесь, напишите!",
     "chat.you": "Вы:",
+    "chat.image": "Изображение",
     "chat.no-chats": "Нет диалогов",
     "chat.select": "Выберите диалог",
     "chat.block-alert": "Отправка сообщений ограничена.",

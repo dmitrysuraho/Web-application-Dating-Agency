@@ -11,7 +11,7 @@ import {
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { of, Subject } from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Chat, Message } from '../chat.types';
@@ -19,6 +19,8 @@ import { ChatService } from '../chat.service';
 import { User } from "../../../../core/user/user.types";
 import { UserService } from "../../../../core/user/user.service";
 import { FuseSplashScreenService } from "../../../../../@fuse/services/splash-screen";
+import { UploadService } from "../../../../core/upload/upload.service";
+import {AngularFireStorageReference} from "@angular/fire/compat/storage";
 
 @Component({
     selector       : 'chat-conversation',
@@ -35,6 +37,8 @@ export class ConversationComponent implements OnInit, OnDestroy
     message: Message;
     isGettingChat: boolean;
     isSending: boolean;
+    srcFile: string;
+    image: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -49,7 +53,8 @@ export class ConversationComponent implements OnInit, OnDestroy
         private _activatedRoute: ActivatedRoute,
         private _route: Router,
         private _splashScreen: FuseSplashScreenService,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _upload: UploadService
     )
     {
     }
@@ -158,6 +163,28 @@ export class ConversationComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
 
     /**
+     * Add image
+     */
+    addImage(): void {
+        const inputNode: any = document.querySelector('#postImage');
+
+        if (typeof (FileReader) !== 'undefined') {
+            const reader = new FileReader();
+
+            reader.onload = (event: any) => {
+                this.srcFile = event.target.result;
+            };
+
+            const file: any = inputNode.files[0];
+
+            if (file) {
+                reader.readAsDataURL(file);
+                this.image = file;
+            }
+        }
+    }
+
+    /**
      * Reset the chat
      */
     resetChat(): void
@@ -186,7 +213,7 @@ export class ConversationComponent implements OnInit, OnDestroy
         const value: string = this.sendForm.get('send').value;
 
         // Check input if empty
-        if(value && value.trim()) {
+        if((value && value.trim()) || this.image) {
             // Set sending
             this.isSending = true;
 
@@ -212,14 +239,34 @@ export class ConversationComponent implements OnInit, OnDestroy
             const chat: Chat = !this.chat.messages.length ? this.chat : null;
 
             // Send message
-            this._chatService.sendMessage(this.message, this.chat.member.userId, user, chat);
+            if (this.srcFile) {
+                this._upload.uploadMessage(this.message, this.image, this.chat.member.userId, user, chat, this.chat)
+                    .then((reference: Observable<AngularFireStorageReference>) => {
+                        reference
+                            .pipe(takeUntil(this._unsubscribeAll))
+                            .subscribe();
+                    });
+            } else {
+                this._chatService.sendMessage(this.message, this.chat.member.userId, user, chat);
+            }
         }
 
         // Reset form
         this.sendForm.reset();
 
+        // Clear image section
+        this.deleteImage();
+
         // Resize form
         this._resizeMessageInput();
+    }
+
+    /**
+     * Delete image
+     */
+    deleteImage(): void {
+        this.srcFile = null;
+        this.image = null;
     }
 
     /**

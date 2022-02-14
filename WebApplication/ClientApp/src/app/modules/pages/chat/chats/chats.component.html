@@ -91,7 +91,12 @@
                                             [class.text-primary]="chat.unreadCount"
                                             [class.dark:text-primary-500]="chat.unreadCount">
                                             <span *ngIf="chat.lastMessage.userId === user.userId">{{ 'chat.you' | translate }}</span>
-                                            {{chat.lastMessage.messageText}}
+                                            <ng-container *ngIf="chat.lastMessage?.messageImage">
+                                                {{ 'chat.image' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngIf="!chat.lastMessage?.messageImage">
+                                                {{ chat.lastMessage.messageText }}
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>

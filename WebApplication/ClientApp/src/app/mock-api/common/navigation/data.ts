@@ -33,13 +33,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon : 'heroicons_outline:star',
         link : '/favorites'
     },
-    // {
-    //     id   : 'calendar',
-    //     title: 'navigation.calendar',
-    //     type : 'basic',
-    //     icon : 'heroicons_outline:calendar',
-    //     link : '/calendar'
-    // },
+    {
+        id   : 'calendar',
+        title: 'navigation.calendar',
+        type : 'basic',
+        icon : 'heroicons_outline:calendar',
+        link : '/calendar'
+    },
     {
         id   : 'settings',
         title: 'navigation.settings',
@@ -77,13 +77,13 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         icon : 'heroicons_outline:star',
         link : '/favorites'
     },
-    // {
-    //     id   : 'calendar',
-    //     title: 'navigation.calendar',
-    //     type : 'basic',
-    //     icon : 'heroicons_outline:chart-pie',
-    //     link : '/calendar'
-    // },
+    {
+        id   : 'calendar',
+        title: 'navigation.calendar',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/calendar'
+    },
     {
         id   : 'settings',
         title: 'navigation.settings',

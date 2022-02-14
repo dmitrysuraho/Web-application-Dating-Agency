@@ -1,12 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { AngularFireStorage } from "@angular/fire/compat/storage";
+import {AngularFireStorage, AngularFireStorageReference} from "@angular/fire/compat/storage";
 import { Router } from "@angular/router";
 import { Observable, of, Subject } from "rxjs";
 import { catchError, switchMap, takeUntil, tap } from "rxjs/operators";
 import { UserService } from "../user/user.service";
 import { User } from "../user/user.types";
 import { Post } from "../user/post.types";
-import { GalleryDialogComponent } from "../../modules/pages/profile/gallery/gallery-dialog/gallery-dialog.component";
+import { Chat, Message } from "../../modules/pages/chat/chat.types";
+import { ChatService } from "../../modules/pages/chat/chat.service";
 
 @Injectable({
     providedIn: 'root'
@@ -21,6 +22,7 @@ export class UploadService implements OnDestroy {
     constructor(
         private _fireStorage: AngularFireStorage,
         private _userService: UserService,
+        private _chatService: ChatService,
         private _route: Router)
     {
     }
@@ -218,5 +220,43 @@ export class UploadService implements OnDestroy {
         } else {
             return this._userService.deletePost(id);
         }
+    }
+
+    /**
+     * Upload post image
+     *
+     * @param message
+     * @param file
+     * @param userId
+     * @param user
+     * @param chat
+     * @param currentChar
+     */
+    uploadMessage(message: Message, file: File, userId: string, user: User, chat: Chat, currentChar: Chat): Promise<Observable<AngularFireStorageReference>> {
+        // Create path
+        const path: string = `images/chats/${currentChar.chatId}/${Date.now()}.${file.type.substr(6)}`;
+
+        // Upload file to storage
+        return this._fireStorage.upload(path, file)
+            .then(() =>
+                // Get image url
+                this._fireStorage.ref(path)
+                    .getDownloadURL()
+                    .pipe(
+                        tap((image: string) => {
+                            message.messageImage = image;
+                            this._chatService.sendMessage(message, userId, user, chat);
+                        }),
+                        catchError((error) => {
+                            console.log(error);
+                            this._route.navigateByUrl('internal-error');
+                            return of(null);
+                        })
+                    )
+            )
+            .catch((error) => {
+                console.log(error);
+                this._route.navigateByUrl('internal-error');
+            });
     }
 }

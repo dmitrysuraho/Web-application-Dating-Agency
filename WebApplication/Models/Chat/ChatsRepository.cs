@@ -68,6 +68,7 @@ namespace WebApplication.Models
                                     {
                                         messageId = prop.MessageId,
                                         messageText = prop.MessageText,
+                                        messageImage = prop.MessageImage,
                                         chatId = prop.ChatId,
                                         userId = prop.UserId,
                                         isMine = prop.UserId == currentId,
@@ -96,6 +97,7 @@ namespace WebApplication.Models
             {
                 messageId = lastMessage.MessageId,
                 messageText = lastMessage.MessageText,
+                messageImage = lastMessage.MessageImage,
                 createdAt = lastMessage.CreatedAt,
                 chatId = lastMessage.ChatId,
                 userId = lastMessage.UserId

@@ -13,6 +13,7 @@ export interface Message
 {
     messageId?: string;
     messageText?: string;
+    messageImage?: string;
     chatId?: string;
     userId?: string;
     isMine?: boolean;

@@ -187,6 +187,7 @@
     "chat.write-message": "Write a message...",
     "chat.dont-be-shy": "Don't be shy, write!",
     "chat.you": "You:",
+    "chat.image": "Image",
     "chat.no-chats": "No chats",
     "chat.select": "Select a conversation",
     "chat.block-alert": "Message sending is limited.",
