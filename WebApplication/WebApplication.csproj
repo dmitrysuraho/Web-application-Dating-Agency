@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
     <PackageReference Include="FirebaseAdmin" Version="2.2.0" />
+    <PackageReference Include="NuGet.PackageManagement" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +29,7 @@
     <Folder Include="Models\Chat\" />
     <Folder Include="Core\Providers\" />
     <Folder Include="Models\Notices\" />
+    <Folder Include="Models\Calendar\" />
   </ItemGroup>
   
   <ItemGroup>
@@ -45,6 +47,8 @@
     <None Remove="Models\Chat\" />
     <None Remove="Core\Providers\" />
     <None Remove="Models\Notices\" />
+    <None Remove="Models\Calendar\" />
+    <None Remove="NuGet.PackageManagement" />
   </ItemGroup>
 <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from "@ngx-translate/core";
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Chat, Message } from './chat.types';
 import { AuthService } from "../../../core/auth/auth.service";
 import { User } from "../../../core/user/user.types";
+import { NavigationService } from "../../../core/navigation/navigation.service";
+import { CalendarService } from "../calendar/calendar.service";
 
 @Injectable({
     providedIn: 'root'
@@ -19,13 +22,17 @@ export class ChatService
         .configureLogging(signalR.LogLevel.Information)
         .build();
     private _receiveMessage = new Subject<[Message, User, Chat]>();
+    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
     constructor(
         private _httpClient: HttpClient,
-        private _authService: AuthService
+        private _authService: AuthService,
+        private _translateService: TranslateService,
+        private _navigationService: NavigationService,
+        private _calendarService: CalendarService
     )
     {
         // Connection SignalR

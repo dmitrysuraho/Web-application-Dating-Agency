@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { registerLocaleData } from "@angular/common";
+import { TranslateService } from "@ngx-translate/core";
 import localeRu from "@angular/common/locales/ru-BY";
 import localeEn from "@angular/common/locales/en-GB";
-import { takeUntil} from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { ChatService } from "./chat.service";
 import { Chat } from "./chat.types";
+import { Navigation } from "../../../core/navigation/navigation.types";
+import { NavigationService } from "../../../core/navigation/navigation.service";
+import { CalendarService } from "../calendar/calendar.service";
 
 @Component({
     selector       : 'chat',
@@ -24,7 +28,11 @@ export class ChatComponent implements OnInit, OnDestroy
     constructor(
         private _splashScreen: FuseSplashScreenService,
         private _chatService: ChatService,
-        private _activatedRoute: ActivatedRoute)
+        private _activatedRoute: ActivatedRoute,
+        private _navigationService: NavigationService,
+        private _calendarService: CalendarService,
+        private _translateService: TranslateService
+    )
     {
     }
 
@@ -62,6 +70,7 @@ export class ChatComponent implements OnInit, OnDestroy
                         }
                         return 0;
                     });
+
                 this._splashScreen.hide();
             });
     }

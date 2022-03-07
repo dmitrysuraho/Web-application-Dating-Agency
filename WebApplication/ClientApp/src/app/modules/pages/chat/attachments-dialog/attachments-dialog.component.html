@@ -1,0 +1,13 @@
+<div mat-dialog-content>
+    <carousel
+        [isAnimated]="false"
+        [showIndicators]="false"
+        [interval]="0">
+        <slide *ngFor="let image of data.images;">
+            <img
+                class="w-full h-full object-cover"
+                alt="slide"
+                [src]="image">
+        </slide>
+    </carousel>
+</div>

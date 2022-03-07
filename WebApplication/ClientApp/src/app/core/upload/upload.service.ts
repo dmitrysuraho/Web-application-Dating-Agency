@@ -1,13 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import {AngularFireStorage, AngularFireStorageReference} from "@angular/fire/compat/storage";
-import { Router } from "@angular/router";
-import { Observable, of, Subject } from "rxjs";
-import { catchError, switchMap, takeUntil, tap } from "rxjs/operators";
-import { UserService } from "../user/user.service";
-import { User } from "../user/user.types";
-import { Post } from "../user/post.types";
-import { Chat, Message } from "../../modules/pages/chat/chat.types";
-import { ChatService } from "../../modules/pages/chat/chat.service";
+import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/compat/storage';
+import { Router } from '@angular/router';
+import { ListResult, Reference } from '@angular/fire/compat/storage/interfaces';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { UserService } from '../user/user.service';
+import { User } from '../user/user.types';
+import { Post } from '../user/post.types';
+import { Chat, Message } from '../../modules/pages/chat/chat.types';
+import { ChatService } from '../../modules/pages/chat/chat.service';
 
 @Injectable({
     providedIn: 'root'
@@ -258,5 +259,29 @@ export class UploadService implements OnDestroy {
                 console.log(error);
                 this._route.navigateByUrl('internal-error');
             });
+    }
+
+    /**
+     * Get chat attachments
+     *
+     * @param url
+     */
+    getChatAttachments(url: string): Observable<string[]> {
+        return this._fireStorage.ref(url)
+            .listAll()
+            .pipe(
+                switchMap((result: ListResult) => {
+                    const images: string[] = [];
+                    result.items.map((ref: Reference) => {
+                        this._fireStorage.ref(ref.fullPath)
+                            .getDownloadURL()
+                            .pipe(
+                                tap((image: string) => images.push(image))
+                            )
+                            .subscribe();
+                    });
+                    return of(images);
+                })
+            );
     }
 }

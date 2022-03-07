@@ -1,11 +1,16 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
 import { of, Subject } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Chat, Message } from '../chat.types';
 import { ChatService } from '../chat.service';
 import { User } from "../../../../core/user/user.types";
 import { UserService } from "../../../../core/user/user.service";
+import { Navigation } from "../../../../core/navigation/navigation.types";
+import { CalendarService } from "../../calendar/calendar.service";
+import { NavigationService } from "../../../../core/navigation/navigation.service";
+import moment from "moment";
 
 @Component({
     selector       : 'chat-chats',
@@ -30,7 +35,10 @@ export class ChatsComponent implements OnInit, OnDestroy
         private _chatService: ChatService,
         private _userService: UserService,
         private _activatedRoute: ActivatedRoute,
-        private _route: Router
+        private _route: Router,
+        private _calendarService: CalendarService,
+        private _navigationService: NavigationService,
+        private _translateService: TranslateService
     )
     {
     }
@@ -78,6 +86,7 @@ export class ChatsComponent implements OnInit, OnDestroy
         this._chatService.receiveMessage()
             .pipe(
                 switchMap(([message, user, chat]: [Message, User, Chat]) => {
+                    this._setNavigationSubtitles();
                     if (user && chat) {
                         if (user.userId == this.user.userId) {
                             chat.lastMessage = message;
@@ -149,7 +158,10 @@ export class ChatsComponent implements OnInit, OnDestroy
         this.selectedChat = chat;
 
         // Read all messages
-        if (chat) this.selectedChat.unreadCount = 0;
+        if (chat) {
+            this.selectedChat.unreadCount = 0;
+            this._setNavigationSubtitles();
+        }
     }
 
     /**
@@ -178,5 +190,60 @@ export class ChatsComponent implements OnInit, OnDestroy
     trackByFn(index: number, item: any): any
     {
         return item.id || index;
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Set message notifications
+     *
+     * @private
+     */
+    private _setNavigationSubtitles(): void {
+        this._calendarService.getEventsForNav(moment(), moment())
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(events => {
+                this._navigationService.get()
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe((navigation: Navigation) => {
+                        if (this.chats) {
+                            let countEvents = 0;
+                            let countMessages = 0;
+                            const defaultCalendar = navigation.default.find(item => item.id == 'calendar');
+                            const horizontalCalendar = navigation.horizontal.find(item => item.id == 'calendar');
+                            const defaultChat = navigation.default.find(item => item.id == 'chat');
+                            const horizontalChat = navigation.horizontal.find(item => item.id == 'chat');
+                            events.map(event => {
+                                const now = new Date();
+                                const start = new Date(event.start);
+                                const diffDate = start.getDate() - now.getDate();
+                                const diffMonth = start.getMonth() - now.getMonth();
+                                if ((start > now) && (diffDate > 0 && diffDate <= 7 && diffMonth === 0)) {
+                                    countEvents++;
+                                }
+                                return event;
+                            });
+                            this.chats.map((chat: Chat) => {
+                                if (chat?.unreadCount) {
+                                    countMessages++;
+                                }
+                                return chat;
+                            });
+                            defaultCalendar.subtitle = this._translateService.instant('calendar.upcoming-events', { count: countEvents });
+                            horizontalCalendar.badge = {
+                                title  : countEvents.toString(),
+                                classes: 'ml-2 px-2 bg-pink-600 text-white rounded-full'
+                            };
+                            if (countMessages) {
+                                defaultChat.badge = horizontalChat.badge = {
+                                    title  : countMessages.toString(),
+                                    classes: 'ml-2 px-2 bg-pink-600 text-white rounded-full'
+                                };
+                            }
+                        }
+                    });
+            });
     }
 }

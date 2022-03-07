@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -13,7 +14,7 @@ import { FuseDateRangeComponent } from '@fuse/components/date-range/date-range.c
     declarations: [
         FuseDateRangeComponent
     ],
-    imports     : [
+    imports: [
         CommonModule,
         ReactiveFormsModule,
         MatButtonModule,
@@ -21,7 +22,8 @@ import { FuseDateRangeComponent } from '@fuse/components/date-range/date-range.c
         MatFormFieldModule,
         MatInputModule,
         MatIconModule,
-        MatMomentDateModule
+        MatMomentDateModule,
+        TranslateModule
     ],
     exports     : [
         FuseDateRangeComponent

@@ -37,6 +37,13 @@ namespace WebApplication.Models
                 Email = true,
                 Security = true
             });
+            _context.Settings.Add(new Settings
+            {
+                DateFormat = "ll",
+                TimeFormat = "24",
+                StartWeekOn = 1,
+                User = user
+            });
             _context.SaveChanges();
             return true;
         }

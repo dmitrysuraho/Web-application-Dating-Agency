@@ -16,6 +16,9 @@ namespace WebApplication.Models
         public DbSet<Member> Members { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Status> Statuses { get; set; }
+        public DbSet<Settings> Settings { get; set; }
+        public DbSet<Calendar> Calendars { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         public ApplicationContext() {}
 

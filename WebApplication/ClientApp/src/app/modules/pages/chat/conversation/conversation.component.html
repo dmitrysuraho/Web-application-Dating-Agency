@@ -40,9 +40,10 @@
                         <div class="ml-4 text-lg font-medium leading-5 truncate">{{chat.member.name}}</div>
                     </div>
 
-                    <button mat-icon-button>
-                        <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
-                    </button>
+<!--                    <button mat-icon-button>-->
+<!--                        <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>-->
+<!--                    </button>-->
+
 
                     <button
                         class="ml-auto"
@@ -50,13 +51,10 @@
                         [matMenuTriggerFor]="conversationHeaderMenu">
                         <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
                         <mat-menu #conversationHeaderMenu>
-                            <button mat-menu-item>
+                            <button mat-menu-item
+                                    (click)="_showAttachments()">
                                 <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
-                                Show attachments
-                            </button>
-                            <button mat-menu-item>
-                                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                Delete chat
+                                {{ 'chat.show-attachments' | translate }}
                             </button>
                         </mat-menu>
                     </button>

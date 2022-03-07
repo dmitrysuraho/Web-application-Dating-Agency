@@ -1,10 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { DateAdapter } from '@angular/material/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDrawer } from '@angular/material/sidenav';
+import { TranslateService } from '@ngx-translate/core';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Calendar as FullCalendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -23,6 +25,10 @@ import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { CalendarRecurrenceComponent } from 'app/modules/pages/calendar/recurrence/recurrence.component';
 import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
 import { Calendar, CalendarDrawerMode, CalendarEvent, CalendarEventEditMode, CalendarEventPanelMode, CalendarSettings } from 'app/modules/pages/calendar/calendar.types';
+import { NavigationService } from 'app/core/navigation/navigation.service';
+import { Navigation } from 'app/core/navigation/navigation.types';
+import { Chat } from "../chat/chat.types";
+import { ChatService } from "../chat/chat.service";
 
 @Component({
     selector       : 'calendar',
@@ -51,6 +57,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
     view: 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay' | 'listYear' = 'dayGridMonth';
     views: any;
     viewTitle: string;
+    navigation: Navigation;
     private _eventPanelOverlayRef: OverlayRef;
     private _fullCalendarApi: FullCalendar;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -67,7 +74,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         private _overlay: Overlay,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _viewContainerRef: ViewContainerRef,
-        private _splashScreen: FuseSplashScreenService
+        private _splashScreen: FuseSplashScreenService,
+        private _navigationService: NavigationService,
+        private _translateService: TranslateService,
+        private _dateAdapter: DateAdapter<any>,
+        private _chatService: ChatService
     )
     {
     }
@@ -75,6 +86,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Get lang
+     */
+    get getLang(): string {
+        return this._translateService.currentLang === 'ru' ? 'ru-BY' : 'en-GB';
+    }
 
     /**
      * Getter for event's recurrence status
@@ -107,6 +125,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Set locale for dates
+        moment.locale(this.getLang);
+
+        // Splash screen
+        this._splashScreen.show();
+        setTimeout(() => this._splashScreen.hide(), 1000);
+
         // Create the event form
         this.eventForm = this._formBuilder.group({
             id              : [''],
@@ -181,10 +206,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         this._calendarService.events$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((events) => {
-
                 // Clone the events to change the object reference so
                 // that the FullCalendar can trigger a re-render.
                 this.events = cloneDeep(events);
+
+                // Check upcoming events
+                this._setNavigationSubtitles();
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -253,16 +280,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
             timeGridWeek: {},
             timeGridDay : {},
             listYear    : {
-                allDayText      : 'All day',
+                allDayText      : this._translateService.instant('calendar.all-day'),
                 eventTimeFormat : this.eventTimeFormat,
                 listDayFormat   : false,
                 listDayAltFormat: false
             }
         };
-
-        // Splash screen
-        this._splashScreen.show();
-        setTimeout(() => this._splashScreen.hide(), 1000);
     }
 
     /**
@@ -274,7 +297,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         this._fullCalendarApi = this._fullCalendar.getApi();
 
         // Get the current view's title
-        this.viewTitle = this._fullCalendarApi.view.title;
+        this._setViewTitle();
 
         // Get the view's current start and end dates, add/subtract
         // 60 days to create a ~150 days period to fetch the data for
@@ -410,7 +433,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
             this._fullCalendarApi.changeView(view);
 
             // Update the view title
-            this.viewTitle = this._fullCalendarApi.view.title;
+            this._setViewTitle();
         }
     }
 
@@ -423,13 +446,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         this._fullCalendarApi.prev();
 
         // Update the view title
-        this.viewTitle = this._fullCalendarApi.view.title;
-
-        // Get the view's current start date
-        const start = moment(this._fullCalendarApi.view.currentStart);
-
-        // Prefetch past events
-        this._calendarService.prefetchPastEvents(start).subscribe();
+        this._setViewTitle();
     }
 
     /**
@@ -441,7 +458,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         this._fullCalendarApi.today();
 
         // Update the view title
-        this.viewTitle = this._fullCalendarApi.view.title;
+        this._setViewTitle();
     }
 
     /**
@@ -453,13 +470,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         this._fullCalendarApi.next();
 
         // Update the view title
-        this.viewTitle = this._fullCalendarApi.view.title;
-
-        // Get the view's current end date
-        const end = moment(this._fullCalendarApi.view.currentEnd);
-
-        // Prefetch future events
-        this._calendarService.prefetchFutureEvents(end).subscribe();
+        this._setViewTitle();
     }
 
     /**
@@ -469,6 +480,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
      */
     onDateClick(calendarEvent): void
     {
+        if (!this.calendars.length) return;
+        if (new Date() > calendarEvent.date) return;
+
         // Prepare the event
         const event = {
             id              : null,
@@ -513,7 +527,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
     onEventClick(calendarEvent): void
     {
         // Find the event with the clicked event's id
-        const event: any = cloneDeep(this.events.find(item => item.id === calendarEvent.event.id));
+        const event: any = cloneDeep(this.events.find(item => item.id == calendarEvent.event.id));
 
         // Set the event
         this.event = event;
@@ -584,7 +598,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
             // Set the event's title to '(No title)' if event title is not available
             if ( !calendarEvent.event.title )
             {
-                calendarEvent.el.querySelector('.fc-list-item-title').innerText = '(No title)';
+                calendarEvent.el.querySelector('.fc-list-item-title').innerText = `(${this._translateService.instant('calendar.no-title')})`;
             }
         }
         // If current view is not month list...
@@ -596,7 +610,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
             // Set the event's title to '(No title)' if event title is not available
             if ( !calendarEvent.event.title )
             {
-                calendarEvent.el.querySelector('.fc-title').innerText = '(No title)';
+                calendarEvent.el.querySelector('.fc-title').innerText = `(${this._translateService.instant('calendar.no-title')})`;
             }
         }
 
@@ -1012,5 +1026,66 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
 
         // If there are no UNTIL or COUNT, set the end date to a fixed value
         this.eventForm.get('end').setValue(moment().year(9999).endOf('year').toISOString());
+    }
+
+    /**
+     * Set view title
+     *
+     * @private
+     */
+    private _setViewTitle(): void {
+        this.viewTitle = this._fullCalendarApi.view.title;
+        this.viewTitle = this.viewTitle.charAt(0).toUpperCase() + this.viewTitle.slice(1);
+    }
+
+    /**
+     * Set calendar subtitle
+     *
+     * @private
+     */
+    private _setNavigationSubtitles(): void {
+        this._chatService.chats$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(chats => {
+                this._navigationService.get()
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe((navigation: Navigation) => {
+                        if (this.events) {
+                            let countEvents = 0;
+                            let countMessages = 0;
+                            const defaultCalendar = navigation.default.find(item => item.id == 'calendar');
+                            const horizontalCalendar = navigation.horizontal.find(item => item.id == 'calendar');
+                            const defaultChat = navigation.default.find(item => item.id == 'chat');
+                            const horizontalChat = navigation.horizontal.find(item => item.id == 'chat');
+                            this.events.map(event => {
+                                const now = new Date();
+                                const start = new Date(event.start);
+                                const diffDate = start.getDate() - now.getDate();
+                                const diffMonth = start.getMonth() - now.getMonth();
+                                if ((start > now) && (diffDate > 0 && diffDate <= 7 && diffMonth === 0)) {
+                                    countEvents++;
+                                }
+                                return event;
+                            });
+                            chats.map((chat: Chat) => {
+                                if (chat?.unreadCount) {
+                                    countMessages++;
+                                }
+                                return chat;
+                            });
+                            defaultCalendar.subtitle = this._translateService.instant('calendar.upcoming-events', { count: countEvents });
+                            horizontalCalendar.badge = {
+                                title  : countEvents.toString(),
+                                classes: 'ml-2 px-2 bg-pink-600 text-white rounded-full'
+                            };
+                            if (countMessages) {
+                                defaultChat.badge = horizontalChat.badge = {
+                                    title  : countMessages.toString(),
+                                    classes: 'ml-2 px-2 bg-pink-600 text-white rounded-full'
+                                };
+                            }
+                        }
+                    });
+            });
     }
 }

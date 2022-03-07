@@ -227,7 +227,7 @@ export class CalendarRecurrenceComponent implements OnInit, OnDestroy
                 nthWeekday: nthWeekday
             },
             end     : {
-                type : 'never',
+                type : 'until',
                 until: null,
                 count: null
             }

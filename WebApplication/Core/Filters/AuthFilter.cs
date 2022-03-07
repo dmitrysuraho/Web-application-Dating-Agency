@@ -37,7 +37,7 @@ namespace WebApplication.Core.Filters
                         _GetError(context, 403, "Forbidden");
                     }
                 }
-                catch(Exception error)
+                catch (Exception error)
                 {
                     _GetError(context, 401, error.Message);
                 }

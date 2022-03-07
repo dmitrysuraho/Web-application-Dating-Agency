@@ -1,11 +1,11 @@
 <div class="flex flex-col flex-auto min-h-full p-8">
-    <div class="pb-6 text-4xl font-extrabold tracking-tight">Calendar</div>
+    <div class="pb-6 text-4xl font-extrabold tracking-tight">{{ 'calendar.title' | translate }}</div>
 
     <!-- Calendars -->
     <div class="group flex items-center justify-between mb-3">
-        <span class="text-lg font-medium">Calendars</span>
+        <span class="text-lg font-medium">{{ 'calendar.sidebar.title' | translate }}</span>
         <mat-icon
-            class="hidden group-hover:inline-flex icon-size-5 cursor-pointer"
+            class="icon-size-5 cursor-pointer"
             [svgIcon]="'heroicons_solid:plus-circle'"
             (click)="addCalendar()"></mat-icon>
     </div>
@@ -32,10 +32,10 @@
     <!-- Settings -->
     <div class="-mx-4 mt-auto">
         <a
-            class="flex items-center w-full py-3 px-4 rounded-full hover:bg-hover"
+            class="flex items-center w-full py-3 px-4 rounded-full hover:bg-hover no-underline"
             [routerLink]="['settings']">
             <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
-            <span class="ml-2 font-medium leading-none">Settings</span>
+            <span class="ml-2 font-medium leading-none">{{ 'calendar.settings' | translate }}</span>
         </a>
     </div>
 
@@ -43,15 +43,15 @@
     <ng-template #editPanel>
         <div class="flex flex-col w-80 p-8 shadow-2xl rounded-lg bg-card">
             <div class="text-2xl font-semibold tracking-tight">
-                <ng-container *ngIf="!calendar.id">Add calendar</ng-container>
-                <ng-container *ngIf="calendar.id">Edit calendar</ng-container>
+                <ng-container *ngIf="!calendar.id">{{ 'calendar.add-calendar' | translate }}</ng-container>
+                <ng-container *ngIf="calendar.id">{{ 'calendar.edit-calendar' | translate }}</ng-container>
             </div>
             <div class="flex items-center mt-8">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <input
                         matInput
                         [(ngModel)]="calendar.title"
-                        [placeholder]="'Title'"
+                        [placeholder]="'calendar.title-placeholder' | translate"
                         required>
                     <mat-select
                         [(value)]="calendar.color"
@@ -60,7 +60,7 @@
                         <mat-select-trigger class="h-6">
                             <mat-icon [svgIcon]="'heroicons_outline:color-swatch'"></mat-icon>
                         </mat-select-trigger>
-                        <div class="px-4 pt-5 text-xl font-semibold">Calendar color</div>
+                        <div class="px-4 pt-5 text-xl font-semibold">{{ 'calendar.calendar-color' | translate }}</div>
                         <div class="flex flex-wrap w-48 my-4 mx-3 -mr-5">
                             <ng-container *ngFor="let color of calendarColors">
                                 <mat-option
@@ -87,7 +87,7 @@
                     mat-button
                     *ngIf="calendar.id"
                     (click)="deleteCalendar(calendar)">
-                    Delete
+                    {{ 'calendar.delete' | translate }}
                 </button>
                 <button
                     mat-flat-button
@@ -95,13 +95,13 @@
                     [color]="'primary'"
                     [disabled]="!calendar.title"
                     (click)="saveCalendar(calendar)">
-                    Update
+                    {{ 'calendar.update' | translate }}
                 </button>
                 <button
                     mat-button
                     *ngIf="!calendar.id"
                     (click)="closeEditPanel()">
-                    Cancel
+                    {{ 'calendar.cancel' | translate }}
                 </button>
                 <button
                     mat-flat-button
@@ -109,7 +109,7 @@
                     [color]="'primary'"
                     [disabled]="!calendar.title"
                     (click)="saveCalendar(calendar)">
-                    Add
+                    {{ 'calendar.add' | translate }}
                 </button>
             </div>
         </div>

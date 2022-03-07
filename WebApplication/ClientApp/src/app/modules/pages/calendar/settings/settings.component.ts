@@ -13,6 +13,7 @@ import { CalendarService } from 'app/modules/pages/calendar/calendar.service';
 export class CalendarSettingsComponent implements OnInit, OnDestroy
 {
     settingsForm: FormGroup;
+    isSaving: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -83,14 +84,16 @@ export class CalendarSettingsComponent implements OnInit, OnDestroy
 
     updateSettings(): void
     {
+        this.settingsForm.disable();
+        this.isSaving = true;
+
         // Get the settings
         const settings = this.settingsForm.value;
 
         // Update the settings on the server
         this._calendarService.updateSettings(settings).subscribe((updatedSettings) => {
-
-            // Reset the form with the updated settings
-            this.settingsForm.reset(updatedSettings);
+            this.settingsForm.enable();
+            this.isSaving = false;
         });
     }
 }

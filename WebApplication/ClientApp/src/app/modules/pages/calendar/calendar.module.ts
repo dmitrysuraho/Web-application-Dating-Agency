@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
@@ -16,6 +17,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { FuseDateRangeModule } from '@fuse/components/date-range';
 import { SharedModule } from 'app/shared/shared.module';
@@ -32,7 +34,7 @@ import { calendarRoutes } from 'app/modules/pages/calendar/calendar.routing';
         CalendarSettingsComponent,
         CalendarSidebarComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(calendarRoutes),
         ScrollingModule,
         MatButtonModule,
@@ -51,7 +53,9 @@ import { calendarRoutes } from 'app/modules/pages/calendar/calendar.routing';
         MatTooltipModule,
         FullCalendarModule,
         FuseDateRangeModule,
-        SharedModule
+        SharedModule,
+        MatProgressSpinnerModule,
+        TranslateModule
     ],
     providers   : [
         {

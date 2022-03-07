@@ -60,10 +60,10 @@
                                 (selectionChange)="changeView(viewChanger.value)"
                                 [value]="view"
                                 #viewChanger="matSelect">
-                                <mat-option [value]="'dayGridMonth'">Month</mat-option>
-                                <mat-option [value]="'timeGridWeek'">Week</mat-option>
-                                <mat-option [value]="'timeGridDay'">Day</mat-option>
-                                <mat-option [value]="'listYear'">Schedule</mat-option>
+                                <mat-option [value]="'dayGridMonth'">{{ 'calendar.month' | translate }}</mat-option>
+                                <mat-option [value]="'timeGridWeek'">{{ 'calendar.week' | translate }}</mat-option>
+                                <mat-option [value]="'timeGridDay'">{{ 'calendar.day' | translate }}</mat-option>
+                                <mat-option [value]="'listYear'">{{ 'calendar.schedule' | translate }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -81,13 +81,13 @@
                                     mat-menu-item
                                     (click)="today()">
                                     <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                                    <span>Go to today</span>
+                                    <span>{{ 'calendar.go-to-today' | translate }}</span>
                                 </button>
                                 <button
                                     [matMenuTriggerFor]="actionsViewsMenu"
                                     mat-menu-item>
                                     <mat-icon [svgIcon]="'heroicons_outline:view-grid'"></mat-icon>
-                                    <span>View</span>
+                                    <span>{{ 'calendar.view' | translate }}</span>
                                 </button>
                             </mat-menu>
 
@@ -96,25 +96,25 @@
                                     mat-menu-item
                                     [disabled]="view === 'dayGridMonth'"
                                     (click)="changeView('dayGridMonth')">
-                                    <span>Month</span>
+                                    <span>{{ 'calendar.month' | translate }}</span>
                                 </button>
                                 <button
                                     mat-menu-item
                                     [disabled]="view === 'timeGridWeek'"
                                     (click)="changeView('timeGridWeek')">
-                                    <span>Week</span>
+                                    <span>{{ 'calendar.week' | translate }}</span>
                                 </button>
                                 <button
                                     mat-menu-item
                                     [disabled]="view === 'timeGridDay'"
                                     (click)="changeView('timeGridDay')">
-                                    <span>Day</span>
+                                    <span>{{ 'calendar.day' | translate }}</span>
                                 </button>
                                 <button
                                     mat-menu-item
                                     [disabled]="view === 'listYear'"
                                     (click)="changeView('listYear')">
-                                    <span>Schedule</span>
+                                    <span>{{ 'calendar.schedule' | translate }}</span>
                                 </button>
                             </mat-menu>
                         </button>
@@ -124,6 +124,7 @@
                 <!-- FullCalendar -->
                 <div class="flex flex-col flex-auto">
                     <full-calendar
+                        [locale]="getLang"
                         [defaultView]="view"
                         [events]="events"
                         [firstDay]="settings.startWeekOn"
@@ -150,8 +151,8 @@
                                 <div class="flex flex-auto justify-between ml-6">
                                     <!-- Info -->
                                     <div>
-                                        <div class="text-3xl font-semibold tracking-tight leading-none">{{event.title || '(No title)'}}</div>
-                                        <div class="mt-0.5 text-secondary">{{event.start | date:'EEEE, MMMM d'}}</div>
+                                        <div class="text-3xl font-semibold tracking-tight leading-none">{{event.title || '(' + ('calendar.no-title' | translate) + ')'}}</div>
+                                        <div class="mt-0.5 text-secondary">{{event.start | date:'longDate': '': getLang}}</div>
                                         <div class="text-secondary">{{recurrenceStatus}}</div>
                                     </div>
                                     <!-- Actions -->
@@ -264,7 +265,7 @@
                                     <input
                                         matInput
                                         [formControlName]="'title'"
-                                        [placeholder]="'Event title'">
+                                        [placeholder]="'calendar.event-title-placeholder' | translate">
                                 </mat-form-field>
                             </div>
 
@@ -283,24 +284,8 @@
                                         class="mt-4"
                                         [color]="'primary'"
                                         [formControlName]="'allDay'">
-                                        All day
+                                        {{ 'calendar.all-day' | translate }}
                                     </mat-checkbox>
-                                </div>
-                            </div>
-
-                            <!-- Recurrence -->
-                            <div
-                                class="flex items-center mt-6"
-                                *ngIf="!event.recurrence || eventEditMode !== 'single'">
-                                <mat-icon
-                                    class="hidden sm:inline-flex mr-6 transform -scale-x-1"
-                                    [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
-                                <div
-                                    class="flex flex-auto items-center h-12 px-4 rounded-md border cursor-pointer shadow-sm border-gray-300 dark:bg-black dark:bg-opacity-5 dark:border-gray-500"
-                                    (click)="openRecurrenceDialog()">
-                                    <div class="flex-auto">
-                                        {{recurrenceStatus || 'Does not repeat'}}
-                                    </div>
                                 </div>
                             </div>
 
@@ -344,7 +329,7 @@
                                         matTextareaAutosize
                                         [matAutosizeMinRows]="1"
                                         [formControlName]="'description'"
-                                        [placeholder]="'Event description'">
+                                        [placeholder]="'calendar.event-description-placeholder' | translate">
                                     </textarea>
                                 </mat-form-field>
                             </div>
@@ -358,7 +343,7 @@
                                     type="button"
                                     [color]="'primary'"
                                     (click)="addEvent()">
-                                    Add
+                                    {{ 'calendar.add' | translate }}
                                 </button>
                                 <button
                                     class="save"
@@ -367,7 +352,7 @@
                                     type="button"
                                     [color]="'primary'"
                                     (click)="updateEvent()">
-                                    Save
+                                    {{ 'calendar.save' | translate }}
                                 </button>
                             </div>
                         </form>

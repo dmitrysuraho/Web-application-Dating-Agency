@@ -6,21 +6,25 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { FuseAlertModule } from "@fuse/components/alert";
 import { SharedModule } from 'app/shared/shared.module';
 import { chatRoutes } from './chat.routing';
 import { ChatComponent } from './chat.component';
 import { ChatsComponent } from './chats/chats.component';
 import { ConversationComponent } from './conversation/conversation.component';
+import { AttachmentsDialogComponent } from './attachments-dialog/attachments-dialog.component';
 
 @NgModule({
     declarations: [
         ChatComponent,
         ChatsComponent,
-        ConversationComponent
+        ConversationComponent,
+        AttachmentsDialogComponent
     ],
     imports: [
         RouterModule.forChild(chatRoutes),
@@ -34,7 +38,9 @@ import { ConversationComponent } from './conversation/conversation.component';
         SharedModule,
         MatProgressSpinnerModule,
         TranslateModule,
-        FuseAlertModule
+        FuseAlertModule,
+        CarouselModule,
+        MatDialogModule
     ]
 })
 export class ChatModule

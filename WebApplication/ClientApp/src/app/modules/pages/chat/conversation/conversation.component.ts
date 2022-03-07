@@ -11,7 +11,9 @@ import {
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import {Observable, of, Subject} from 'rxjs';
+import { AngularFireStorageReference } from "@angular/fire/compat/storage";
+import { MatDialog } from "@angular/material/dialog";
+import { Observable, of, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Chat, Message } from '../chat.types';
@@ -20,7 +22,9 @@ import { User } from "../../../../core/user/user.types";
 import { UserService } from "../../../../core/user/user.service";
 import { FuseSplashScreenService } from "../../../../../@fuse/services/splash-screen";
 import { UploadService } from "../../../../core/upload/upload.service";
-import {AngularFireStorageReference} from "@angular/fire/compat/storage";
+import { AttachmentsDialogComponent } from "../attachments-dialog/attachments-dialog.component";
+import { CalendarService } from "../../calendar/calendar.service";
+import { NavigationService } from "../../../../core/navigation/navigation.service";
 
 @Component({
     selector       : 'chat-conversation',
@@ -54,7 +58,10 @@ export class ConversationComponent implements OnInit, OnDestroy
         private _route: Router,
         private _splashScreen: FuseSplashScreenService,
         private _translateService: TranslateService,
-        private _upload: UploadService
+        private _upload: UploadService,
+        private _dialog: MatDialog,
+        private _calendarService: CalendarService,
+        private _navigationService: NavigationService
     )
     {
     }
@@ -267,6 +274,18 @@ export class ConversationComponent implements OnInit, OnDestroy
     deleteImage(): void {
         this.srcFile = null;
         this.image = null;
+    }
+
+    /**
+     * Show attachments
+     */
+    _showAttachments(): void {
+        this._upload.getChatAttachments('images/chats/' + this.chat.chatId)
+            .subscribe((images: string[]) => {
+                this._dialog.open(AttachmentsDialogComponent, {
+                    data: { images: images }
+                });
+            });
     }
 
     /**

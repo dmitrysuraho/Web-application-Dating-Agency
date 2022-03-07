@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Moment } from 'moment';
 import { Calendar, CalendarEvent, CalendarEventEditMode, CalendarSettings, CalendarWeekday } from 'app/modules/pages/calendar/calendar.types';
+import {omit} from "lodash-es";
 
 @Injectable({
     providedIn: 'root'
@@ -73,7 +74,7 @@ export class CalendarService
      */
     getCalendars(): Observable<Calendar[]>
     {
-        return this._httpClient.get<Calendar[]>('api/apps/calendar/calendars').pipe(
+        return this._httpClient.get<Calendar[]>('api/calendar/calendars').pipe(
             tap((response) => {
                 this._calendars.next(response);
             })
@@ -89,20 +90,19 @@ export class CalendarService
     {
         return this.calendars$.pipe(
             take(1),
-            switchMap(calendars => this._httpClient.post<Calendar>('api/apps/calendar/calendars', {
-                calendar
-            }).pipe(
-                map((addedCalendar) => {
+            switchMap(calendars => this._httpClient.post<Calendar>('api/calendar/calendars', {title: calendar.title, color: calendar.color, visible: calendar.visible})
+                .pipe(
+                    map((addedCalendar) => {
 
-                    // Add the calendar
-                    calendars.push(addedCalendar);
+                        // Add the calendar
+                        calendars.push(addedCalendar);
 
-                    // Update the calendars
-                    this._calendars.next(calendars);
+                        // Update the calendars
+                        this._calendars.next(calendars);
 
-                    // Return the added calendar
-                    return addedCalendar;
-                })
+                        // Return the added calendar
+                        return addedCalendar;
+                    })
             ))
         );
     }
@@ -117,24 +117,22 @@ export class CalendarService
     {
         return this.calendars$.pipe(
             take(1),
-            switchMap(calendars => this._httpClient.patch<Calendar>('api/apps/calendar/calendars', {
-                id,
-                calendar
-            }).pipe(
-                map((updatedCalendar) => {
+            switchMap(calendars => this._httpClient.put<Calendar>('api/calendar/calendars/' + id, calendar)
+                .pipe(
+                    map((updatedCalendar) => {
 
-                    // Find the index of the updated calendar
-                    const index = calendars.findIndex(item => item.id === id);
+                        // Find the index of the updated calendar
+                        const index = calendars.findIndex(item => item.id === id);
 
-                    // Update the calendar
-                    calendars[index] = updatedCalendar;
+                        // Update the calendar
+                        calendars[index] = updatedCalendar;
 
-                    // Update the calendars
-                    this._calendars.next(calendars);
+                        // Update the calendars
+                        this._calendars.next(calendars);
 
-                    // Return the updated calendar
-                    return updatedCalendar;
-                })
+                        // Return the updated calendar
+                        return updatedCalendar;
+                    })
             ))
         );
     }
@@ -148,29 +146,28 @@ export class CalendarService
     {
         return this.calendars$.pipe(
             take(1),
-            switchMap(calendars => this._httpClient.delete<Calendar>('api/apps/calendar/calendars', {
-                params: {id}
-            }).pipe(
-                map((isDeleted) => {
+            switchMap(calendars => this._httpClient.delete<Calendar>('api/calendar/calendars/' + id)
+                .pipe(
+                    map((isDeleted) => {
 
-                    // Find the index of the deleted calendar
-                    const index = calendars.findIndex(item => item.id === id);
+                        // Find the index of the deleted calendar
+                        const index = calendars.findIndex(item => item.id === id);
 
-                    // Delete the calendar
-                    calendars.splice(index, 1);
+                        // Delete the calendar
+                        calendars.splice(index, 1);
 
-                    // Update the calendars
-                    this._calendars.next(calendars);
+                        // Update the calendars
+                        this._calendars.next(calendars);
 
-                    // Remove the events belong to deleted calendar
-                    const events = this._events.value.filter(event => event.calendarId !== id);
+                        // Remove the events belong to deleted calendar
+                        const events = this._events.value.filter(event => event.calendarId !== id);
 
-                    // Update the events
-                    this._events.next(events);
+                        // Update the events
+                        this._events.next(events);
 
-                    // Return the deleted status
-                    return isDeleted;
-                })
+                        // Return the deleted status
+                        return isDeleted;
+                    })
             ))
         );
     }
@@ -197,7 +194,7 @@ export class CalendarService
         }
 
         // Get the events
-        return this._httpClient.get<CalendarEvent[]>('api/apps/calendar/events', {
+        return this._httpClient.get<CalendarEvent[]>('api/calendar/events', {
             params: {
                 start: start.toISOString(true),
                 end  : end.toISOString(true)
@@ -231,12 +228,24 @@ export class CalendarService
     }
 
     /**
+     * Get events for nav
+     */
+    getEventsForNav(start: Moment, end: Moment): Observable<CalendarEvent[]> {
+        return this._httpClient.get<CalendarEvent[]>('api/calendar/events', {
+            params: {
+                start: start.toISOString(true),
+                end  : end.toISOString(true)
+            }
+        });
+    }
+
+    /**
      * Reload events using the loaded events range
      */
     reloadEvents(): Observable<CalendarEvent[]>
     {
         // Get the events
-        return this._httpClient.get<CalendarEvent[]>('api/apps/calendar/events', {
+        return this._httpClient.get<CalendarEvent[]>('api/calendar/events', {
             params: {
                 start: this._loadedEventsRange.start.toISOString(),
                 end  : this._loadedEventsRange.end.toISOString()
@@ -314,19 +323,21 @@ export class CalendarService
      */
     addEvent(event): Observable<CalendarEvent>
     {
+        // Prepare object to request
+        event = omit(event, ['id', 'duration', 'recurrence'])
+
         return this.events$.pipe(
             take(1),
-            switchMap(events => this._httpClient.post<CalendarEvent>('api/apps/calendar/event', {
-                event
-            }).pipe(
-                map((addedEvent) => {
+            switchMap(events => this._httpClient.post<CalendarEvent>('api/calendar/event', event)
+                .pipe(
+                    map((addedEvent) => {
 
-                    // Update the events
-                    this._events.next(events);
+                        // Update the events
+                        this._events.next(events);
 
-                    // Return the added event
-                    return addedEvent;
-                })
+                        // Return the added event
+                        return addedEvent;
+                    })
             ))
         );
     }
@@ -341,24 +352,22 @@ export class CalendarService
     {
         return this.events$.pipe(
             take(1),
-            switchMap(events => this._httpClient.patch<CalendarEvent>('api/apps/calendar/event', {
-                id,
-                event
-            }).pipe(
-                map((updatedEvent) => {
+            switchMap(events => this._httpClient.put<CalendarEvent>('api/calendar/event/' + id, event)
+                .pipe(
+                    map((updatedEvent) => {
 
-                    // Find the index of the updated event
-                    const index = events.findIndex(item => item.id === id);
+                        // Find the index of the updated event
+                        const index = events.findIndex(item => item.id == id);
 
-                    // Update the event
-                    events[index] = updatedEvent;
+                        // Update the event
+                        events[index] = updatedEvent;
 
-                    // Update the events
-                    this._events.next(events);
+                        // Update the events
+                        this._events.next(events);
 
-                    // Return the updated event
-                    return updatedEvent;
-                })
+                        // Return the updated event
+                        return updatedEvent;
+                    })
             ))
         );
     }
@@ -388,21 +397,22 @@ export class CalendarService
     {
         return this.events$.pipe(
             take(1),
-            switchMap(events => this._httpClient.delete<CalendarEvent>('api/apps/calendar/event', {params: {id}}).pipe(
-                map((isDeleted) => {
+            switchMap(events => this._httpClient.delete<CalendarEvent>('api/calendar/event/' + id)
+                .pipe(
+                    map((isDeleted) => {
 
-                    // Find the index of the deleted event
-                    const index = events.findIndex(item => item.id === id);
+                        // Find the index of the deleted event
+                        const index = events.findIndex(item => item.id == id);
 
-                    // Delete the event
-                    events.splice(index, 1);
+                        // Delete the event
+                        events.splice(index, 1);
 
-                    // Update the events
-                    this._events.next(events);
+                        // Update the events
+                        this._events.next(events);
 
-                    // Return the deleted status
-                    return isDeleted;
-                })
+                        // Return the deleted status
+                        return isDeleted;
+                    })
             ))
         );
     }
@@ -428,7 +438,7 @@ export class CalendarService
      */
     getSettings(): Observable<CalendarSettings>
     {
-        return this._httpClient.get<CalendarSettings>('api/apps/calendar/settings').pipe(
+        return this._httpClient.get<CalendarSettings>('api/calendar/settings').pipe(
             tap((response) => {
                 this._settings.next(response);
             })
@@ -442,21 +452,20 @@ export class CalendarService
     {
         return this.events$.pipe(
             take(1),
-            switchMap(events => this._httpClient.patch<CalendarSettings>('api/apps/calendar/settings', {
-                settings
-            }).pipe(
-                map((updatedSettings) => {
+            switchMap(events => this._httpClient.put<CalendarSettings>('api/calendar/settings', settings)
+                .pipe(
+                    map((updatedSettings) => {
 
-                    // Update the settings
-                    this._settings.next(settings);
+                        // Update the settings
+                        this._settings.next(settings);
 
-                    // Get weekdays again to get them in correct order
-                    // in case the startWeekOn setting changes
-                    this.getWeekdays().subscribe();
+                        // Get weekdays again to get them in correct order
+                        // in case the startWeekOn setting changes
+                        this.getWeekdays().subscribe();
 
-                    // Return the updated settings
-                    return updatedSettings;
-                })
+                        // Return the updated settings
+                        return updatedSettings;
+                    })
             ))
         );
     }

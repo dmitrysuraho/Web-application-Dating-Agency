@@ -1,5 +1,10 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, Input, OnDestroy, OnInit, Output, Renderer2, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { registerLocaleData } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import localeRu from '@angular/common/locales/ru-BY';
+import localeEn from '@angular/common/locales/en-GB';
 import { Overlay } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatCalendarCellCssClasses, MatMonthView } from '@angular/material/datepicker';
@@ -18,7 +23,8 @@ import { Moment } from 'moment';
             provide    : NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => FuseDateRangeComponent),
             multi      : true
-        }
+        },
+        { provide: MAT_DATE_LOCALE, useValue: 'ru-RU' }
     ]
 })
 export class FuseDateRangeComponent implements ControlValueAccessor, OnInit, OnDestroy
@@ -58,7 +64,9 @@ export class FuseDateRangeComponent implements ControlValueAccessor, OnInit, OnD
         private _elementRef: ElementRef,
         private _overlay: Overlay,
         private _renderer2: Renderer2,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _translateService: TranslateService,
+        private _dateAdapter: DateAdapter<any>
     )
     {
         this._onChange = (): void => {
@@ -301,6 +309,13 @@ export class FuseDateRangeComponent implements ControlValueAccessor, OnInit, OnD
         };
     }
 
+    /**
+     * Get lang
+     */
+    get getLang(): string {
+        return this._translateService.currentLang === 'ru' ? 'ru-BY' : 'en-GB';
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Control Value Accessor
     // -----------------------------------------------------------------------------------------------------
@@ -348,7 +363,13 @@ export class FuseDateRangeComponent implements ControlValueAccessor, OnInit, OnD
      */
     ngOnInit(): void
     {
+        // Register locale data
+        registerLocaleData(localeRu);
+        registerLocaleData(localeEn);
 
+        this._dateAdapter.setLocale(this._translateService.currentLang);
+
+        moment.locale(this.getLang);
     }
 
     /**

@@ -16,9 +16,13 @@ namespace WebApplication.Models
         public string About { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public bool IsPlus { get; set; }
 
         public Notification Notifications { get; set; }
         public List<Gallery> Galleries { get; set; }
         public List<Blacklist> Blacklists { get; set; }
+        public Settings Settings { get; set; }
+        public List<Calendar> Calendars { get; set; }
+        public List<Event> Events { get; set; }
     }
 }

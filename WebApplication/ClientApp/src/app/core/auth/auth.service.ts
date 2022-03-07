@@ -1,7 +1,7 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, Injector, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, of, Subject } from "rxjs";
+import { forkJoin, Observable, of, Subject } from "rxjs";
 import { catchError, takeUntil, tap } from "rxjs/operators";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
@@ -9,6 +9,12 @@ import { TwitterAuthProvider, GithubAuthProvider, GoogleAuthProvider } from "fir
 import firebase from "firebase/compat";
 import User = firebase.User;
 import UserCredential = firebase.auth.UserCredential;
+import moment from "moment";
+import { Navigation } from "../navigation/navigation.types";
+import { CalendarService } from "../../modules/pages/calendar/calendar.service";
+import { NavigationService } from "../navigation/navigation.service";
+import { Chat } from "../../modules/pages/chat/chat.types";
+import { ChatService } from "../../modules/pages/chat/chat.service";
 
 @Injectable()
 export class AuthService implements OnDestroy
@@ -19,10 +25,13 @@ export class AuthService implements OnDestroy
      * Constructor
      */
     constructor(
+        private _injector: Injector,
         private _httpClient: HttpClient,
         private _angularFireAuth: AngularFireAuth,
         private _translateService: TranslateService,
-        private _router: Router
+        private _router: Router,
+        private _calendarService: CalendarService,
+        private _navigationService: NavigationService
     )
     {
     }
@@ -95,7 +104,16 @@ export class AuthService implements OnDestroy
     signOut(): void
     {
         this._angularFireAuth.signOut()
-            .then(() => localStorage.clear());
+            .then(() => {
+                localStorage.clear();
+
+                const interval = setInterval(() => {
+                    if (this.accessToken) {
+                        this._setNavigationSubtitles();
+                        clearInterval(interval);
+                    }
+                }, 100);
+            });
     }
 
     /**
@@ -202,6 +220,58 @@ export class AuthService implements OnDestroy
                     .subscribe(() => {
                         this.accessToken = result.user.multiFactor.user.accessToken;
                         this._router.navigateByUrl('');
+                    });
+            });
+    }
+
+    /**
+     * Set calendar subtitle
+     *
+     * @private
+     */
+    private _setNavigationSubtitles(): void {
+        forkJoin(
+            this._calendarService.getEventsForNav(moment(), moment()),
+            this._injector.get(ChatService).getChats()
+        )
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(([events, chats]) => {
+                this._navigationService.get()
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe((navigation: Navigation) => {
+                        let countEvents = 0;
+                        let countMessages = 0;
+                        const defaultCalendar = navigation.default.find(item => item.id == 'calendar');
+                        const horizontalCalendar = navigation.horizontal.find(item => item.id == 'calendar');
+                        const defaultChat = navigation.default.find(item => item.id == 'chat');
+                        const horizontalChat = navigation.horizontal.find(item => item.id == 'chat');
+                        events.map(event => {
+                            const now = new Date();
+                            const start = new Date(event.start);
+                            const diffDate = start.getDate() - now.getDate();
+                            const diffMonth = start.getMonth() - now.getMonth();
+                            if ((start > now) && (diffDate > 0 && diffDate <= 7 && diffMonth === 0)) {
+                                countEvents++;
+                            }
+                            return event;
+                        });
+                        chats.map((chat: Chat) => {
+                            if (chat?.unreadCount) {
+                                countMessages++;
+                            }
+                            return chat;
+                        });
+                        defaultCalendar.subtitle = this._translateService.instant('calendar.upcoming-events', { count: countEvents });
+                        horizontalCalendar.badge = {
+                            title  : countEvents.toString(),
+                            classes: 'ml-2 px-2 bg-pink-600 text-white rounded-full'
+                        };
+                        if (countMessages) {
+                            defaultChat.badge = horizontalChat.badge = {
+                                title  : countMessages.toString(),
+                                classes: 'ml-2 px-2 bg-pink-600 text-white rounded-full'
+                            };
+                        }
                     });
             });
     }
