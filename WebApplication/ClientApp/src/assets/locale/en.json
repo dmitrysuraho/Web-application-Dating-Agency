@@ -192,6 +192,8 @@
     "chat.select": "Select a conversation",
     "chat.block-alert": "Message sending is limited.",
     "chat.show-attachments": "Show attachments",
+    "chat.call-dialog.waiting-for-an-answer": "Waiting for an answer",
+    "chat.call-dialog.incoming-call": "Incoming call",
     "calendar.title": "Calendar",
     "calendar.go-to-today": "Go to today",
     "calendar.view": "View",

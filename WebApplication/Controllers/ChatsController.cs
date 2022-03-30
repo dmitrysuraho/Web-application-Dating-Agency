@@ -67,6 +67,14 @@ namespace WebApplication.Controllers
             return Json(new { chatId = chat.ChatId });
         }
 
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("{id:int}/attachments")]
+        [HttpGet]
+        public IActionResult GetAttachments(int id)
+        {
+            return Json(_chatsRepository.GetChatAttachments(id));
+        }
+
         private User _GetCurrentUser()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];

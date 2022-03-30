@@ -1,3 +1,3 @@
 export interface DialogData {
-    images?: string[];
+    chatId?: string;
 }

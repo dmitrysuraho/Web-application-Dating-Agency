@@ -67,3 +67,16 @@
 .mat-dialog-actions {
     flex-wrap: nowrap !important;
 }
+
+.no-dialog-radius .mat-dialog-container {
+    border-radius: 0 !important;
+    padding: 0 !important;
+}
+
+.no-dialog-radius .mat-dialog-content {
+    max-height: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-y: hidden !important;
+}

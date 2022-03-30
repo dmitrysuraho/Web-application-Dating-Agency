@@ -131,5 +131,11 @@ namespace WebApplication.Models
             if (blacklist == null) return false;
             else return true;
         }
+
+        public string[] GetChatAttachments(int chatId)
+        {
+            return _context.Messages.Where(prop => prop.ChatId == chatId && prop.MessageImage != null)
+                .Select(prop => prop.MessageImage).ToArray();
+        }
     }
 }

@@ -18,13 +18,15 @@ import { ChatComponent } from './chat.component';
 import { ChatsComponent } from './chats/chats.component';
 import { ConversationComponent } from './conversation/conversation.component';
 import { AttachmentsDialogComponent } from './attachments-dialog/attachments-dialog.component';
+import { CallDialogComponent } from './call-dialog/call-dialog.component';
 
 @NgModule({
     declarations: [
         ChatComponent,
         ChatsComponent,
         ConversationComponent,
-        AttachmentsDialogComponent
+        AttachmentsDialogComponent,
+        CallDialogComponent
     ],
     imports: [
         RouterModule.forChild(chatRoutes),

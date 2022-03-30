@@ -148,4 +148,13 @@ export class ChatService
     readMessages(id: string): Observable<any> {
         return this._httpClient.put('api/chats/' + id, null);
     }
+
+    /**
+     * Get chat attachments
+     *
+     * @param id
+     */
+    getChatAttachments(id: string): Observable<string[]> {
+        return this._httpClient.get<string[]>('api/chats/' + id + '/attachments');
+    }
 }

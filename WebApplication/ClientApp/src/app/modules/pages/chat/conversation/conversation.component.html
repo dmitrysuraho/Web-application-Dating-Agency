@@ -40,9 +40,12 @@
                         <div class="ml-4 text-lg font-medium leading-5 truncate">{{chat.member.name}}</div>
                     </div>
 
-<!--                    <button mat-icon-button>-->
-<!--                        <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>-->
-<!--                    </button>-->
+                    <button
+                        mat-icon-button
+                        [disabled]="chat.member.isBlocked || chat.member.isYouBlocked"
+                        (click)="_makeCall()">
+                        <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+                    </button>
 
 
                     <button

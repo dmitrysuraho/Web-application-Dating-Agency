@@ -1,0 +1,121 @@
+<ng-container *ngIf="isAnswer; else video">
+    <h1 mat-dialog-title
+        class="text-center">
+        {{ 'chat.call-dialog.incoming-call' | translate }}
+    </h1>
+    <div mat-dialog-content>
+        <div class="flex flex-col items-center p-2">
+            <div class="relative w-32 h-32">
+                <img
+                    class="w-full h-full rounded-full"
+                    *ngIf="this.data.user?.photo"
+                    [src]="this.data.user.photo"
+                    alt="User avatar">
+                <mat-icon
+                    class="w-32 h-32 rounded-full bg-gray-200"
+                    *ngIf="!this.data.user?.photo"
+                    [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+            </div>
+            <div class="mt-4 text-lg font-bold leading-none text-center break-all">{{ this.data.user.name }}</div>
+        </div>
+        <div class="flex justify-center p-3">
+            <button
+                mat-fab
+                [color]="'primary'"
+                (click)="_acceptCall()">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+            </button>
+            <button
+                mat-fab
+                class="ml-4"
+                [color]="'warn'"
+                (click)="_cancelCall()">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:phone-missed-call'"></mat-icon>
+            </button>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #video>
+    <div mat-dialog-content>
+        <div class="flex justify-end fixed-top p-4"
+             [ngClass]="{'invisible': !isVideoOn}">
+            <video #localVideo
+                   class="h-50 w-50"
+                   autoplay
+                   playsinline
+                   [muted]=true></video>
+        </div>
+        <div class="flex justify-center fixed-bottom z-10 p-4">
+            <button
+                *ngIf="isAcceptCall"
+                mat-fab
+                class="mr-4"
+                [color]="isMircoOn ? 'primary' : 'accent'"
+                (click)="_changeMicro()">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="isMircoOn ? 'heroicons_solid:volume-up' : 'heroicons_solid:volume-off'"></mat-icon>
+            </button>
+            <button
+                *ngIf="isAcceptCall"
+                mat-fab
+                [color]="isVideoOn ? 'primary' : 'accent'"
+                (click)="_changeVideo()">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="isVideoOn ? 'heroicons_solid:eye' : 'heroicons_solid:eye-off'"></mat-icon>
+            </button>
+            <button
+                mat-fab
+                [ngClass]="{'ml-4': isAcceptCall}"
+                [color]="'warn'"
+                (click)="_endCall()">
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:phone-missed-call'"></mat-icon>
+            </button>
+        </div>
+        <div *ngIf="!isAcceptCall && !this.data.joinCall"
+             class="flex flex-col items-center justify-center h-full p-2">
+            <div class="flex mb-2">
+                <span>{{ 'chat.call-dialog.waiting-for-an-answer' | translate }}</span>
+                <img class="w-6 h-6 ml-2"
+                     src="assets/icons/spinner.gif"
+                     alt="spinner">
+            </div>
+            <ng-container [ngTemplateOutlet]="userInfo"></ng-container>
+        </div>
+        <div *ngIf="!isRemoteVideoVisible"
+             class="flex flex-col items-center justify-center h-full p-2">
+            <ng-container [ngTemplateOutlet]="userInfo"></ng-container>
+        </div>
+        <video
+            #remoteVideo
+            [style.visibility]="isRemoteVideoVisible ? 'visible' : 'hidden'"
+            class="w-full h-full bg-black"
+            autoplay
+            playsinline>
+        </video>
+    </div>
+</ng-template>
+
+<ng-template #userInfo>
+    <div class="relative w-32 h-32">
+        <img
+            class="w-full h-full rounded-full"
+            *ngIf="this.data.member?.photo"
+            [src]="this.data.member.photo"
+            alt="User avatar">
+        <mat-icon
+            class="w-32 h-32 rounded-full bg-gray-200"
+            *ngIf="!this.data.member?.photo"
+            [svgIcon]="'heroicons_solid:user-circle'">
+        </mat-icon>
+    </div>
+    <div class="mt-4 text-lg font-bold leading-none text-center break-all">{{ this.data.member.name }}</div>
+</ng-template>

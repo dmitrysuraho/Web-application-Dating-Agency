@@ -260,28 +260,4 @@ export class UploadService implements OnDestroy {
                 this._route.navigateByUrl('internal-error');
             });
     }
-
-    /**
-     * Get chat attachments
-     *
-     * @param url
-     */
-    getChatAttachments(url: string): Observable<string[]> {
-        return this._fireStorage.ref(url)
-            .listAll()
-            .pipe(
-                switchMap((result: ListResult) => {
-                    const images: string[] = [];
-                    result.items.map((ref: Reference) => {
-                        this._fireStorage.ref(ref.fullPath)
-                            .getDownloadURL()
-                            .pipe(
-                                tap((image: string) => images.push(image))
-                            )
-                            .subscribe();
-                    });
-                    return of(images);
-                })
-            );
-    }
 }

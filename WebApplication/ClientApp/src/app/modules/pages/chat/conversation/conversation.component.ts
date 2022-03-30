@@ -25,6 +25,7 @@ import { UploadService } from "../../../../core/upload/upload.service";
 import { AttachmentsDialogComponent } from "../attachments-dialog/attachments-dialog.component";
 import { CalendarService } from "../../calendar/calendar.service";
 import { NavigationService } from "../../../../core/navigation/navigation.service";
+import { CallDialogComponent } from "../call-dialog/call-dialog.component";
 
 @Component({
     selector       : 'chat-conversation',
@@ -280,12 +281,23 @@ export class ConversationComponent implements OnInit, OnDestroy
      * Show attachments
      */
     _showAttachments(): void {
-        this._upload.getChatAttachments('images/chats/' + this.chat.chatId)
-            .subscribe((images: string[]) => {
-                this._dialog.open(AttachmentsDialogComponent, {
-                    data: { images: images }
-                });
-            });
+        this._dialog.open(AttachmentsDialogComponent, {
+            data: { chatId: this.chat.chatId }
+        });
+    }
+
+    /**
+     * Make call
+     */
+    _makeCall(): void {
+        this._dialog.open(CallDialogComponent, {
+            panelClass: 'no-dialog-radius',
+            maxWidth: '100vw',
+            height: '100%',
+            width: '100%',
+            disableClose: true,
+            data: { user: this.user, userId: this.chat.member.userId, joinCall: false, member: this.chat.member }
+        });
     }
 
     /**

@@ -1,13 +1,31 @@
 <div mat-dialog-content>
-    <carousel
-        [isAnimated]="false"
-        [showIndicators]="false"
-        [interval]="0">
-        <slide *ngFor="let image of data.images;">
-            <img
-                class="w-full h-full object-cover"
-                alt="slide"
-                [src]="image">
-        </slide>
-    </carousel>
+    <ng-container *ngIf="images?.length">
+        <carousel
+            [isAnimated]="false"
+            [showIndicators]="false"
+            [interval]="0">
+            <slide *ngFor="let image of images">
+                <img
+                    class="w-full h-full object-cover"
+                    alt="slide"
+                    [src]="image">
+            </slide>
+        </carousel>
+    </ng-container>
+
+    <ng-container *ngIf="images && !images.length">
+        <fuse-alert
+            [appearance]="'outline'"
+            [showIcon]="true"
+            [type]="'info'"
+            [isContentCentered]="true">
+            {{'There is no attachments.'}}
+        </fuse-alert>
+    </ng-container>
+
+    <ng-container *ngIf="isLoading">
+        <mat-progress-spinner
+            [diameter]="64"
+            [mode]="'indeterminate'"></mat-progress-spinner>
+    </ng-container>
 </div>

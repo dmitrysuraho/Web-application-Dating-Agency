@@ -9,7 +9,6 @@ import { Subject } from "rxjs";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { ChatService } from "./chat.service";
 import { Chat } from "./chat.types";
-import { Navigation } from "../../../core/navigation/navigation.types";
 import { NavigationService } from "../../../core/navigation/navigation.service";
 import { CalendarService } from "../calendar/calendar.service";
 

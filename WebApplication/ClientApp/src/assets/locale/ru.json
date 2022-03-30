@@ -193,6 +193,8 @@
     "chat.select": "Выберите диалог",
     "chat.block-alert": "Отправка сообщений ограничена.",
     "chat.show-attachments": "Просмотреть вложения",
+    "chat.call-dialog.waiting-for-an-answer": "Ожидание ответа",
+    "chat.call-dialog.incoming-call": "Входящий звонок",
     "calendar.title": "Календарь",
     "calendar.go-to-today": "Сегодняшний день",
     "calendar.view": "Отображение",
