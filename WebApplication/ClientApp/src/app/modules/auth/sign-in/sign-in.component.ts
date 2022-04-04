@@ -112,8 +112,29 @@ export class AuthSignInComponent implements OnInit
      * Sign in with Google
      */
     googleSignIn(): void {
+        // Hide the alert
+        this.showAlert = false;
+
         // Sign in
-        this._authService.googleSignIn();
+        this._authService.googleSignIn()
+            .catch(result => {
+                // Create error message
+                let errorMessage: string;
+                if (result.message.includes('has been disabled')) {
+                    errorMessage = this._translateService.instant('common.alert.disabled-user');
+                } else {
+                    errorMessage = result.message;
+                }
+
+                // Set the alert
+                this.alert = {
+                    type   : 'error',
+                    message: errorMessage
+                };
+
+                // Show the alert
+                this.showAlert = true;
+            });
     }
 
     /**
@@ -121,7 +142,25 @@ export class AuthSignInComponent implements OnInit
      */
     twitterSignIn(): void {
         // Sign in
-        this._authService.twitterSignIn();
+        this._authService.twitterSignIn()
+            .catch(result => {
+                // Create error message
+                let errorMessage: string;
+                if (result.message.includes('has been disabled')) {
+                    errorMessage = this._translateService.instant('common.alert.disabled-user');
+                } else {
+                    errorMessage = result.message;
+                }
+
+                // Set the alert
+                this.alert = {
+                    type   : 'error',
+                    message: errorMessage
+                };
+
+                // Show the alert
+                this.showAlert = true;
+            });
     }
 
     /**
@@ -129,6 +168,24 @@ export class AuthSignInComponent implements OnInit
      */
     githubSignIn(): void {
         // Sign in
-        this._authService.githubSignIn();
+        this._authService.githubSignIn()
+            .catch(result => {
+                // Create error message
+                let errorMessage: string;
+                if (result.message.includes('has been disabled')) {
+                    errorMessage = this._translateService.instant('common.alert.disabled-user');
+                } else {
+                    errorMessage = result.message;
+                }
+
+                // Set the alert
+                this.alert = {
+                    type   : 'error',
+                    message: errorMessage
+                };
+
+                // Show the alert
+                this.showAlert = true;
+            });
     }
 }

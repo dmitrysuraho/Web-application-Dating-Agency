@@ -154,22 +154,22 @@ export class AuthService implements OnDestroy
     /**
      * Sign in with Google
      */
-    googleSignIn(): void {
-        this._selectProvider(new GoogleAuthProvider());
+    googleSignIn(): Promise<any> {
+        return this._selectProvider(new GoogleAuthProvider());
     }
 
     /**
      * Sign in with Twitter
      */
-    twitterSignIn(): void {
-        this._selectProvider(new TwitterAuthProvider());
+    twitterSignIn(): Promise<any> {
+        return this._selectProvider(new TwitterAuthProvider());
     }
 
     /**
      * Sign in with Github
      */
-    githubSignIn(): void {
-        this._selectProvider(new GithubAuthProvider());
+    githubSignIn(): Promise<any> {
+        return this._selectProvider(new GithubAuthProvider());
     }
 
     /**
