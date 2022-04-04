@@ -16,4 +16,5 @@ export interface User
     isCurrentUser?: boolean;
     isBlocked?: boolean;
     isYouBlocked?: boolean;
+    isPlus?: boolean;
 }

@@ -40,6 +40,7 @@ export class ConversationComponent implements OnInit, OnDestroy
     chat: Chat;
     sendForm: FormGroup;
     message: Message;
+    isBlocking: boolean;
     isGettingChat: boolean;
     isSending: boolean;
     srcFile: string;
@@ -284,6 +285,36 @@ export class ConversationComponent implements OnInit, OnDestroy
         this._dialog.open(AttachmentsDialogComponent, {
             data: { chatId: this.chat.chatId }
         });
+    }
+
+    /**
+     * Block user
+     */
+    _block(): void {
+        this.isBlocking = true;
+        this._userService.blockUser(this.chat.member.userId)
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe(() => {
+                this.chat.member.isBlocked = true;
+                this.isBlocking = false;
+            });
+    }
+
+    /**
+     * Unblock user
+     */
+    _unblock(): void {
+        this.isBlocking = true;
+        this._userService.unblockUser(this.chat.member.userId)
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe(() => {
+                this.chat.member.isBlocked = false;
+                this.isBlocking = false;
+            });
     }
 
     /**

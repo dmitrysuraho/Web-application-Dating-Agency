@@ -1,19 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { MatDrawer } from '@angular/material/sidenav';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { User } from "../../../core/user/user.types";
-import { UserService } from "../../../core/user/user.service";
+import { User } from "app/core/user/user.types";
+import { UserService } from "app/core/user/user.service";
+import { Subscription } from "app/core/user/subscription.types";
 
 
 @Component({
     selector       : 'settings',
-    templateUrl    : './settings.component.html',
-    encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl    : './settings.component.html'
 })
 export class SettingsComponent implements OnInit, OnDestroy
 {
@@ -23,6 +22,7 @@ export class SettingsComponent implements OnInit, OnDestroy
     panels: any[] = [];
     selectedPanel: string = 'account';
     user: Observable<User>;
+    subscription: Subscription;
     blockedUsers: User[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -63,6 +63,12 @@ export class SettingsComponent implements OnInit, OnDestroy
                 description: this._translateService.instant('profile.settings.security.description')
             },
             {
+                id         : 'plan-billing',
+                icon       : 'heroicons_outline:credit-card',
+                title      : this._translateService.instant('profile.plan-billing.title'),
+                description: this._translateService.instant('profile.plan-billing.description')
+            },
+            {
                 id         : 'notifications',
                 icon       : 'heroicons_outline:bell',
                 title      : this._translateService.instant('profile.settings.notifications.title'),
@@ -79,13 +85,7 @@ export class SettingsComponent implements OnInit, OnDestroy
                 icon       : 'heroicons_outline:photograph',
                 title      : this._translateService.instant('profile.settings.appearance.title'),
                 description: this._translateService.instant('profile.settings.appearance.description')
-            },
-            // {
-            //     id         : 'plan-billing',
-            //     icon       : 'heroicons_outline:credit-card',
-            //     title      : 'Plan & Billing',
-            //     description: 'Manage your subscription plan, payment method and billing information'
-            // },
+            }
         ];
 
         // Subscribe to media changes
@@ -112,12 +112,16 @@ export class SettingsComponent implements OnInit, OnDestroy
         // Get current user
         this.user = this._userService.getCurrentUser();
 
-        // Get blocked users
+        // Get blocked users and subscription
         this._userService.getBlockedUsers()
             .pipe(
+                switchMap((users: User[]) => {
+                    this.blockedUsers = users;
+                    return this._userService.getSubscription()
+                }),
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe((users: User[]) => this.blockedUsers = users);
+            .subscribe((sub: Subscription) => this.subscription = sub);
 
         // Splash screen
         this._splashScreen.show();

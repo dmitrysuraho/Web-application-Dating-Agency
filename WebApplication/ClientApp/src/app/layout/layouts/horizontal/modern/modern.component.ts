@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { NavigationService } from 'app/core/navigation/navigation.service';
+import { User } from 'app/core/user/user.types';
+import { UserService } from 'app/core/user/user.service';
 
 @Component({
     selector     : 'modern-layout',
@@ -14,6 +16,7 @@ import { NavigationService } from 'app/core/navigation/navigation.service';
 })
 export class ModernLayoutComponent implements OnInit, OnDestroy
 {
+    user: User;
     isScreenSmall: boolean;
     navigation: Navigation;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -26,7 +29,8 @@ export class ModernLayoutComponent implements OnInit, OnDestroy
         private _router: Router,
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
+        private _fuseNavigationService: FuseNavigationService,
+        private _userService: UserService
     )
     {
     }
@@ -54,9 +58,15 @@ export class ModernLayoutComponent implements OnInit, OnDestroy
     {
         // Subscribe to navigation data
         this._navigationService.navigation$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((navigation: Navigation) => {
-                this.navigation = navigation;
+            .pipe(
+                switchMap((navigation: Navigation) => {
+                    this.navigation = navigation;
+                    return this._userService.user$;
+                }),
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((user: User) => {
+                this.user = user;
             });
 
         // Subscribe to media changes

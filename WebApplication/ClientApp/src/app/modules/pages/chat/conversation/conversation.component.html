@@ -42,7 +42,7 @@
 
                     <button
                         mat-icon-button
-                        [disabled]="chat.member.isBlocked || chat.member.isYouBlocked"
+                        [disabled]="chat.member.isBlocked || chat.member.isYouBlocked || !user?.isPlus"
                         (click)="_makeCall()">
                         <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                     </button>
@@ -52,12 +52,28 @@
                         class="ml-auto"
                         mat-icon-button
                         [matMenuTriggerFor]="conversationHeaderMenu">
-                        <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
+                        <mat-icon
+                            *ngIf="!isBlocking"
+                            [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-progress-spinner
+                            *ngIf="isBlocking"
+                            [diameter]="24"
+                            [mode]="'indeterminate'"></mat-progress-spinner>
                         <mat-menu #conversationHeaderMenu>
                             <button mat-menu-item
                                     (click)="_showAttachments()">
                                 <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
                                 {{ 'chat.show-attachments' | translate }}
+                            </button>
+                            <button mat-menu-item
+                                    (click)="null">
+                                <mat-icon [svgIcon]="'heroicons_outline:speakerphone'"></mat-icon>
+                                {{ 'chat.report' | translate }}
+                            </button>
+                            <button mat-menu-item
+                                    (click)="chat.member.isBlocked ? _unblock() : _block()">
+                                <mat-icon [svgIcon]="'heroicons_outline:exclamation'"></mat-icon>
+                                {{ (chat.member.isBlocked ? 'chat.unblock' : 'chat.block') | translate }}
                             </button>
                         </mat-menu>
                     </button>

@@ -60,6 +60,15 @@ namespace WebApplication.Controllers
             }
         }
 
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("{id:int}/blocking")]
+        [HttpGet]
+        public IActionResult GetBlockUsers(int id)
+        {
+            User user = _usersRepository.FindUserById(id);
+            return Json(FirebaseAuth.DefaultInstance.GetUserAsync(user.Uid).Result.Disabled);
+        }
+
         [HttpPost]
         public IActionResult PostUsers([FromBody] User user)
         {
@@ -97,6 +106,35 @@ namespace WebApplication.Controllers
             }
         }
 
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("subscription")]
+        [HttpGet]
+        public IActionResult GetSubscription()
+        {
+            User user = _GetCurrentUser();
+            Subscription subscription = _usersRepository.GetSubscription(user);
+            return Json(new
+            {
+                subscriptionId = subscription.SubscriptionId,
+                start = subscription.Start,
+                end = subscription.End
+            });
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("subscription")]
+        [HttpPut]
+        public IActionResult PutSubscription([FromBody] Subscription subscription)
+        {
+            User user = _GetCurrentUser();
+            Subscription createdSubscription = _usersRepository.BuySubscription(user, subscription.End);
+            return Json(new
+            {
+                subscriptionId = createdSubscription.SubscriptionId,
+                start = createdSubscription.Start,
+                end = createdSubscription.End
+            });
+        }
 
         [TypeFilter(typeof(AuthFilter))]
         [Route("blacklists")]
@@ -176,7 +214,8 @@ namespace WebApplication.Controllers
                 posts = posts,
                 isCurrentUser = isCurrentUser,
                 isBlocked = isBlocked,
-                isYouBlocked = isYouBlocked
+                isYouBlocked = isYouBlocked,
+                isPlus = user.IsPlus
             });
         }
     }

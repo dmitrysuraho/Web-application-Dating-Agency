@@ -50,6 +50,14 @@
             <languages></languages>
             <notifications></notifications>
             <user></user>
+            <div *ngIf="user?.isPlus"
+                 class="rounded-2xl bg-teal-300 text-black p-1">
+                Plus
+            </div>
+            <div *ngIf="!user?.isPlus"
+                 class="rounded-2xl bg-gray-300 text-black p-1">
+                Basic
+            </div>
         </div>
     </div>
 

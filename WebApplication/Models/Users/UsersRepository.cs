@@ -63,6 +63,40 @@ namespace WebApplication.Models
             return candidate;
         }
 
+        public Subscription GetSubscription(User user)
+        {
+            Subscription subscription = _context.Subscriptions.Find(user.UserId);
+            if (subscription == null) return new Subscription();
+            return subscription;
+        }
+
+        public Subscription BuySubscription(User user, DateTime end)
+        {
+            User candidate = FindUserByUid(user.Uid);
+            candidate.IsPlus = true;
+            Subscription oldSubscription = _context.Subscriptions.Find(user.UserId);
+            if (oldSubscription == null)
+            {
+                Subscription subscription = new Subscription
+                {
+                    SubscriptionId = candidate.UserId,
+                    Start = DateTime.Now,
+                    End = end
+                };
+                _context.Subscriptions.Add(subscription);
+                _context.SaveChanges();
+                return subscription;
+            }
+            else
+            {
+                oldSubscription.Start = DateTime.Now;
+                oldSubscription.End = end;
+                _context.SaveChanges();
+                return oldSubscription;
+            }
+            
+        }
+
         public bool CheckEmailDuplicate(User user)
         {
             User dublicateUser = _context.Users.FirstOrDefault(prop => prop.Email == user.Email);

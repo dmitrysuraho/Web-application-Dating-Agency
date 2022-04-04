@@ -6,13 +6,14 @@
     <div class="flex flex-col shadow bg-card">
 
         <!-- User info -->
-        <info [user]="user"></info>
+        <info [user]="user"
+              [isDisabled]="isDisabled"></info>
 
     </div>
 
     <!-- Main -->
     <div
-        *ngIf="!user?.isYouBlocked"
+        *ngIf="!user?.isYouBlocked && (user.isCurrentUser ? true : !isDisabled)"
         class="flex flex-auto flex-col lg:flex-row justify-center items-center lg:items-start w-full max-w-5xl mx-auto p-0 lg:p-4 md:p-4 sm:p-4">
 
         <!-- Column -->

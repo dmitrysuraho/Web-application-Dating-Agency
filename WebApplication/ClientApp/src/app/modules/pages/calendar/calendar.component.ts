@@ -19,7 +19,7 @@ import { clone, cloneDeep, isEqual, omit } from 'lodash-es';
 import * as moment from 'moment';
 import { RRule } from 'rrule';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { CalendarRecurrenceComponent } from 'app/modules/pages/calendar/recurrence/recurrence.component';
@@ -29,13 +29,17 @@ import { NavigationService } from 'app/core/navigation/navigation.service';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { Chat } from "../chat/chat.types";
 import { ChatService } from "../chat/chat.service";
+import { User } from "app/core/user/user.types";
+import { UserService } from "app/core/user/user.service";
+import { fuseAnimations } from "@fuse/animations";
 
 @Component({
     selector       : 'calendar',
     templateUrl    : './calendar.component.html',
     styleUrls      : ['./calendar.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation  : ViewEncapsulation.None
+    encapsulation  : ViewEncapsulation.None,
+    animations     : [fuseAnimations]
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
 {
@@ -43,6 +47,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('fullCalendar') private _fullCalendar: FullCalendarComponent;
     @ViewChild('drawer') private _drawer: MatDrawer;
 
+    user: User;
     calendars: Calendar[];
     calendarPlugins: any[] = [dayGridPlugin, interactionPlugin, listPlugin, momentPlugin, rrulePlugin, timeGridPlugin];
     drawerMode: CalendarDrawerMode = 'side';
@@ -78,7 +83,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
         private _navigationService: NavigationService,
         private _translateService: TranslateService,
         private _dateAdapter: DateAdapter<any>,
-        private _chatService: ChatService
+        private _chatService: ChatService,
+        private _userService: UserService
     )
     {
     }
@@ -192,11 +198,17 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Get calendars
         this._calendarService.calendars$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((calendars) => {
+            .pipe(
+                switchMap(calendars => {
+                    // Store the calendars
+                    this.calendars = calendars;
 
-                // Store the calendars
-                this.calendars = calendars;
+                    return this._userService.user$;
+                }),
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((user) => {
+                this.user = user;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -293,19 +305,24 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
      */
     ngAfterViewInit(): void
     {
-        // Get the full calendar API
-        this._fullCalendarApi = this._fullCalendar.getApi();
+        if (this.user?.isPlus) {
+            // Get the full calendar API
+            this._fullCalendarApi = this._fullCalendar.getApi();
 
-        // Get the current view's title
-        this._setViewTitle();
+            // Get the current view's title
+            this._setViewTitle();
 
-        // Get the view's current start and end dates, add/subtract
-        // 60 days to create a ~150 days period to fetch the data for
-        const viewStart = moment(this._fullCalendarApi.view.currentStart).subtract(60, 'days');
-        const viewEnd = moment(this._fullCalendarApi.view.currentEnd).add(60, 'days');
+            // Get the view's current start and end dates, add/subtract
+            // 60 days to create a ~150 days period to fetch the data for
+            const viewStart = moment(this._fullCalendarApi.view.currentStart).subtract(60, 'days');
+            const viewEnd = moment(this._fullCalendarApi.view.currentEnd).add(60, 'days');
 
-        // Get events
-        this._calendarService.getEvents(viewStart, viewEnd, true).subscribe();
+            // Get events
+            this._calendarService.getEvents(viewStart, viewEnd, true).subscribe();
+        } else {
+            // Get events
+            this._calendarService.getEvents(moment(), moment(), true).subscribe();
+        }
     }
 
     /**
@@ -1067,7 +1084,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
                                 }
                                 return event;
                             });
-                            chats.map((chat: Chat) => {
+                            chats?.map((chat: Chat) => {
                                 if (chat?.unreadCount) {
                                     countMessages++;
                                 }

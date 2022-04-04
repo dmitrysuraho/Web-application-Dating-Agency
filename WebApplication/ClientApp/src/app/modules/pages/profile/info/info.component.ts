@@ -18,6 +18,9 @@ export class InfoComponent implements OnDestroy
     @Input()
     user: User;
 
+    @Input()
+    isDisabled: boolean;
+
     isBlockDisabled: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 

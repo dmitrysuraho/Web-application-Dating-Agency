@@ -85,6 +85,12 @@
                         <ng-container *ngSwitchCase="'security'">
                             <settings-security></settings-security>
                         </ng-container>
+                        <!-- Plan & Billing -->
+                        <ng-container *ngSwitchCase="'plan-billing'">
+                            <settings-plan-billing [user]="user"
+                                                   [subscription]="subscription">
+                            </settings-plan-billing>
+                        </ng-container>
                         <!-- Notifications -->
                         <ng-container *ngSwitchCase="'notifications'">
                             <settings-notifications></settings-notifications>
@@ -97,10 +103,6 @@
                         <ng-container *ngSwitchCase="'appearance'">
                             <settings-appearance></settings-appearance>
                         </ng-container>
-                        <!-- Plan & Billing -->
-<!--                        <ng-container *ngSwitchCase="'plan-billing'">-->
-<!--                            <settings-plan-billing></settings-plan-billing>-->
-<!--                        </ng-container>-->
                     </ng-container>
                 </div>
 

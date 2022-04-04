@@ -10,7 +10,7 @@
         <div
             class="fuse-horizontal-navigation-item"
             [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item.active}"
-            [routerLink]="[item.link]"
+            [routerLink]="(item.id === 'profile' && user.isCurrentUser) ? [item.link, user.userId] : [item.link]"
             [routerLinkActive]="'fuse-horizontal-navigation-item-active'"
             [routerLinkActiveOptions]="isActiveMatchOptions"
             [matTooltip]="item.tooltip || ''">

@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { User } from "../../../core/user/user.types";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { switchMap, takeUntil } from "rxjs/operators";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { UserService } from "../../../core/user/user.service";
 import { fuseAnimations } from "@fuse/animations";
@@ -13,6 +13,7 @@ import { fuseAnimations } from "@fuse/animations";
 })
 export class FavoritesComponent {
 
+    user: User;
     favoriteUsers: User[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -39,10 +40,14 @@ export class FavoritesComponent {
         this._splashScreen.show();
         this._userService.getFavorites()
             .pipe(
+                switchMap((favorites: User[]) => {
+                    this.favoriteUsers = favorites;
+                    return this._userService.user$;
+                }),
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe((favorites: User[]) => {
-                this.favoriteUsers = favorites;
+            .subscribe((user: User) => {
+                this.user = user;
                 this._splashScreen.hide()
             });
     }

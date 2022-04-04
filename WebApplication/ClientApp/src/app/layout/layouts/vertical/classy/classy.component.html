@@ -38,6 +38,14 @@
                     {{user.name}}
                 </div>
             </div>
+            <div *ngIf="user?.isPlus"
+                 class="rounded-2xl bg-teal-300 text-black p-1 mt-2">
+                Plus
+            </div>
+            <div *ngIf="!user?.isPlus"
+                 class="rounded-2xl bg-gray-300 text-black p-1 mt-2">
+                Basic
+            </div>
         </div>
     </ng-container>
 </fuse-vertical-navigation>

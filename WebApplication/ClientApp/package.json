@@ -41,6 +41,7 @@
     "@ngx-translate/http-loader": "^6.0.0",
     "apexcharts": "3.28.1",
     "bootstrap": "^4.5.3",
+    "creditcardpayments": "^1.0.3",
     "crypto-js": "3.3.0",
     "firebase": "^9.1.1",
     "highlight.js": "11.2.0",

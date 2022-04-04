@@ -10,7 +10,7 @@
         <a
             class="flex justify-between fuse-vertical-navigation-item"
             [ngClass]="{'fuse-vertical-navigation-item-active-forced': item.active, 'py-0.5': item.id === 'dating'}"
-            [routerLink]="[item.link]"
+            [routerLink]="(item.id === 'profile' && user.isCurrentUser) ? [item.link, user.userId] : [item.link]"
             [routerLinkActive]="'fuse-vertical-navigation-item-active'"
             [routerLinkActiveOptions]="isActiveMatchOptions"
             [matTooltip]="item.tooltip || ''">

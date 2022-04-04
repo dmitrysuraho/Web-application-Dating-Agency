@@ -91,8 +91,8 @@ export class AuthSignInComponent implements OnInit
 
                     // Create error message
                     let errorMessage: string;
-                    if (response.message.indexOf('Firebase') == -1) {
-                        errorMessage = response.message;
+                    if (response.message.includes('has been disabled')) {
+                        errorMessage = this._translateService.instant('common.alert.disabled-user');
                     } else {
                         errorMessage = this._translateService.instant('common.alert.wrong-email-or-password');
                     }

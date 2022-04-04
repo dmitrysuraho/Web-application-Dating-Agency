@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { FuseAlertModule } from "@fuse/components/alert";
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -55,7 +56,8 @@ import { calendarRoutes } from 'app/modules/pages/calendar/calendar.routing';
         FuseDateRangeModule,
         SharedModule,
         MatProgressSpinnerModule,
-        TranslateModule
+        TranslateModule,
+        FuseAlertModule
     ],
     providers   : [
         {

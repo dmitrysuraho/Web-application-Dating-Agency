@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication.Models
 {
@@ -18,6 +17,7 @@ namespace WebApplication.Models
         public string Phone { get; set; }
         public bool IsPlus { get; set; }
 
+        public Subscription Subscriptions { get; set; }
         public Notification Notifications { get; set; }
         public List<Gallery> Galleries { get; set; }
         public List<Blacklist> Blacklists { get; set; }

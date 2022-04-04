@@ -6,6 +6,7 @@ namespace WebApplication.Models
     public class ApplicationContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Gallery> Galleries { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Notification> Notifications { get; set; }

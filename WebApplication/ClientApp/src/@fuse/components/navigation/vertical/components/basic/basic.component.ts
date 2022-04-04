@@ -8,7 +8,9 @@ import { FuseNavigationService } from '@fuse/components/navigation/navigation.se
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import { DatingSettingsDialogComponent } from "@fuse/components/navigation/dating-settings-dialog/dating-settings-dialog.component";
-import { ChatService } from "../../../../../../app/modules/pages/chat/chat.service";
+import { ChatService } from "app/modules/pages/chat/chat.service";
+import { User } from "app/core/user/user.types";
+import { UserService } from "app/core/user/user.service";
 
 @Component({
     selector       : 'fuse-vertical-navigation-basic-item',
@@ -20,6 +22,7 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
     @Input() item: FuseNavigationItem;
     @Input() name: string;
 
+    user: User;
     isActiveMatchOptions: IsActiveMatchOptions;
     private _fuseVerticalNavigationComponent: FuseVerticalNavigationComponent;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -32,7 +35,8 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
         private _fuseNavigationService: FuseNavigationService,
         private _fuseUtilsService: FuseUtilsService,
         private _dialog: MatDialog,
-        private _chatService: ChatService
+        private _chatService: ChatService,
+        private _userService: UserService
     )
     {
         // Set the equivalent of {exact: false} as default for active match options.
@@ -73,6 +77,12 @@ export class FuseVerticalNavigationBasicItemComponent implements OnInit, OnDestr
             // Mark for check
             this._changeDetectorRef.markForCheck();
         });
+
+        this._userService.user$
+            .pipe(
+                takeUntil(this._unsubscribeAll)
+            )
+            .subscribe((user: User) => this.user = user);
     }
 
     /**

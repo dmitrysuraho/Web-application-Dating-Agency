@@ -7,6 +7,7 @@ import { User } from 'app/core/user/user.types';
 import { Notification } from 'app/core/user/notification.types';
 import { Dating } from './dating.types';
 import { Post } from "./post.types";
+import { Subscription } from "./subscription.types";
 
 @Injectable({
     providedIn: 'root'
@@ -60,6 +61,15 @@ export class UserService
     }
 
     /**
+     * Is user disabled
+     *
+     * @param id
+     */
+    isUserDisabled(id: string): Observable<boolean> {
+        return this._httpClient.get<boolean>(`api/users/${id}/blocking`);
+    }
+
+    /**
      * Get user by id
      *
      * @param id
@@ -77,6 +87,22 @@ export class UserService
     updateCurrentUser(user: User): Observable<User>
     {
         return this._httpClient.put<User>('api/users', user);
+    }
+
+    /**
+     * Get subscription
+     */
+    getSubscription(): Observable<Subscription> {
+        return this._httpClient.get<Subscription>('api/users/subscription');
+    }
+
+    /**
+     * Buy subscription
+     *
+     * @param end
+     */
+    buySubscription(end: Date): Observable<Subscription> {
+        return this._httpClient.put<Subscription>('api/users/subscription', { end: end });
     }
 
     /**

@@ -40,14 +40,20 @@ namespace WebApplication.Models
             return calendar;
         }
 
-        public Calendar ChangeCalendars(int calendarId, Calendar newCalendar)
+        public object ChangeCalendars(int calendarId, Calendar newCalendar)
         {
             Calendar calendar = _context.Calendars.Find(calendarId);
             calendar.Title = newCalendar.Title;
             calendar.Color = newCalendar.Color;
             calendar.Visible = newCalendar.Visible;
             _context.SaveChanges();
-            return calendar;
+            return new
+            {
+                id = calendar.Id,
+                title = calendar.Title,
+                color = calendar.Color,
+                visible = calendar.Visible
+            };
         }
 
         public void DeleteCalendars(int calendarId)

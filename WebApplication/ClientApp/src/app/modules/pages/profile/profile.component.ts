@@ -10,7 +10,7 @@ import  localeEn  from "@angular/common/locales/en-GB";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
 import { Observable, of, Subject } from "rxjs";
-import { catchError, switchMap, takeUntil } from "rxjs/operators";
+import {catchError, switchMap, takeUntil, tap} from "rxjs/operators";
 import { User } from "../../../core/user/user.types";
 import { UserService } from "../../../core/user/user.service";
 
@@ -20,6 +20,7 @@ import { UserService } from "../../../core/user/user.service";
 })
 export class ProfileComponent implements OnInit, OnDestroy
 {
+    isDisabled: boolean;
     user: Observable<User>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -53,7 +54,19 @@ export class ProfileComponent implements OnInit, OnDestroy
             .pipe(
                 switchMap((params: HttpParams) => {
                     const id: string = params['id'];
-                    return id ? this._userService.getUserById(id) : this._userService.getCurrentUser();
+                    return id ? this._userService.isUserDisabled(id)
+                            .pipe(
+                                switchMap((result: boolean) => {
+                                    this.isDisabled = result;
+                                    return this._userService.getUserById(id)
+                                })
+                            )
+                        : this._userService.getCurrentUser();
+                }),
+                tap((user: User) => {
+                    if (this._router.url === '/profile') {
+                        this._router.navigate(['profile', user.userId]);
+                    }
                 }),
                 takeUntil(this._unsubscribeAll),
                 catchError(() => {
