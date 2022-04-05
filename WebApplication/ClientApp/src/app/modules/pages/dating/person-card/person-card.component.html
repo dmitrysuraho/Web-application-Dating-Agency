@@ -1,5 +1,5 @@
 <fuse-card
-    *ngIf="user; else spinner"
+    *ngIf="user && isDisabled !== undefined; else spinner"
     class="flex lg:w-240 lg:h-140"
     [ngClass]="{ 'flex-col': !isScreenLarge }">
     <div
@@ -16,7 +16,7 @@
             </slide>
         </carousel>
         <img
-            *ngIf="!user?.gallery.length"
+            *ngIf="!user?.gallery.length || isDisabled"
             class="object-cover"
             src="assets/images/defaults/default-placeholder.png"
             [ngClass]="{ 'w-full h-full ': isScreenLarge, 'w-120 h-80': !isScreenLarge && !isScreenXSmall, 'w-100 h-50': isScreenXSmall }">
@@ -27,10 +27,20 @@
         <div>
             <div class="flex justify-between items-center">
                 <div class="flex flex-row text-2xl items-center font-semibold leading-tight">
-                    <div
-                        class="self-center break-all"
-                        [ngClass]="{ '': isScreenXSmall }">{{ user.name }}</div>
+                    <div class="flex justify-center items-center break-all">
+                        <img
+                            *ngIf="user.photo"
+                            class="w-12 min-w-12 h-12 rounded-full mr-4"
+                            [src]="user.photo"
+                            alt="Card cover image">
+                        <mat-icon
+                            *ngIf="!user.photo"
+                            class="w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+                            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        <span>{{ user.name }}</span>
+                    </div>
                     <button
+                        *ngIf="!isDisabled"
                         class="ml-1"
                         mat-icon-button
                         [disabled]="isBlocking"
@@ -64,7 +74,7 @@
                         </button>
                     </mat-menu>
                 </div>
-                <div>
+                <div *ngIf="!isDisabled">
                     <button
                         class="w-10 h-10"
                         mat-fab
@@ -77,13 +87,23 @@
                     </button>
                 </div>
             </div>
-            <hr class="w-full border-t my-6">
+            <fuse-alert
+                *ngIf="isDisabled"
+                class="mt-8 -mb-4"
+                [appearance]="'outline'"
+                [showIcon]="true"
+                [type]="'error'">
+                {{ 'dating.person-card.disabled-alert' | translate }}
+            </fuse-alert>
+            <hr *ngIf="!isDisabled"
+                class="w-full border-t my-6">
             <div
-                *ngIf="user?.about"
+                *ngIf="user?.about && !isDisabled"
                 class="mb-6">
                 {{ user.about }}
             </div>
-            <div class="flex flex-col">
+            <div *ngIf="!isDisabled"
+                 class="flex flex-col">
                 <div
                     *ngIf="user?.sex"
                     class="flex items-center">
@@ -106,7 +126,7 @@
         </div>
         <div class="flex justify-center mt-6">
             <button
-                class="mr-1"
+                [ngClass]="{'mr-1': !isDisabled}"
                 mat-fab
                 [color]="'accent'"
                 (click)="dating('ignore')">
@@ -115,6 +135,7 @@
                     [svgIcon]="'heroicons_solid:x'"></mat-icon>
             </button>
             <button
+                *ngIf="!isDisabled"
                 class="ml-1"
                 mat-fab
                 [color]="'primary'"

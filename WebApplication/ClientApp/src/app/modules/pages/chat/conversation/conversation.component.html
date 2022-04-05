@@ -41,6 +41,7 @@
                     </div>
 
                     <button
+                        *ngIf="!isDisabled"
                         mat-icon-button
                         [disabled]="chat.member.isBlocked || chat.member.isYouBlocked || !user?.isPlus"
                         (click)="_makeCall()">
@@ -49,6 +50,7 @@
 
 
                     <button
+                        *ngIf="!isDisabled"
                         class="ml-auto"
                         mat-icon-button
                         [matMenuTriggerFor]="conversationHeaderMenu">
@@ -80,99 +82,102 @@
                 </div>
 
                 <!-- Conversation -->
-                <div
-                    *ngIf="chat?.messages.length; else writeFirst"
-                    class="flex overflow-y-scroll flex-col-reverse h-full">
-                    <div class="flex flex-col flex-auto flex-shrink p-6 bg-card dark:bg-transparent">
-                        <ng-container *ngFor="let message of chat.messages; let i = index; let first = first; let last = last; trackBy: trackByFn">
-                            <!-- Start of the day -->
-                            <ng-container *ngIf="first || (chat.messages[i - 1].createdAt | date:'d') !== (message.createdAt | date:'d')">
-                                <div class="flex items-center justify-center my-3 -mx-6">
-                                    <div class="flex-auto border-b"></div>
-                                    <div class="flex-0 mx-4 text-sm font-medium leading-5 text-secondary">
-                                        {{ message.createdAt | date: 'longDate' : '' : getLang }}
+                <ng-container *ngIf="!isDisabled;">
+                    <div
+                        *ngIf="chat?.messages.length; else writeFirst"
+                        class="flex overflow-y-scroll flex-col-reverse h-full">
+                        <div class="flex flex-col flex-auto flex-shrink p-6 bg-card dark:bg-transparent">
+                            <ng-container *ngFor="let message of chat.messages; let i = index; let first = first; let last = last; trackBy: trackByFn">
+                                <!-- Start of the day -->
+                                <ng-container *ngIf="first || (chat.messages[i - 1].createdAt | date:'d') !== (message.createdAt | date:'d')">
+                                    <div class="flex items-center justify-center my-3 -mx-6">
+                                        <div class="flex-auto border-b"></div>
+                                        <div class="flex-0 mx-4 text-sm font-medium leading-5 text-secondary">
+                                            {{ message.createdAt | date: 'longDate' : '' : getLang }}
+                                        </div>
+                                        <div class="flex-auto border-b"></div>
                                     </div>
-                                    <div class="flex-auto border-b"></div>
-                                </div>
-                            </ng-container>
-                            <ng-container *ngIf="i === (chat.messages.length - chat.unreadCount)">
-                                <div class="flex items-center justify-center my-3 -mx-6">
-                                    <div class="flex-auto border-b border-primary"></div>
-                                    <div class="flex-0 mx-4 text-sm font-medium leading-5 text-primary">
-                                        {{ 'chat.new-messages' | translate }}
+                                </ng-container>
+                                <ng-container *ngIf="i === (chat.messages.length - chat.unreadCount)">
+                                    <div class="flex items-center justify-center my-3 -mx-6">
+                                        <div class="flex-auto border-b border-primary"></div>
+                                        <div class="flex-0 mx-4 text-sm font-medium leading-5 text-primary">
+                                            {{ 'chat.new-messages' | translate }}
+                                        </div>
+                                        <div class="flex-auto border-b border-primary"></div>
                                     </div>
-                                    <div class="flex-auto border-b border-primary"></div>
-                                </div>
-                            </ng-container>
-                            <div
-                                class="flex flex-col"
-                                [ngClass]="{'items-end': message.isMine,
+                                </ng-container>
+                                <div
+                                    class="flex flex-col"
+                                    [ngClass]="{'items-end': message.isMine,
                                         'items-start': !message.isMine,
                                         'mt-0.5': i > 0 && chat.messages[i - 1].isMine === message.isMine,
                                         'mt-3': i > 0 && chat.messages[i - 1].isMine !== message.isMine}">
-                                <!-- Bubble -->
-                                <div
-                                    class="relative max-w-3/4 px-3 py-2 rounded-lg"
-                                    [ngClass]="{'bg-blue-500 text-blue-50': message.isMine,
-                                            'bg-gray-500 text-gray-50': !message.isMine}">
-                                    <!-- Speech bubble tail -->
-                                    <ng-container *ngIf="last || chat.messages[i + 1].isMine !== message.isMine">
-                                        <div
-                                            class="absolute bottom-0 w-3 transform"
-                                            [ngClass]="{'text-blue-500 -right-1 -mr-px mb-px': message.isMine,
-                                                    'text-gray-500 -left-1 -ml-px mb-px -scale-x-1': !message.isMine}">
-                                            <ng-container *ngTemplateOutlet="speechBubbleExtension"></ng-container>
-                                        </div>
-                                    </ng-container>
-                                    <!-- Message -->
+                                    <!-- Bubble -->
                                     <div
-                                        class="min-w-4 leading-5 break-words">
-                                        <ng-container *ngIf="message?.messageText">
-                                            {{ message.messageText }}
+                                        class="relative max-w-3/4 px-3 py-2 rounded-lg"
+                                        [ngClass]="{'bg-blue-500 text-blue-50': message.isMine,
+                                            'bg-gray-500 text-gray-50': !message.isMine}">
+                                        <!-- Speech bubble tail -->
+                                        <ng-container *ngIf="last || chat.messages[i + 1].isMine !== message.isMine">
+                                            <div
+                                                class="absolute bottom-0 w-3 transform"
+                                                [ngClass]="{'text-blue-500 -right-1 -mr-px mb-px': message.isMine,
+                                                    'text-gray-500 -left-1 -ml-px mb-px -scale-x-1': !message.isMine}">
+                                                <ng-container *ngTemplateOutlet="speechBubbleExtension"></ng-container>
+                                            </div>
                                         </ng-container>
-                                        <img
-                                            *ngIf="message?.messageImage"
-                                            [ngClass]="{ 'mt-2': message?.messageText }"
-                                            alt="Message image"
-                                            [src]="message.messageImage">
+                                        <!-- Message -->
+                                        <div
+                                            class="min-w-4 leading-5 break-words">
+                                            <ng-container *ngIf="message?.messageText">
+                                                {{ message.messageText }}
+                                            </ng-container>
+                                            <img
+                                                *ngIf="message?.messageImage"
+                                                [ngClass]="{ 'mt-2': message?.messageText }"
+                                                alt="Message image"
+                                                [src]="message.messageImage">
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- Time -->
-                                <ng-container
-                                    *ngIf="first
+                                    <!-- Time -->
+                                    <ng-container
+                                        *ngIf="first
                                        || last
                                        || chat.messages[i + 1].isMine !== message.isMine
                                        || chat.messages[i + 1].createdAt !== message.createdAt">
-                                    <div
-                                        class="my-0.5 text-sm font-medium text-secondary">
-                                        {{ message.createdAt | date:'HH:mm' }}
-                                    </div>
-                                </ng-container>
-                            </div>
-                        </ng-container>
+                                        <div
+                                            class="my-0.5 text-sm font-medium text-secondary">
+                                            {{ message.createdAt | date:'HH:mm' }}
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </div>
                     </div>
-                </div>
+                </ng-container>
 
                 <!-- Message field -->
-                <form
-                    *ngIf="!chat.member.isBlocked && !chat.member.isYouBlocked; else blocked"
-                    class="flex items-start p-4 border-t bg-gray-50 dark:bg-transparent"
-                    [formGroup]="sendForm">
-                    <div class="flex items-center h-11 my-px">
-                        <button
-                            mat-icon-button
-                            (click)="fileInput.click()">
-                            <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
-                        </button>
-                        <input hidden
-                               #fileInput
-                               type="file"
-                               id="postImage"
-                               accept="image/jpeg, image/png"
-                               (change)="addImage()">
-                    </div>
-                    <div class="w-full ml-2">
-                        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded fuse-mat-bold w-full">
+                <ng-container *ngIf="!isDisabled; else disabled">
+                    <form
+                        *ngIf="!chat.member.isBlocked && !chat.member.isYouBlocked; else blocked"
+                        class="flex items-start p-4 border-t bg-gray-50 dark:bg-transparent"
+                        [formGroup]="sendForm">
+                        <div class="flex items-center h-11 my-px">
+                            <button
+                                mat-icon-button
+                                (click)="fileInput.click()">
+                                <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
+                            </button>
+                            <input hidden
+                                   #fileInput
+                                   type="file"
+                                   id="postImage"
+                                   accept="image/jpeg, image/png"
+                                   (change)="addImage()">
+                        </div>
+                        <div class="w-full ml-2">
+                            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded fuse-mat-bold w-full">
                             <textarea
                                 class="min-h-5 my-0 resize-none"
                                 style="margin: 11px 0 !important; padding: 0 !important;"
@@ -183,39 +188,40 @@
                                 (keydown.enter)="send($event)"
                                 matInput
                                 #messageInput></textarea>
-                        </mat-form-field>
-                        <div
-                            *ngIf="srcFile"
-                            class="flex flex-col items-end w-50">
-                            <button mat-mini-fab
-                                    class="top-3 left-3 icon-size-6"
-                                    [color]="'warn'"
-                                    (click)="deleteImage()">
-                                <mat-icon
-                                    [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                            </button>
-                            <img
-                                class="rounded-2xl"
-                                alt="Post image"
-                                [src]="srcFile">
+                            </mat-form-field>
+                            <div
+                                *ngIf="srcFile"
+                                class="flex flex-col items-end w-50">
+                                <button mat-mini-fab
+                                        class="top-3 left-3 icon-size-6"
+                                        [color]="'warn'"
+                                        (click)="deleteImage()">
+                                    <mat-icon
+                                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                                </button>
+                                <img
+                                    class="rounded-2xl"
+                                    alt="Post image"
+                                    [src]="srcFile">
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex items-center h-11 my-px ml-2">
-                        <button
-                            mat-icon-button
-                            [disabled]="isSending"
-                            (click)="send(null)">
-                            <mat-icon
-                                *ngIf="!isSending"
-                                class="transform rotate-90"
-                                [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
-                            <mat-progress-spinner
-                                *ngIf="isSending"
-                                [diameter]="24"
-                                [mode]="'indeterminate'"></mat-progress-spinner>
-                        </button>
-                    </div>
-                </form>
+                        <div class="flex items-center h-11 my-px ml-2">
+                            <button
+                                mat-icon-button
+                                [disabled]="isSending"
+                                (click)="send(null)">
+                                <mat-icon
+                                    *ngIf="!isSending"
+                                    class="transform rotate-90"
+                                    [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
+                                <mat-progress-spinner
+                                    *ngIf="isSending"
+                                    [diameter]="24"
+                                    [mode]="'indeterminate'"></mat-progress-spinner>
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
 
             </mat-drawer-content>
 
@@ -232,6 +238,18 @@
             [isContentCentered]="true">
             {{ 'chat.block-alert' | translate }}
         </fuse-alert>
+    </ng-template>
+
+    <!-- Disabled -->
+    <ng-template #disabled>
+        <div class="m-auto p-6">
+            <fuse-alert
+                [appearance]="'outline'"
+                [showIcon]="true"
+                [type]="'error'">
+                {{ 'chat.disabled-alert' | translate }}
+            </fuse-alert>
+        </div>
     </ng-template>
 
     <!-- Spinner -->

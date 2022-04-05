@@ -13,7 +13,7 @@ import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { AngularFireStorageReference } from "@angular/fire/compat/storage";
 import { MatDialog } from "@angular/material/dialog";
-import { Observable, of, Subject } from 'rxjs';
+import {forkJoin, Observable, of, Subject} from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Chat, Message } from '../chat.types';
@@ -45,6 +45,7 @@ export class ConversationComponent implements OnInit, OnDestroy
     isSending: boolean;
     srcFile: string;
     image: any;
+    isDisabled: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -128,11 +129,12 @@ export class ConversationComponent implements OnInit, OnDestroy
                 }),
                 switchMap((chat: Chat) => {
                     this.chat = chat;
-                    return this._chatService.readMessages(chat.chatId);
+                    return forkJoin(this._chatService.readMessages(chat.chatId), this._userService.isUserDisabled(chat.member.userId));
                 }),
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe(() => {
+            .subscribe((result) => {
+                this.isDisabled = result[1];
                 this.isGettingChat = false;
             });
 

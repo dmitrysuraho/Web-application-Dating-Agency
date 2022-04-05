@@ -37,6 +37,8 @@ export class PersonCardComponent implements OnInit, OnDestroy
     isScreenXSmall: boolean;
     currentLang: string;
     isBlocking: boolean;
+    isDisabled: boolean;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -104,6 +106,10 @@ export class PersonCardComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this._userService.isUserDisabled(this.user.userId)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((result: boolean) => this.isDisabled = result);
+
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -152,18 +158,23 @@ export class PersonCardComponent implements OnInit, OnDestroy
 
         // Set candidate in null
         this.user = null;
+        this.isDisabled = undefined;
 
         // Dating and get new candidate
         this._userService.dating(dating)
             .pipe(
+                switchMap((user: User) => {
+                    this.user = user;
+                    return this._userService.isUserDisabled(user.userId);
+                }),
                 takeUntil(this._unsubscribeAll),
                 catchError(() => {
                     this.onNotFound.emit();
                     return of(null);
                 })
             )
-            .subscribe((user: User) => {
-                this.user = user;
+            .subscribe((result:  boolean) => {
+                this.isDisabled = result;
             });
     }
 
