@@ -58,7 +58,7 @@
                     <mat-menu #listCard09Menu="matMenu">
                         <button
                             mat-menu-item
-                            (click)="null">
+                            (click)="report()">
                             <mat-icon
                                 class="icon-size-5 mr-2"
                                 [svgIcon]="'heroicons_solid:speakerphone'"></mat-icon>
@@ -89,7 +89,7 @@
             </div>
             <fuse-alert
                 *ngIf="isDisabled"
-                class="mt-8 -mb-4"
+                class="mt-8"
                 [appearance]="'outline'"
                 [showIcon]="true"
                 [type]="'error'">

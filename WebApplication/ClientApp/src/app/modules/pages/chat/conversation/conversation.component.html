@@ -44,7 +44,7 @@
                         *ngIf="!isDisabled"
                         mat-icon-button
                         [disabled]="chat.member.isBlocked || chat.member.isYouBlocked || !user?.isPlus"
-                        (click)="_makeCall()">
+                        (click)="makeCall()">
                         <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                     </button>
 
@@ -63,17 +63,17 @@
                             [mode]="'indeterminate'"></mat-progress-spinner>
                         <mat-menu #conversationHeaderMenu>
                             <button mat-menu-item
-                                    (click)="_showAttachments()">
+                                    (click)="showAttachments()">
                                 <mat-icon [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
                                 {{ 'chat.show-attachments' | translate }}
                             </button>
                             <button mat-menu-item
-                                    (click)="null">
+                                    (click)="report()">
                                 <mat-icon [svgIcon]="'heroicons_outline:speakerphone'"></mat-icon>
                                 {{ 'chat.report' | translate }}
                             </button>
                             <button mat-menu-item
-                                    (click)="chat.member.isBlocked ? _unblock() : _block()">
+                                    (click)="chat.member.isBlocked ? unblock() : block()">
                                 <mat-icon [svgIcon]="'heroicons_outline:exclamation'"></mat-icon>
                                 {{ (chat.member.isBlocked ? 'chat.unblock' : 'chat.block') | translate }}
                             </button>

@@ -3,6 +3,7 @@ import { Post } from "./post.types";
 export interface User
 {
     userId: string;
+    uid?: string;
     sex?: string;
     name: string;
     birthday?: Date;

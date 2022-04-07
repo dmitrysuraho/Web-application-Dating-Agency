@@ -111,6 +111,7 @@ namespace WebApplication.Models
             return new
             {
                 userId = member.UserId,
+                uid = member.Uid,
                 name = member.Name,
                 photo = member.Photo,
                 isBlocked = IsUserBlocked(currentId, member.UserId),

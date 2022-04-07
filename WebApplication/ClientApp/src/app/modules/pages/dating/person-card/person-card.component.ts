@@ -10,12 +10,14 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { of, Subject } from "rxjs";
 import { catchError, switchMap, takeUntil } from "rxjs/operators";
+import { MatDialog } from "@angular/material/dialog";
 import { fuseAnimations } from "@fuse/animations";
 import { FuseMediaWatcherService } from "@fuse/services/media-watcher";
 import { UserService } from "../../../../core/user/user.service";
 import { User } from "../../../../core/user/user.types";
 import { Dating } from "../../../../core/user/dating.types";
 import { NotificationsService } from "../../../../layout/common/notifications/notifications.service";
+import { ReportDialogComponent } from "../../../../shared/report-dialog/report-dialog.component";
 
 @Component({
     selector       : 'person-card',
@@ -50,7 +52,8 @@ export class PersonCardComponent implements OnInit, OnDestroy
         private _userService: UserService,
         private _translateService: TranslateService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _notificationsService: NotificationsService
+        private _notificationsService: NotificationsService,
+        private _dialog: MatDialog
     )
     {
     }
@@ -176,6 +179,16 @@ export class PersonCardComponent implements OnInit, OnDestroy
             .subscribe((result:  boolean) => {
                 this.isDisabled = result;
             });
+    }
+
+    /**
+     * Report
+     */
+    report(): void {
+        this._dialog.open(ReportDialogComponent, {
+            maxWidth: '320px',
+            data: { user: this.user }
+        });
     }
 
     /**

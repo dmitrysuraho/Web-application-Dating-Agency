@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
-import { AuthService } from "./core/auth/auth.service";
+import { init } from '@emailjs/browser';
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { AuthService } from "./core/auth/auth.service";
 
 @Component({
     selector   : 'app-root',
@@ -47,5 +48,8 @@ export class AppComponent
         } else {
             this._translateService.use('ru');
         }
+
+        // Init EmailJS
+        init("BO9wpFNiCkzEZbPiH");
     }
 }

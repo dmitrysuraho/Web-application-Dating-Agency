@@ -26,6 +26,7 @@ import { AttachmentsDialogComponent } from "../attachments-dialog/attachments-di
 import { CalendarService } from "../../calendar/calendar.service";
 import { NavigationService } from "../../../../core/navigation/navigation.service";
 import { CallDialogComponent } from "../call-dialog/call-dialog.component";
+import { ReportDialogComponent } from "../../../../shared/report-dialog/report-dialog.component";
 
 @Component({
     selector       : 'chat-conversation',
@@ -283,16 +284,26 @@ export class ConversationComponent implements OnInit, OnDestroy
     /**
      * Show attachments
      */
-    _showAttachments(): void {
+    showAttachments(): void {
         this._dialog.open(AttachmentsDialogComponent, {
             data: { chatId: this.chat.chatId }
         });
     }
 
     /**
+     * Report
+     */
+    report(): void {
+        this._dialog.open(ReportDialogComponent, {
+            maxWidth: '320px',
+            data: { user: this.chat.member }
+        });
+    }
+
+    /**
      * Block user
      */
-    _block(): void {
+    block(): void {
         this.isBlocking = true;
         this._userService.blockUser(this.chat.member.userId)
             .pipe(
@@ -307,7 +318,7 @@ export class ConversationComponent implements OnInit, OnDestroy
     /**
      * Unblock user
      */
-    _unblock(): void {
+    unblock(): void {
         this.isBlocking = true;
         this._userService.unblockUser(this.chat.member.userId)
             .pipe(
@@ -322,7 +333,7 @@ export class ConversationComponent implements OnInit, OnDestroy
     /**
      * Make call
      */
-    _makeCall(): void {
+    makeCall(): void {
         this._dialog.open(CallDialogComponent, {
             panelClass: 'no-dialog-radius',
             maxWidth: '100vw',

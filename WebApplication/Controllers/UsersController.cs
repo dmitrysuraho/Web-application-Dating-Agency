@@ -202,6 +202,7 @@ namespace WebApplication.Controllers
             return Json(new
             {
                 userId = user.UserId,
+                uid = user.Uid,
                 sex = user.Sex,
                 name = user.Name,
                 birthday = user.Birthday,

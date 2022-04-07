@@ -1,0 +1,97 @@
+<div mat-dialog-title>
+    <div class="flex items-center break-all">
+        <img
+            *ngIf="data.user.photo"
+            class="w-12 min-w-12 h-12 rounded-full mr-4"
+            [src]="data.user.photo"
+            alt="Card cover image">
+        <mat-icon
+            *ngIf="!data.user.photo"
+            class="w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+        <span>{{ data.user.name }}</span>
+    </div>
+</div>
+<div mat-dialog-content>
+    <hr class="w-full border-t"
+        [ngStyle]="{'margin': 0}">
+    <form (submit)="sendReport($event)">
+        <fuse-alert
+            *ngIf="isFail"
+            [appearance]="'outline'"
+            [showIcon]="true"
+            [type]="'error'">
+            {{ failText }}
+        </fuse-alert>
+        <fuse-alert
+            *ngIf="isSuccess"
+            [appearance]="'outline'"
+            [showIcon]="true"
+            [type]="'success'">
+            {{ 'report-dialog.success-alert' | translate }}
+        </fuse-alert>
+        <ng-container *ngIf="!isSuccess">
+            <div class="flex flex-col w-full">
+                <input hidden
+                       name="subject"
+                       [value]="'report-dialog.subject' | translate: {name: data.user.name}">
+                <input hidden
+                       name="uid"
+                       [value]="data.user.uid">
+                <mat-form-field class="mt-4 fuse-mat-textarea fuse-mat-no-subscript">
+                        <textarea
+                            matInput
+                            matTextareaAutosize
+                            #description
+                            name="message"
+                            [(ngModel)]="reportText"
+                            [disabled]="isSending"
+                            [placeholder]="'report-dialog.description-placeholder' | translate"
+                            [rows]="3"
+                            [maxLength]="150"></textarea>
+                </mat-form-field>
+                <div
+                    *ngIf="description.value.length"
+                    class="text-right mt-1 text-md text-hint">{{ description.value.length }} / 150</div>
+                <img
+                    *ngIf="srcFile"
+                    class="mt-2 rounded-2xl"
+                    alt="Post image"
+                    [ngStyle]="{'max-width': '320px'}"
+                    [src]="srcFile">
+            </div>
+            <div class="flex items-center justify-between mt-2 -mx-3">
+                <button
+                    class="px-3"
+                    type="button"
+                    mat-button
+                    [disabled]="isSending"
+                    (click)="fileInput.click()">
+                    <mat-icon
+                        class="icon-size-5 mr-2"
+                        [svgIcon]="'heroicons_solid:photograph'"></mat-icon>
+                    <span>{{ (!srcFile ? 'report-dialog.add-image' : 'report-dialog.change-image') | translate }}</span>
+                </button>
+                <button
+                    class="px-3"
+                    type="submit"
+                    mat-button
+                    [disabled]="isSending"
+                    [color]="'primary'">
+                    <span *ngIf="!isSending">{{ 'report-dialog.send' | translate }}</span>
+                    <mat-progress-spinner
+                        *ngIf="isSending"
+                        [diameter]="24"
+                        [mode]="'indeterminate'"></mat-progress-spinner>
+                </button>
+                <input hidden
+                       #fileInput
+                       type="file"
+                       id="proof"
+                       name="proof"
+                       accept="image/jpeg, image/png"
+                       (change)="addImage()">
+            </div>
+        </ng-container>
+    </form>
+</div>

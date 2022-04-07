@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
@@ -8,6 +9,7 @@ import { UploadService } from "../../../../core/upload/upload.service";
 import { UserService } from "../../../../core/user/user.service";
 import { ChatService } from "../../chat/chat.service";
 import { Chat } from "../../chat/chat.types";
+import { ReportDialogComponent } from "app/shared/report-dialog/report-dialog.component";
 
 @Component({
     selector       : 'info',
@@ -32,7 +34,8 @@ export class InfoComponent implements OnDestroy
         private _upload: UploadService,
         private _userService: UserService,
         private _splashScreen: FuseSplashScreenService,
-        private _chatService: ChatService
+        private _chatService: ChatService,
+        private _dialog: MatDialog
     )
     {
     }
@@ -58,7 +61,7 @@ export class InfoComponent implements OnDestroy
     /**
      * Add/Change photo
      */
-    uploadPhoto() {
+    uploadPhoto(): void {
         // Get input file
         const inputNode: any = document.querySelector('#uploadPhoto');
 
@@ -76,8 +79,18 @@ export class InfoComponent implements OnDestroy
     /**
      * Delete photo
      */
-    deletePhoto() {
+    deletePhoto(): void {
         this._upload.deleteAvatar(this.user);
+    }
+
+    /**
+     * Report
+     */
+    report(): void {
+        this._dialog.open(ReportDialogComponent, {
+            maxWidth: '320px',
+            data: { user: this.user }
+        });
     }
 
     /**
@@ -145,7 +158,7 @@ export class InfoComponent implements OnDestroy
      *
      * @param url
      */
-    navigate(url: string) {
+    navigate(url: string): void {
         this._router.navigate([url]);
     }
 }

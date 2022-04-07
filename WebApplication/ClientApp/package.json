@@ -28,6 +28,7 @@
     "@angular/router": "12.2.3",
     "@cometchat-pro/chat": "^3.0.3",
     "@ctrl/ngx-emoji-mart": "^1.0.6",
+    "@emailjs/browser": "^3.5.0",
     "@fullcalendar/angular": "4.4.5-beta",
     "@fullcalendar/core": "4.4.2",
     "@fullcalendar/daygrid": "4.4.2",
