@@ -256,7 +256,6 @@
     "calendar.upcoming-events": "Upcoming events: {{count}}",
     "calendar.no-subscription.title": "No subscription.",
     "calendar.no-subscription.description": "Subscribe to use the calendar.",
-    "report-dialog.subject": "Report for user: {{name}}",
     "report-dialog.description-placeholder": "Description",
     "report-dialog.add-image": "Proof",
     "report-dialog.change-image": "Change",

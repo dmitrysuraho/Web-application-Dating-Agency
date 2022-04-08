@@ -257,7 +257,6 @@
     "calendar.upcoming-events": "Предстоящие события: {{count}} ",
     "calendar.no-subscription.title": "Нет подписки.",
     "calendar.no-subscription.description": "Оформите подписку, чтобы пользоваться календарем.",
-    "report-dialog.subject": "Жалоба на пользователя: {{name}}",
     "report-dialog.description-placeholder": "Описание жалобы",
     "report-dialog.add-image": "Доказательство",
     "report-dialog.change-image": "Изменить",
