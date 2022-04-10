@@ -11,7 +11,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DOCUMENT } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { of, Subject } from "rxjs";
-import { switchMap, takeUntil } from "rxjs/operators";
+import {switchMap, takeUntil, tap} from "rxjs/operators";
 import { PaypalDialogComponent } from "./paypal-dialog/paypal-dialog.component";
 import { User } from "app/core/user/user.types";
 import { UserService } from "app/core/user/user.service";
@@ -32,6 +32,7 @@ export class SettingsPlanBillingComponent implements OnInit, OnDestroy
     @ViewChild('planRadioGroup')
     selectedPlan: HTMLElement;
 
+    isLoading: boolean;
     planBillingForm: FormGroup;
     plans: any[];
     isBuy: boolean = false;
@@ -79,24 +80,24 @@ export class SettingsPlanBillingComponent implements OnInit, OnDestroy
         // Setup the plans
         this.plans = [
             {
-                value  : '5',
+                value  : '4.99',
                 label  : this._translateService.instant('profile.plan-billing.plan-1-title'),
                 details: this._translateService.instant('profile.plan-billing.plan-1-description'),
-                price  : '5',
+                price  : '4.99',
                 month  : 1
             },
             {
-                value  : '20',
+                value  : '19.99',
                 label  : this._translateService.instant('profile.plan-billing.plan-2-title'),
                 details: this._translateService.instant('profile.plan-billing.plan-2-description'),
-                price  : '20',
+                price  : '19.99',
                 month  : 6
             },
             {
-                value  : '40',
+                value  : '39.99',
                 label  : this._translateService.instant('profile.plan-billing.plan-3-title'),
                 details: this._translateService.instant('profile.plan-billing.plan-3-description'),
-                price  : '40',
+                price  : '39.99',
                 month  : 12
             }
         ];
@@ -133,6 +134,7 @@ export class SettingsPlanBillingComponent implements OnInit, OnDestroy
 
         dialogRef.afterClosed()
             .pipe(
+                tap(() => this.isLoading = true),
                 switchMap(result => result ? this._userService.buySubscription(end) : of(null)),
                 takeUntil(this._unsubscribeAll)
             )
@@ -142,6 +144,7 @@ export class SettingsPlanBillingComponent implements OnInit, OnDestroy
                     this._userService.user = this.user;
                     this.subscription = sub;
                     this.isBuy = true;
+                    this.isLoading = false;
                 }
             });
     }
