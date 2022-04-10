@@ -92,8 +92,8 @@ export class CallDialogComponent implements OnDestroy, OnInit {
             });
 
         if (!this.data.joinCall) {
-            this._callService.enableCallAnswer();
-            this._callService.sendCall(this._peerId, this.data.userId, this.data.user);
+            this._callService.enableCallAnswer()
+                .then(() => this._callService.sendCall(this._peerId, this.data.userId, this.data.user));
         }
     }
 
@@ -118,10 +118,12 @@ export class CallDialogComponent implements OnDestroy, OnInit {
      * Accept call
      */
     _acceptCall(): void {
-        this.isAnswer = false;
-        this._dialogRef.updateSize('100%', '100%');
-        this._dialogRef.addPanelClass('no-dialog-radius');
-        this._callService.establishMediaCall(this.data.peerId);
+        this._callService.establishMediaCall(this.data.peerId)
+            .then(() => {
+                this.isAnswer = false;
+                this._dialogRef.updateSize('100%', '100%');
+                this._dialogRef.addPanelClass('no-dialog-radius');
+            });
     }
 
     /**
