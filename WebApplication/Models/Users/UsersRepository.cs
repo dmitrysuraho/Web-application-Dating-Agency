@@ -100,7 +100,7 @@ namespace WebApplication.Models
         public User CheckPlus(User user)
         {
             Subscription subscription = _context.Subscriptions.Find(user.UserId);
-            if (subscription.End < DateTime.Now)
+            if (subscription != null && subscription.End < DateTime.Now)
             {
                 user.IsPlus = false;
                 _context.SaveChanges();
