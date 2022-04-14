@@ -296,7 +296,7 @@ export class ConversationComponent implements OnInit, OnDestroy
     report(): void {
         this._dialog.open(ReportDialogComponent, {
             maxWidth: '320px',
-            data: { user: this.chat.member }
+            data: { user: this.chat.member, currentUser: this.user }
         });
     }
 

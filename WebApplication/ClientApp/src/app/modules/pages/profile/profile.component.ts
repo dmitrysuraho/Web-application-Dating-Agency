@@ -20,6 +20,7 @@ import { UserService } from "../../../core/user/user.service";
 })
 export class ProfileComponent implements OnInit, OnDestroy
 {
+    currentUser: User;
     isDisabled: boolean;
     user: Observable<User>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -48,6 +49,13 @@ export class ProfileComponent implements OnInit, OnDestroy
         // Register locale data
         registerLocaleData(localeRu);
         registerLocaleData(localeEn);
+
+
+        // Get current user
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => this.currentUser = user);
+
 
         // Get user
         this.user = this._activatedRoute.params

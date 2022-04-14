@@ -187,7 +187,7 @@ export class PersonCardComponent implements OnInit, OnDestroy
     report(): void {
         this._dialog.open(ReportDialogComponent, {
             maxWidth: '320px',
-            data: { user: this.user }
+            data: { user: this.user, currentUser: this.currentUser }
         });
     }
 

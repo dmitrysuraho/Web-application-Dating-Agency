@@ -15,7 +15,8 @@
 <div mat-dialog-content>
     <hr class="w-full border-t"
         [ngStyle]="{'margin': 0}">
-    <form (submit)="sendReport($event)">
+    <form [formGroup]="reportForm"
+          (submit)="sendReport($event)">
         <fuse-alert
             *ngIf="isFail"
             [appearance]="'outline'"
@@ -41,14 +42,26 @@
                 <input hidden
                        name="uid"
                        [value]="data.user.uid">
+                <input hidden
+                       name="email"
+                       [value]="data.currentUser?.email ? data.currentUser?.email : reportForm.get('email').value">
+                <input hidden
+                       name="message"
+                       [value]="reportForm.get('description').value">
+                <mat-form-field *ngIf="!data.currentUser?.email"
+                                class="mt-4 fuse-mat-no-subscript">
+                    <input matInput
+                           name="email"
+                           [formControlName]="'email'"
+                           [placeholder]="'report-dialog.email-placeholder' | translate">
+                </mat-form-field>
                 <mat-form-field class="mt-4 fuse-mat-textarea fuse-mat-no-subscript">
                         <textarea
                             matInput
                             matTextareaAutosize
                             #description
                             name="message"
-                            [(ngModel)]="reportText"
-                            [disabled]="isSending"
+                            [formControlName]="'description'"
                             [placeholder]="'report-dialog.description-placeholder' | translate"
                             [rows]="3"
                             [maxLength]="150"></textarea>
@@ -63,12 +76,12 @@
                     [ngStyle]="{'max-width': '320px'}"
                     [src]="srcFile">
             </div>
-            <div class="flex items-center justify-between mt-2 -mx-3">
+            <div class="flex items-center justify-between mt-2">
                 <button
                     class="px-3"
                     type="button"
                     mat-button
-                    [disabled]="isSending"
+                    [disabled]="reportForm.disabled"
                     (click)="fileInput.click()">
                     <mat-icon
                         class="icon-size-5 mr-2"
@@ -79,11 +92,11 @@
                     class="px-3"
                     type="submit"
                     mat-button
-                    [disabled]="isSending"
+                    [disabled]="reportForm.disabled"
                     [color]="'primary'">
-                    <span *ngIf="!isSending">{{ 'report-dialog.send' | translate }}</span>
+                    <span *ngIf="!reportForm.disabled">{{ 'report-dialog.send' | translate }}</span>
                     <mat-progress-spinner
-                        *ngIf="isSending"
+                        *ngIf="reportForm.disabled"
                         [diameter]="24"
                         [mode]="'indeterminate'"></mat-progress-spinner>
                 </button>

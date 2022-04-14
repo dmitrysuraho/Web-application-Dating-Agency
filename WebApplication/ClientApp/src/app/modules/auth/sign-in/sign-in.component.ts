@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from "@ngx-translate/core";
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
+import { QuestionDialogComponent } from 'app/shared/question-dialog/question-dialog.component';
 
 @Component({
     selector     : 'auth-sign-in',
@@ -22,6 +24,7 @@ export class AuthSignInComponent implements OnInit
     signInForm: FormGroup;
     showAlert: boolean = false;
     currentLanguage: string;
+    isDisabled: boolean;
 
     /**
      * Constructor
@@ -31,7 +34,8 @@ export class AuthSignInComponent implements OnInit
         private _authService: AuthService,
         private _formBuilder: FormBuilder,
         private _router: Router,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _dialog: MatDialog
     )
     {
     }
@@ -60,6 +64,15 @@ export class AuthSignInComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     /**
+     * Question
+     */
+    question(): void {
+        this._dialog.open(QuestionDialogComponent, {
+            width: '320px'
+        });
+    }
+
+    /**
      * Sign in
      */
     signIn(): void
@@ -72,6 +85,7 @@ export class AuthSignInComponent implements OnInit
 
         // Hide the alert
         this.showAlert = false;
+        this.isDisabled = false;
 
         // Sign in
         this._authService.signIn(this.signInForm.value)
@@ -93,6 +107,7 @@ export class AuthSignInComponent implements OnInit
                     let errorMessage: string;
                     if (response.message.includes('has been disabled')) {
                         errorMessage = this._translateService.instant('common.alert.disabled-user');
+                        this.isDisabled = true;
                     } else {
                         errorMessage = this._translateService.instant('common.alert.wrong-email-or-password');
                     }
@@ -112,8 +127,10 @@ export class AuthSignInComponent implements OnInit
      * Sign in with Google
      */
     googleSignIn(): void {
+
         // Hide the alert
         this.showAlert = false;
+        this.isDisabled = false;
 
         // Sign in
         this._authService.googleSignIn()
@@ -122,6 +139,7 @@ export class AuthSignInComponent implements OnInit
                 let errorMessage: string;
                 if (result.message.includes('has been disabled')) {
                     errorMessage = this._translateService.instant('common.alert.disabled-user');
+                    this.isDisabled = true;
                 } else {
                     errorMessage = result.message;
                 }
@@ -141,6 +159,11 @@ export class AuthSignInComponent implements OnInit
      * Sign in with Twitter
      */
     twitterSignIn(): void {
+
+        // Hide the alert
+        this.showAlert = false;
+        this.isDisabled = false;
+
         // Sign in
         this._authService.twitterSignIn()
             .catch(result => {
@@ -148,6 +171,7 @@ export class AuthSignInComponent implements OnInit
                 let errorMessage: string;
                 if (result.message.includes('has been disabled')) {
                     errorMessage = this._translateService.instant('common.alert.disabled-user');
+                    this.isDisabled = true;
                 } else {
                     errorMessage = result.message;
                 }
@@ -167,6 +191,11 @@ export class AuthSignInComponent implements OnInit
      * Sign in with Github
      */
     githubSignIn(): void {
+
+        // Hide the alert
+        this.showAlert = false;
+        this.isDisabled = false;
+
         // Sign in
         this._authService.githubSignIn()
             .catch(result => {
@@ -174,6 +203,7 @@ export class AuthSignInComponent implements OnInit
                 let errorMessage: string;
                 if (result.message.includes('has been disabled')) {
                     errorMessage = this._translateService.instant('common.alert.disabled-user');
+                    this.isDisabled = true;
                 } else {
                     errorMessage = result.message;
                 }

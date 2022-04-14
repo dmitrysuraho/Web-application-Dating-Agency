@@ -33,7 +33,8 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
-            User user = _GetCurrentUser();
+            User currentUser = _GetCurrentUser();
+            User user = _usersRepository.CheckPlus(currentUser);
             return _JsonResult(user, _galleriesRepository.GetGalleries(user.UserId), _postsRepository.GetPostsByUserId(user.UserId), true);
         }
 

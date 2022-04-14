@@ -26,6 +26,12 @@
                 [type]="alert.type"
                 [@shake]="alert.type === 'error'">
                 {{alert.message}}
+                <div *ngIf="isDisabled">
+                    <a class="cursor-pointer"
+                       (click)="question()">
+                        {{ 'sign-in.question' | translate }}
+                    </a>
+                </div>
             </fuse-alert>
 
             <!-- Sign in form -->

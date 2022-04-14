@@ -18,6 +18,9 @@ import { ReportDialogComponent } from "app/shared/report-dialog/report-dialog.co
 export class InfoComponent implements OnDestroy
 {
     @Input()
+    currentUser: User;
+
+    @Input()
     user: User;
 
     @Input()
@@ -89,7 +92,7 @@ export class InfoComponent implements OnDestroy
     report(): void {
         this._dialog.open(ReportDialogComponent, {
             maxWidth: '320px',
-            data: { user: this.user }
+            data: { user: this.user, currentUser: this.currentUser }
         });
     }
 

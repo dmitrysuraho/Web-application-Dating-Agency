@@ -9,11 +9,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FuseAlertModule } from '@fuse/components/alert';
-import { ReportDialogComponent } from './report-dialog.component';
+import { QuestionDialogComponent } from './question-dialog.component';
 
 @NgModule({
     declarations: [
-        ReportDialogComponent
+        QuestionDialogComponent
     ],
     imports: [
         CommonModule,
@@ -29,6 +29,6 @@ import { ReportDialogComponent } from './report-dialog.component';
         ReactiveFormsModule
     ]
 })
-export class ReportDialogModule
+export class QuestionDialogModule
 {
 }

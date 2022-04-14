@@ -1,22 +1,19 @@
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Subject } from "rxjs";
-import { DialogData } from "./report-dialog.types";
 import emailJs, { EmailJSResponseStatus } from "@emailjs/browser";
 
 @Component({
     selector: 'report-dialog.component',
-    templateUrl: 'report-dialog.component.html',
+    templateUrl: 'question-dialog.component.html',
 })
-export class ReportDialogComponent implements OnInit, OnDestroy {
+export class QuestionDialogComponent implements OnInit, OnDestroy {
 
-    reportForm: FormGroup;
+    questionForm: FormGroup;
     failText: string;
     isSuccess: boolean;
     isFail: boolean;
-    srcFile: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -24,9 +21,7 @@ export class ReportDialogComponent implements OnInit, OnDestroy {
      */
     constructor(
         private _translateService: TranslateService,
-        private _formBuilder: FormBuilder,
-        private _dialogRef: MatDialogRef<ReportDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData
+        private _formBuilder: FormBuilder
     )
     {
     }
@@ -40,8 +35,9 @@ export class ReportDialogComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Create the form
-        this.reportForm = this._formBuilder.group({
-            email: [this.data.currentUser?.email, [Validators.required, Validators.email]],
+        this.questionForm = this._formBuilder.group({
+            name: ['', [Validators.required]],
+            email: ['', [Validators.required, Validators.email]],
             description: ['', [Validators.required]]
         });
     }
@@ -61,23 +57,6 @@ export class ReportDialogComponent implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Add image
-     */
-    addImage(): void {
-        const inputNode: any = document.querySelector('#proof');
-
-        if (typeof (FileReader) !== 'undefined') {
-            const reader = new FileReader();
-
-            reader.onload = (event: any) => {
-                this.srcFile = event.target.result;
-            };
-
-            reader.readAsDataURL(inputNode.files[0]);
-        }
-    }
-
-    /**
      * Send report
      *
      * @param event
@@ -85,20 +64,20 @@ export class ReportDialogComponent implements OnInit, OnDestroy {
     sendReport(event: Event): void {
         event.preventDefault();
         this.isFail = false;
-        if (this.reportForm.invalid || !this.srcFile) {
+        if (this.questionForm.invalid) {
             this.isFail = true;
-            this.failText = this._translateService.instant('report-dialog.fail-alert');
+            this.failText = this._translateService.instant('question-dialog.fail-alert');
             return;
         }
-        this.reportForm.disable();
-        emailJs.sendForm('service_1yt3zwc', 'template_1xhzx39', event.target as HTMLFormElement, 'BO9wpFNiCkzEZbPiH')
+        this.questionForm.disable();
+        emailJs.sendForm('service_1yt3zwc', 'template_olun2uv', event.target as HTMLFormElement, 'BO9wpFNiCkzEZbPiH')
             .then((result: EmailJSResponseStatus) => {
                 this.isSuccess = true;
-                this.reportForm.enable();
+                this.questionForm.enable();
             }, (error) => {
                 this.isFail = true;
                 this.failText = error.text;
-                this.reportForm.enable();
+                this.questionForm.enable();
             });
     }
 }

@@ -1,0 +1,77 @@
+<div mat-dialog-title>
+    {{ 'question-dialog.title' | translate }}
+</div>
+<div mat-dialog-content>
+    <hr class="w-full border-t"
+        [ngStyle]="{'margin': 0}">
+    <form [formGroup]="questionForm"
+          (submit)="sendReport($event)">
+        <fuse-alert
+            *ngIf="isFail"
+            [appearance]="'outline'"
+            [showIcon]="true"
+            [type]="'error'">
+            {{ failText }}
+        </fuse-alert>
+        <fuse-alert
+            *ngIf="isSuccess"
+            [appearance]="'outline'"
+            [showIcon]="true"
+            [type]="'success'">
+            {{ 'question-dialog.success-alert' | translate }}
+        </fuse-alert>
+        <ng-container *ngIf="!isSuccess">
+            <div class="flex flex-col w-full">
+                <input hidden
+                       name="name"
+                       [value]="questionForm.get('name').value">
+                <input hidden
+                       name="email"
+                       [value]="questionForm.get('email').value">
+                <input hidden
+                       name="message"
+                       [value]="questionForm.get('description').value">
+                <mat-form-field class="mt-4 fuse-mat-no-subscript">
+                    <input matInput
+                           name="name"
+                           [formControlName]="'name'"
+                           [placeholder]="'question-dialog.name-placeholder' | translate">
+                </mat-form-field>
+                <mat-form-field class="mt-4 fuse-mat-no-subscript">
+                    <input matInput
+                           name="email"
+                           [formControlName]="'email'"
+                           [placeholder]="'question-dialog.email-placeholder' | translate">
+                </mat-form-field>
+                <mat-form-field class="mt-4 fuse-mat-textarea fuse-mat-no-subscript">
+                        <textarea
+                            matInput
+                            matTextareaAutosize
+                            #description
+                            name="message"
+                            [formControlName]="'description'"
+                            [placeholder]="'question-dialog.description-placeholder' | translate"
+                            [rows]="3"
+                            [maxLength]="150"></textarea>
+                </mat-form-field>
+                <div
+                    *ngIf="description.value.length"
+                    class="text-right mt-1 text-md text-hint">{{ description.value.length }} / 150</div>
+            </div>
+            <div class="flex items-center justify-end mt-2">
+                <button
+                    class="px-3"
+                    type="submit"
+                    mat-button
+                    [disabled]="questionForm.disabled"
+                    [color]="'primary'">
+                    <span *ngIf="!questionForm.disabled">{{ 'question-dialog.send' | translate }}</span>
+                    <mat-progress-spinner
+                        *ngIf="questionForm.disabled"
+                        [diameter]="24"
+                        [mode]="'indeterminate'"></mat-progress-spinner>
+                </button>
+            </div>
+        </ng-container>
+    </form>
+</div>
