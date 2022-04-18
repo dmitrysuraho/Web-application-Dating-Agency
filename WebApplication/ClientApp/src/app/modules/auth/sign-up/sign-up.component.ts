@@ -68,7 +68,7 @@ export class AuthSignUpComponent implements OnInit
                 sex       : ['', Validators.required],
                 name      : ['', [Validators.required, Validators.maxLength(30), Validators.pattern('^[A-Za-zА-Яа-я ]+$')]],
                 birthday  : ['', Validators.required],
-                region    : ['', [Validators.required, Validators.maxLength(30), Validators.pattern('^[A-Za-zА-Яа-я., ]+$')]],
+                region    : ['', [Validators.required, Validators.maxLength(30), Validators.pattern('^[A-Za-zА-Яа-я-., ]+$')]],
                 email     : ['', [Validators.required, Validators.email]],
                 password  : ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
                 agreements: ['']

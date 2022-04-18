@@ -1,3 +1,11 @@
+<div class="flex justify-end fixed-top p-4"
+     [ngClass]="{'invisible': !isVideoOn}">
+    <video #localVideo
+           class="h-50 w-50"
+           autoplay
+           playsinline
+           [muted]=true></video>
+</div>
 <ng-container *ngIf="isAnswer; else video">
     <h1 mat-dialog-title
         class="text-center">
@@ -42,14 +50,6 @@
 
 <ng-template #video>
     <div mat-dialog-content>
-        <div class="flex justify-end fixed-top p-4"
-             [ngClass]="{'invisible': !isVideoOn}">
-            <video #localVideo
-                   class="h-50 w-50"
-                   autoplay
-                   playsinline
-                   [muted]=true></video>
-        </div>
         <div class="flex justify-center fixed-bottom z-10 p-4">
             <button
                 *ngIf="isAcceptCall"

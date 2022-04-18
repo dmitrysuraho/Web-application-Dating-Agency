@@ -27,6 +27,7 @@ export class CallDialogComponent implements OnDestroy, OnInit {
 
     private _peerId: string;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+
     /**
      * Constructor
      */

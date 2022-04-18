@@ -108,8 +108,10 @@ export class AuthSignInComponent implements OnInit
                     if (response.message.includes('has been disabled')) {
                         errorMessage = this._translateService.instant('common.alert.disabled-user');
                         this.isDisabled = true;
-                    } else {
+                    } else if (response.message.includes('no user') || response.message.includes('password is invalid')) {
                         errorMessage = this._translateService.instant('common.alert.wrong-email-or-password');
+                    } else {
+                        errorMessage = response.message;
                     }
 
                     // Set the alert
