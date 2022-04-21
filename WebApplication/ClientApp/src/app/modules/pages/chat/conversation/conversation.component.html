@@ -53,6 +53,7 @@
                         *ngIf="!isDisabled"
                         class="ml-auto"
                         mat-icon-button
+                        [disabled]="isBlocking"
                         [matMenuTriggerFor]="conversationHeaderMenu">
                         <mat-icon
                             *ngIf="!isBlocking"

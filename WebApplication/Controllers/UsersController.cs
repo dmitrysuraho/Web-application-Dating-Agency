@@ -19,6 +19,7 @@ namespace WebApplication.Controllers
         private readonly GalleriesRepository _galleriesRepository;
         private readonly PostsRepository _postsRepository;
         private readonly BlacklistsRepository _blacklistsRepository;
+        private readonly DatingRepository _datingRepository;
 
         public UsersController(ILogger<UsersController> logger, ApplicationContext context)
         {
@@ -27,6 +28,7 @@ namespace WebApplication.Controllers
             _galleriesRepository = new GalleriesRepository(context);
             _postsRepository = new PostsRepository(context);
             _blacklistsRepository = new BlacklistsRepository(context);
+            _datingRepository = new DatingRepository(context);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -57,7 +59,8 @@ namespace WebApplication.Controllers
                     _postsRepository.GetPostsByUserId(user.UserId),
                     user.Uid == currentUser.Uid,
                     _blacklistsRepository.IsUserBlocked(currentUser.UserId, id),
-                    _blacklistsRepository.IsYouBlocked(currentUser.UserId, id));
+                    _blacklistsRepository.IsYouBlocked(currentUser.UserId, id),
+                    _datingRepository.IsFavorite(currentUser.UserId, id));
             }
         }
 
@@ -198,7 +201,7 @@ namespace WebApplication.Controllers
             return _usersRepository.FindUserByUid(uid);
         }
 
-        private IActionResult _JsonResult(User user, string[] galleries, object[] posts, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null)
+        private IActionResult _JsonResult(User user, string[] galleries, object[] posts, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null, bool? isFavorite = null)
         {
             return Json(new
             {
@@ -217,7 +220,8 @@ namespace WebApplication.Controllers
                 isCurrentUser = isCurrentUser,
                 isBlocked = isBlocked,
                 isYouBlocked = isYouBlocked,
-                isPlus = user.IsPlus
+                isPlus = user.IsPlus,
+                isFavorite = isFavorite
             });
         }
     }

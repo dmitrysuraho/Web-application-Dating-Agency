@@ -10,6 +10,8 @@ import { UserService } from "../../../../core/user/user.service";
 import { ChatService } from "../../chat/chat.service";
 import { Chat } from "../../chat/chat.types";
 import { ReportDialogComponent } from "app/shared/report-dialog/report-dialog.component";
+import { NotificationsService } from "app/layout/common/notifications/notifications.service";
+import {Dating} from "../../../../core/user/dating.types";
 
 @Component({
     selector       : 'info',
@@ -26,6 +28,7 @@ export class InfoComponent implements OnDestroy
     @Input()
     isDisabled: boolean;
 
+    isFollowing: boolean;
     isBlockDisabled: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -38,6 +41,7 @@ export class InfoComponent implements OnDestroy
         private _userService: UserService,
         private _splashScreen: FuseSplashScreenService,
         private _chatService: ChatService,
+        private _notificationsService: NotificationsService,
         private _dialog: MatDialog
     )
     {
@@ -84,6 +88,46 @@ export class InfoComponent implements OnDestroy
      */
     deletePhoto(): void {
         this._upload.deleteAvatar(this.user);
+    }
+
+    /**
+     * Follow
+     */
+    follow(): void {
+        const dating: Dating = {
+            candidate: this.user.userId,
+            isLike: false,
+            isIgnore: false,
+            isFavorite: true
+        };
+
+        this._notificationsService.sendNotice({
+            sender: this.currentUser.userId,
+            action: 'favorite',
+            isRead: false,
+            time: Date.now().toString()
+        }, this.user.userId);
+
+        this.isFollowing = true;
+        this._userService.dating(dating)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(() => {
+                this.user.isFavorite = true;
+                this.isFollowing = false;
+            });
+    }
+
+    /**
+     * Unfollow
+     */
+    unfollow(): void {
+        this.isFollowing = true;
+        this._userService.deleteFavorite(this.user.userId)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(() => {
+                this.user.isFavorite = false;
+                this.isFollowing = false;
+            });
     }
 
     /**

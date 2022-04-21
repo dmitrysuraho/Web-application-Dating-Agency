@@ -48,13 +48,31 @@
 
             <button
                 *ngIf="!user?.isCurrentUser && !isDisabled"
-                mat-icon-button
                 class="ml-1"
-                [color]="'primary'"
-                (click)="report()">
+                mat-icon-button
+                [disabled]="isFollowing"
+                [matMenuTriggerFor]="profileMenu">
                 <mat-icon
-                    class="icon-size-5"
-                    [svgIcon]="'heroicons_solid:speakerphone'"></mat-icon>
+                    *ngIf="!isFollowing"
+                    [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                <mat-progress-spinner
+                    *ngIf="isFollowing"
+                    [diameter]="24"
+                    [mode]="'indeterminate'"></mat-progress-spinner>
+                <mat-menu #profileMenu>
+                    <button *ngIf="!user?.isBlocked && !user?.isYouBlocked"
+                            mat-menu-item
+                            [disabled]="!currentUser?.isPlus"
+                            (click)="user?.isFavorite ? unfollow() : follow()">
+                        <mat-icon [svgIcon]="'heroicons_outline:star'"></mat-icon>
+                        {{ (user?.isFavorite ? 'profile.info.unfollow' : 'profile.info.follow') | translate }}
+                    </button>
+                    <button mat-menu-item
+                            (click)="report()">
+                        <mat-icon [svgIcon]="'heroicons_outline:speakerphone'"></mat-icon>
+                        {{ 'profile.info.report' | translate }}
+                    </button>
+                </mat-menu>
             </button>
         </div>
     </div>

@@ -68,21 +68,15 @@ namespace WebApplication.Controllers
         public IActionResult Post(string sex, int minAge, int maxAge, [FromBody] Dating dating)
         {
             User currentUser = _GetCurrentUser();
-            if (!_datingRepository.Dating(currentUser, dating))
+            _datingRepository.Dating(currentUser, dating);
+            User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge);
+            if (candidate == null)
             {
-                return Conflict(new { message = "You has already granded that candidate" });
+                return NotFound(new { message = "Candidate is not found" });
             }
             else
             {
-                User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge);
-                if (candidate == null)
-                {
-                    return NotFound(new { message = "Candidate is not found" });
-                }
-                else
-                {
-                    return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate.UserId));
-                }
+                return _JsonResult(candidate, _galleriesRepository.GetGalleries(candidate.UserId));
             }
         }
 

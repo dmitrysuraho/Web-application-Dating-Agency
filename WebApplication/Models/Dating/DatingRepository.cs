@@ -28,19 +28,28 @@ namespace WebApplication.Models
                 .FirstOrDefault();
         }
 
-        public bool Dating(User user, Dating dating)
+        public void Dating(User user, Dating dating)
         {
-            if (_context.Datings.Where(prop => prop.UserId == user.UserId && prop.Candidate == dating.Candidate).FirstOrDefault() != null) return false;
-            _context.Datings.Add(new Dating
+            Dating datingUser = _context.Datings.Where(prop => prop.UserId == user.UserId && prop.Candidate == dating.Candidate).FirstOrDefault();
+            if (datingUser != null)
             {
-                Candidate = dating.Candidate,
-                IsIgnore = dating.IsIgnore,
-                IsLike = dating.IsLike,
-                IsFavorite = dating.IsFavorite,
-                User = user
-            });
-            _context.SaveChanges();
-            return true;
+                datingUser.IsIgnore = dating.IsIgnore;
+                datingUser.IsLike = dating.IsLike;
+                datingUser.IsFavorite = dating.IsFavorite;
+                _context.SaveChanges();
+            }
+            else
+            {
+                _context.Datings.Add(new Dating
+                {
+                    Candidate = dating.Candidate,
+                    IsIgnore = dating.IsIgnore,
+                    IsLike = dating.IsLike,
+                    IsFavorite = dating.IsFavorite,
+                    User = user
+                });
+                _context.SaveChanges();
+            }
         }
 
         public object[] GetFavorites(int userId)
@@ -62,6 +71,12 @@ namespace WebApplication.Models
                 return true;
             }
             return false;
+        }
+
+        public bool IsFavorite(int currentId, int id)
+        {
+            Dating favorite = _context.Datings.FirstOrDefault(prop => prop.UserId == currentId && prop.Candidate == id && prop.IsFavorite == true);
+            return favorite != null;
         }
 
         private DateTime _GetDateFromMinAge(int age)
