@@ -18,6 +18,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { ProfileComponent } from 'app/modules/pages/profile/profile.component';
 import { InfoComponent } from "./info/info.component";
 import { DescriptionComponent } from "./description/description.component";
+import { FavoritesComponent } from "./favorites/favorites.component";
 import { GalleryComponent } from "./gallery/gallery.component";
 import { PostsComponent } from "./posts/posts.component";
 import { PostComponent } from "./posts/post/post.component";
@@ -29,6 +30,7 @@ import { profileRoutes } from 'app/modules/pages/profile/profile.routing';
         ProfileComponent,
         InfoComponent,
         DescriptionComponent,
+        FavoritesComponent,
         GalleryComponent,
         PostsComponent,
         PostComponent,

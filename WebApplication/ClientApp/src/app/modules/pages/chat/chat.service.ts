@@ -22,7 +22,7 @@ export class ChatService
         .configureLogging(signalR.LogLevel.Information)
         .build();
     private _receiveMessage = new Subject<[Message, User, Chat]>();
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _receiveDeleteMessage = new Subject<[Message, User, Chat]>();
 
     /**
      * Constructor
@@ -40,7 +40,11 @@ export class ChatService
             await this._connection.start();
         });
         this._connection.on("ReceiveMessage", (message: Message, user: User, chat: Chat) => {
-            this._receiveMessage.next([message, user, chat]);
+            if (!message?.messageText && !message?.messageImage) {
+                this._receiveDeleteMessage.next([message, user, chat]);
+            } else {
+                this._receiveMessage.next([message, user, chat]);
+            }
         });
         this._connection.start();
     }
@@ -138,6 +142,13 @@ export class ChatService
      */
     receiveMessage(): Observable<[Message, User, Chat]> {
         return this._receiveMessage.asObservable();
+    }
+
+    /**
+     * Receive mapped object
+     */
+    receiveDeleteMessage(): Observable<[Message, User, Chat]> {
+        return this._receiveDeleteMessage.asObservable();
     }
 
     /**

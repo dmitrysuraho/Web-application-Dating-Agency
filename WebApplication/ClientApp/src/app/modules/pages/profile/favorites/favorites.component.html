@@ -1,0 +1,33 @@
+<fuse-card class="flex flex-col lg:mt-8 px-8 pt-6 pb-6 rounded-none lg:rounded-2xl">
+    <div class="flex items-center justify-between">
+        <div class="text-2xl font-semibold leading-tight">{{ 'profile.favorites.title' | translate: { count: user?.favorites.length } }}</div>
+    </div>
+    <div
+        *ngIf="user?.favorites.length"
+        class="flex flex-wrap mt-4 max-h-50 overflow-y-scroll">
+        <div *ngFor="let favorite of user?.favorites">
+            <img
+                *ngIf="favorite?.photo"
+                class="w-10 min-w-10 h-10 rounded-full mt-2 mr-2 cursor-pointer"
+                alt="Card cover image"
+                [routerLink]="['/profile', favorite.userId]"
+                [src]="favorite.photo">
+            <mat-icon
+                *ngIf="!favorite?.photo"
+                class="w-10 min-w-10 h-10 rounded-full mt-2 mr-2 bg-gray-200 cursor-pointer"
+                [routerLink]="['/profile', favorite.userId]"
+                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+        </div>
+    </div>
+    <div
+        *ngIf="user?.isCurrentUser && user?.favorites.length"
+        class="flex items-center mt-3 -mx-3">
+        <button
+            class="px-3"
+            mat-button
+            [color]="'primary'"
+            [routerLink]="'/favorites'">
+            {{ 'profile.favorites.go-to-followings' | translate }}
+        </button>
+    </div>
+</fuse-card>

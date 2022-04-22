@@ -12,6 +12,7 @@ export interface User
     about?: string;
     email?: string;
     phone?: string;
+    favorites?: User[],
     gallery?: string[];
     posts?: Post[];
     isCurrentUser?: boolean;

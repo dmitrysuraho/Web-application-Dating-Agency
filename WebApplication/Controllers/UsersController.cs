@@ -37,7 +37,12 @@ namespace WebApplication.Controllers
         {
             User currentUser = _GetCurrentUser();
             User user = _usersRepository.CheckPlus(currentUser);
-            return _JsonResult(user, _galleriesRepository.GetGalleries(user.UserId), _postsRepository.GetPostsByUserId(user.UserId), true);
+            return _JsonResult(
+                user,
+                _datingRepository.GetFavorites(currentUser.UserId),
+                _galleriesRepository.GetGalleries(user.UserId),
+                _postsRepository.GetPostsByUserId(user.UserId),
+                true);
         }
 
         [TypeFilter(typeof(AuthFilter))]
@@ -55,6 +60,7 @@ namespace WebApplication.Controllers
             {
                 return _JsonResult(
                     user,
+                    _datingRepository.GetFavorites(id),
                     _galleriesRepository.GetGalleries(user.UserId),
                     _postsRepository.GetPostsByUserId(user.UserId),
                     user.Uid == currentUser.Uid,
@@ -106,7 +112,7 @@ namespace WebApplication.Controllers
             else
             {
                 User updatedUser = _usersRepository.UpdateUser(user);
-                return _JsonResult(updatedUser, null, null, true);
+                return _JsonResult(updatedUser, null, null, null, true);
             }
         }
 
@@ -167,7 +173,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.AddToBlacklist(currentUser, id);
-                return _JsonResult(blockUser, null, null, false, true, true);
+                return _JsonResult(blockUser, null, null, null, false, true, true);
             }
         }
 
@@ -189,7 +195,7 @@ namespace WebApplication.Controllers
             else
             {
                 _blacklistsRepository.RemoveFromBlackList(currentUser, id);
-                return _JsonResult(unblockUser, null, null, false, false, false);
+                return _JsonResult(unblockUser, null, null, null, false, false, false);
             }
         }
 
@@ -201,7 +207,7 @@ namespace WebApplication.Controllers
             return _usersRepository.FindUserByUid(uid);
         }
 
-        private IActionResult _JsonResult(User user, string[] galleries, object[] posts, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null, bool? isFavorite = null)
+        private IActionResult _JsonResult(User user, object[] favorites, string[] galleries, object[] posts, bool isCurrentUser, bool? isBlocked = null, bool? isYouBlocked = null, bool? isFavorite = null)
         {
             return Json(new
             {
@@ -215,6 +221,7 @@ namespace WebApplication.Controllers
                 about = user.About,
                 email = isCurrentUser ? user.Email : "",
                 phone = isCurrentUser ? user.Phone: "",
+                favorites = favorites,
                 gallery = galleries,
                 posts = posts,
                 isCurrentUser = isCurrentUser,

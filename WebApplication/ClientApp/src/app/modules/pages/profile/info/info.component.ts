@@ -11,7 +11,7 @@ import { ChatService } from "../../chat/chat.service";
 import { Chat } from "../../chat/chat.types";
 import { ReportDialogComponent } from "app/shared/report-dialog/report-dialog.component";
 import { NotificationsService } from "app/layout/common/notifications/notifications.service";
-import {Dating} from "../../../../core/user/dating.types";
+import { Dating } from "app/core/user/dating.types";
 
 @Component({
     selector       : 'info',

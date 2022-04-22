@@ -126,6 +126,8 @@
     "profile.info.disable-alert": "Данная учетная запись была приостановлена.",
     "profile.description.title": "Описание",
     "profile.description.no-info": "Нет информации",
+    "profile.favorites.title": "Подписки: {{count}}",
+    "profile.favorites.go-to-followings": "Перейти к подпискам",
     "profile.gallery.title": "Галерея",
     "profile.gallery.add-image": "Добавить изображение",
     "profile.gallery.see-images": "Просмотреть галерею",

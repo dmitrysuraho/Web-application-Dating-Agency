@@ -15,14 +15,23 @@ namespace WebApplication.Core.Hubs
             using (ApplicationContext _context = new ApplicationContext())
             {
                 int currentId = _GetCurrentUserId(_context);
-                _context.Messages.Add(message);
-                _context.Statuses.Add(new Status
+                if (string.IsNullOrEmpty(message.MessageText) && string.IsNullOrEmpty(message.MessageImage))
                 {
-                    IsRead = false,
-                    Message = message,
-                    UserId = int.Parse(id)
-                });
-                _context.SaveChanges();
+                    Message deletedMessage =_context.Messages.Find(message.MessageId);
+                    _context.Remove(deletedMessage);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    _context.Messages.Add(message);
+                    _context.Statuses.Add(new Status
+                    {
+                        IsRead = false,
+                        Message = message,
+                        UserId = int.Parse(id)
+                    });
+                    _context.SaveChanges();
+                }
                 await Clients.Users(currentId.ToString(), id).SendAsync("ReceiveMessage", message, user, chat);
             }
         }

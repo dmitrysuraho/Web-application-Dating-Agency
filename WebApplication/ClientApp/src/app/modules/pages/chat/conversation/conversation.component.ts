@@ -13,7 +13,7 @@ import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { AngularFireStorageReference } from "@angular/fire/compat/storage";
 import { MatDialog } from "@angular/material/dialog";
-import {forkJoin, Observable, of, Subject} from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Chat, Message } from '../chat.types';
@@ -158,6 +158,14 @@ export class ConversationComponent implements OnInit, OnDestroy
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe();
+
+        // Subscribe to receive delete message
+        this._chatService.receiveDeleteMessage()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(([message, user, chat]: [Message, User, Chat]) => {
+                const index: number = this.chat.messages.findIndex((m: Message) => m.messageId == message.messageId);
+                this.chat.messages.splice(index, 1);
+            });
     }
 
     /**
@@ -208,6 +216,19 @@ export class ConversationComponent implements OnInit, OnDestroy
 
         // Navigate to chat
         this._route.navigateByUrl('chat');
+    }
+
+    /**
+     * Delete message
+     */
+    deleteMessage(message: Message): void {
+        const deletedMessage: Message = {
+            messageId: message.messageId,
+            messageText: '',
+            messageImage: ''
+        }
+
+        this._chatService.sendMessage(deletedMessage, this.chat.member.userId, this.user, this.chat);
     }
 
     /**

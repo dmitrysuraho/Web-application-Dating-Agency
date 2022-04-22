@@ -129,11 +129,21 @@
                                             </div>
                                         </ng-container>
                                         <!-- Message -->
-                                        <div
-                                            class="min-w-4 leading-5 break-words">
-                                            <ng-container *ngIf="message?.messageText">
-                                                {{ message.messageText }}
-                                            </ng-container>
+                                        <div class="min-w-4 leading-5 break-words">
+                                            <div class="flex items-center">
+                                                <ng-container *ngIf="message?.messageText">
+                                                    {{ message.messageText }}
+                                                </ng-container>
+                                                <button
+                                                    *ngIf="message.isMine"
+                                                    mat-icon-button
+                                                    [color]="'warn'"
+                                                    (click)="deleteMessage(message)">
+                                                    <mat-icon
+                                                        class="icon-size-5"
+                                                        [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                                </button>
+                                            </div>
                                             <img
                                                 *ngIf="message?.messageImage"
                                                 [ngClass]="{ 'mt-2': message?.messageText }"
