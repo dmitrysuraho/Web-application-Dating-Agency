@@ -1,0 +1,44 @@
+<ng-container *ngIf="currentUser?.isPlus; else noSubscription">
+    <ng-container *ngIf="posts?.length; else noPosts">
+        <div class="flex flex-col items-center w-full">
+            <div class="lg:max-w-140 md:max-w-140 sm:max-w-140 w-full mb-4">
+                <post-news
+                    *ngFor="let post of posts; let i = index"
+                    [post]="post"
+                    [owner]="post.owner"
+                    [currentUser]="currentUser">
+                </post-news>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>
+
+<ng-template #noPosts>
+    <div
+        class="m-auto p-6">
+        <fuse-alert
+            [type]="'info'"
+            [appearance]="'outline'"
+            @zoomIn>
+            <span
+                class="font-semibold"
+                fuseAlertTitle>{{ 'news.no-news.title' | translate }}</span>
+            <span>{{ 'news.no-news.description' | translate }}</span>
+        </fuse-alert>
+    </div>
+</ng-template>
+
+<ng-template #noSubscription>
+    <div
+        class="m-auto p-6">
+        <fuse-alert
+            [type]="'info'"
+            [appearance]="'outline'"
+            @zoomIn>
+            <span
+                class="font-semibold"
+                fuseAlertTitle>{{ 'news.no-subscription.title' | translate }}</span>
+            <span>{{ 'news.no-subscription.description' | translate }}</span>
+        </fuse-alert>
+    </div>
+</ng-template>

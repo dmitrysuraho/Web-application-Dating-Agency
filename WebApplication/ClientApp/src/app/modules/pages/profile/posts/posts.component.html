@@ -74,9 +74,11 @@
 <post
     *ngFor="let post of user.posts; let i = index"
     [post]="post"
-    [user]="user"
+    [owner]="user"
+    [currentUser]="currentUser"
     [position]="i"
-    (onDeletePost)="onDeletePost($event)"></post>
+    (onDeletePost)="onDeletePost($event)">
+</post>
 
 <!-- No posts -->
 <fuse-card

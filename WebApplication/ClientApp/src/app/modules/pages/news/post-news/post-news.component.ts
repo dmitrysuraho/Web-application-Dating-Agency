@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
+import { Component, Input, OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { UploadService } from "app/core/upload/upload.service";
@@ -7,10 +7,10 @@ import { Post, Comment } from "app/core/user/post.types";
 import { User } from "app/core/user/user.types";
 
 @Component({
-    selector       : 'post',
-    templateUrl    : './post.component.html'
+    selector       : 'post-news',
+    templateUrl    : './post-news.component.html'
 })
-export class PostComponent implements OnDestroy {
+export class PostNewsComponent implements OnDestroy {
 
     @Input()
     post: Post;
@@ -21,15 +21,8 @@ export class PostComponent implements OnDestroy {
     @Input()
     currentUser: User;
 
-    @Input()
-    position: number;
-
-    @Output()
-    onDeletePost: EventEmitter<number> = new EventEmitter<number>();
-
     commentText: string;
     isSendingComment: boolean = false;
-    isDeleting: boolean;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -58,21 +51,6 @@ export class PostComponent implements OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Delete post
-     */
-    deletePost(): void {
-        this.isDeleting = true;
-        this._upload.deletePost(this.post.postId, this.post.image)
-            .pipe(
-                takeUntil(this._unsubscribeAll)
-            )
-            .subscribe(() => {
-                this.onDeletePost.emit(this.position);
-                this.isDeleting = false;
-            });
-    }
 
     /**
      * Like

@@ -13,6 +13,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/profile'
     },
     {
+        id   : 'news',
+        title: 'navigation.news',
+        type : 'basic',
+        icon : 'heroicons_outline:newspaper',
+        link : '/news'
+    },
+    {
         id   : 'dating',
         title: 'navigation.dating',
         type : 'basic',

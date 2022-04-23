@@ -132,6 +132,16 @@ export class ChatsComponent implements OnInit, OnDestroy
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe();
+
+        this._chatService.receiveDeleteMessage()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(([message, user, chat]: [Message, User, Chat]) => {
+                const index: number = chat.messages.findIndex((m: Message) => m.messageId == message.messageId);
+                chat.messages.splice(index, 1);
+                const foundChat: Chat = this.chats.find((c: Chat) => c.chatId == chat.chatId);
+                const lastMessage: Message = chat.messages[chat.messages.length - 1];
+                foundChat.lastMessage = lastMessage ? lastMessage : null;
+            });
     }
 
     /**

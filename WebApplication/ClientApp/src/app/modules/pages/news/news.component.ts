@@ -1,20 +1,21 @@
 import { Component } from "@angular/core";
-import { User } from "../../../core/user/user.types";
 import { Subject } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
 import { FuseSplashScreenService } from "@fuse/services/splash-screen";
-import { UserService } from "../../../core/user/user.service";
 import { fuseAnimations } from "@fuse/animations";
+import { User } from "app/core/user/user.types";
+import { UserService } from "app/core/user/user.service";
+import { Post } from "app/core/user/post.types";
 
 @Component({
-    selector       : 'favorites',
-    templateUrl    : './favorites.component.html',
+    selector       : 'news',
+    templateUrl    : './news.component.html',
     animations     : [fuseAnimations]
 })
-export class FavoritesComponent {
+export class NewsComponent {
 
-    user: User;
-    favoriteUsers: User[];
+    currentUser: User;
+    posts: Post[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -36,18 +37,18 @@ export class FavoritesComponent {
      */
     ngOnInit(): void
     {
-        // Splash screen ang get favorites
+        // Splash screen ang get news
         this._splashScreen.show();
-        this._userService.getFavorites()
+        this._userService.user$
             .pipe(
-                switchMap((favorites: User[]) => {
-                    this.favoriteUsers = favorites;
-                    return this._userService.user$;
+                switchMap((user: User) => {
+                    this.currentUser = user;
+                    return this._userService.getNews();
                 }),
                 takeUntil(this._unsubscribeAll)
             )
-            .subscribe((user: User) => {
-                this.user = user;
+            .subscribe((posts: Post[]) => {
+                this.posts = posts;
                 this._splashScreen.hide();
             });
     }
@@ -60,18 +61,5 @@ export class FavoritesComponent {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On delete favorite
-     *
-     * @param position
-     */
-    onDeleteFavorite(position: number): void {
-        this.favoriteUsers.splice(position, 1);
     }
 }

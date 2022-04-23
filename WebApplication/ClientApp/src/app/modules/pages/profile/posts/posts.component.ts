@@ -15,6 +15,9 @@ export class PostsComponent implements OnInit, OnDestroy {
     @Input()
     user: User;
 
+    @Input()
+    currentUser: User;
+
     srcFile: string;
     description: string;
     image: any;

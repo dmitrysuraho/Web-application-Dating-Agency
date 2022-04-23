@@ -22,8 +22,17 @@ namespace WebApplication.Controllers
         }
 
         [TypeFilter(typeof(AuthFilter))]
+        [Route("news")]
+        [HttpGet]
+        public IActionResult GetNews()
+        {
+            User currentUser = _GetCurrentUser();
+            return Json(_postsRepository.GetNews(currentUser.UserId));
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
         [HttpPost]
-        public IActionResult Post([FromBody] Post post)
+        public IActionResult PostPost([FromBody] Post post)
         {
             return Json(_postsRepository.CreatePost(post, _GetCurrentUser()));
         }
@@ -31,10 +40,56 @@ namespace WebApplication.Controllers
         [TypeFilter(typeof(AuthFilter))]
         [Route("{id:int}")]
         [HttpDelete]
-        public IActionResult Dlete(int id)
+        public IActionResult DeletePost(int id)
         {
             _postsRepository.DeletePost(id);
             return Json(new { message = "Post is deleted" });
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("{id}/like")]
+        [HttpPost]
+        public IActionResult PostLike(int id)
+        {
+            User currentUser = _GetCurrentUser();
+            _postsRepository.Like(currentUser.UserId, id);
+            return Json(new { message = "Post is liked" });
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("{id}/like")]
+        [HttpDelete]
+        public IActionResult DeleteLike(int id)
+        {
+            User currentUser = _GetCurrentUser();
+            _postsRepository.Unlike(currentUser.UserId, id);
+            return Json(new { message = "Post is unliked" });
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("comment")]
+        [HttpPost]
+        public IActionResult PostComment([FromBody] Comment comment)
+        {
+            User currentUser = _GetCurrentUser();
+            Comment addedComment = _postsRepository.AddComment(comment);
+            return Json(new
+            {
+                commentId = addedComment.CommentId,
+                commentText = addedComment.CommentText,
+                postId = addedComment.PostId,
+                userId = addedComment.UserId,
+                sender = currentUser
+            });
+        }
+
+        [TypeFilter(typeof(AuthFilter))]
+        [Route("comment/{id}")]
+        [HttpDelete]
+        public IActionResult DeleteComment(int id)
+        {
+            _postsRepository.DeleteComment(id);
+            return Json(new { message = "Comment is deleted" });
         }
 
         private User _GetCurrentUser()

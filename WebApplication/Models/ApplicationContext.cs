@@ -9,6 +9,8 @@ namespace WebApplication.Models
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Gallery> Galleries { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Notice> Notices { get; set; }
         public DbSet<Blacklist> Blacklists { get; set; }

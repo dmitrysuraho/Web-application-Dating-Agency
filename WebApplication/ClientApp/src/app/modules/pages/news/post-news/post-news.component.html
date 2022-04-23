@@ -1,7 +1,6 @@
 <fuse-card
     #expandableCard="fuseCard"
-    class="flex flex-col lg:max-w-140 md:max-w-140 sm:max-w-140 lg:min-w-140 w-full"
-    [ngClass]="{ 'mt-8 lg:mt-0': !owner?.isCurrentUser && position === 0, 'mt-4': position !== 0 }">
+    class="flex flex-col lg:max-w-140 md:max-w-140 sm:max-w-140 lg:min-w-140 w-full mt-4">
     <div class="flex items-center mx-6 sm:mx-8 my-4">
         <img
             *ngIf="owner?.photo"
@@ -18,21 +17,6 @@
         <div class="flex flex-col">
             <span class="font-semibold leading-none">{{ owner.name }}</span>
         </div>
-        <button
-            *ngIf="owner?.isCurrentUser"
-            class="ml-auto -mr-4"
-            mat-icon-button
-            [disabled]="isDeleting"
-            (click)="deletePost()">
-            <mat-icon
-                *ngIf="!isDeleting"
-                class="icon-size-5"
-                [svgIcon]="'heroicons_solid:trash'"></mat-icon>
-            <mat-progress-spinner
-                *ngIf="isDeleting"
-                [diameter]="24"
-                [mode]="'indeterminate'"></mat-progress-spinner>
-        </button>
     </div>
     <div class="mx-6 sm:mx-8 mb-4">
         {{ post.description }}

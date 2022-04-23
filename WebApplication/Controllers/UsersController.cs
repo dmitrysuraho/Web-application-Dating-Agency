@@ -41,7 +41,7 @@ namespace WebApplication.Controllers
                 user,
                 _datingRepository.GetFavorites(currentUser.UserId),
                 _galleriesRepository.GetGalleries(user.UserId),
-                _postsRepository.GetPostsByUserId(user.UserId),
+                _postsRepository.GetPostsByUserId(currentUser.UserId, user.UserId),
                 true);
         }
 
@@ -62,7 +62,7 @@ namespace WebApplication.Controllers
                     user,
                     _datingRepository.GetFavorites(id),
                     _galleriesRepository.GetGalleries(user.UserId),
-                    _postsRepository.GetPostsByUserId(user.UserId),
+                    _postsRepository.GetPostsByUserId(currentUser.UserId, user.UserId),
                     user.Uid == currentUser.Uid,
                     _blacklistsRepository.IsUserBlocked(currentUser.UserId, id),
                     _blacklistsRepository.IsYouBlocked(currentUser.UserId, id),

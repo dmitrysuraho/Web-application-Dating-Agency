@@ -6,7 +6,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { User } from 'app/core/user/user.types';
 import { Notification } from 'app/core/user/notification.types';
 import { Dating } from './dating.types';
-import { Post } from "./post.types";
+import { Post, Comment } from "./post.types";
 import { Subscription } from "./subscription.types";
 
 @Injectable({
@@ -213,6 +213,13 @@ export class UserService
     }
 
     /**
+     * Get news
+     */
+    getNews(): Observable<Post[]> {
+        return this._httpClient.get<Post[]>('api/posts/news');
+    }
+
+    /**
      * Get favorites
      */
     getFavorites(): Observable<User[]> {
@@ -224,6 +231,42 @@ export class UserService
      */
     deleteFavorite(id: string): Observable<any> {
         return this._httpClient.delete('api/dating/favorites/' + id);
+    }
+
+    /**
+     * Like
+     *
+     * @param postId
+     */
+    like(postId: string): Observable<any> {
+        return this._httpClient.post(`api/posts/${postId}/like`, null);
+    }
+
+    /**
+     * Unlike
+     *
+     * @param postId
+     */
+    unlike(postId: string): Observable<any> {
+        return this._httpClient.delete(`api/posts/${postId}/like`);
+    }
+
+    /**
+     * Add comment
+     *
+     * @param comment
+     */
+    addComment(comment: Comment): Observable<Comment> {
+        return this._httpClient.post<Comment>(`api/posts/comment`, comment);
+    }
+
+    /**
+     * Delete comment
+     *
+     * @param commentId
+     */
+    deleteComment(commentId: string): Observable<any> {
+        return this._httpClient.delete(`api/posts/comment/${commentId}`);
     }
 
     // -----------------------------------------------------------------------------------------------------
