@@ -11,7 +11,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DOCUMENT } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { of, Subject } from "rxjs";
-import {switchMap, takeUntil, tap} from "rxjs/operators";
+import { switchMap, takeUntil, tap } from "rxjs/operators";
 import { PaypalDialogComponent } from "./paypal-dialog/paypal-dialog.component";
 import { User } from "app/core/user/user.types";
 import { UserService } from "app/core/user/user.service";
@@ -126,7 +126,6 @@ export class SettingsPlanBillingComponent implements OnInit, OnDestroy
         const end: Date = new Date();
         end.setMonth(end.getMonth() + plan.month);
         const dialogRef = this._dialog.open(PaypalDialogComponent, {
-            panelClass: 'paypal',
             data: {
                 price: plan.price
             }
@@ -144,8 +143,8 @@ export class SettingsPlanBillingComponent implements OnInit, OnDestroy
                     this._userService.user = this.user;
                     this.subscription = sub;
                     this.isBuy = true;
-                    this.isLoading = false;
                 }
+                this.isLoading = false;
             });
     }
 

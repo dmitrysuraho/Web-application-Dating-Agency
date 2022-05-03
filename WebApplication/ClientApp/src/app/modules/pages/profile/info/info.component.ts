@@ -114,6 +114,9 @@ export class InfoComponent implements OnDestroy
             .subscribe(() => {
                 this.user.isFavorite = true;
                 this.isFollowing = false;
+            }, () => {
+                this.user.isFavorite = true;
+                this.isFollowing = false;
             });
     }
 

@@ -13,6 +13,7 @@ namespace WebApplication.Models
         public string Region { get; set; }
         public string Photo { get; set; }
         public string About { get; set; }
+        public string Interests { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public bool IsPlus { get; set; }
