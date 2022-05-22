@@ -30,12 +30,14 @@
                     <div class="flex justify-center items-center break-all">
                         <img
                             *ngIf="user.photo"
-                            class="w-12 min-w-12 h-12 rounded-full mr-4"
+                            class="cursor-pointer w-12 min-w-12 h-12 rounded-full mr-4"
+                            [routerLink]="['/profile', user.userId]"
                             [src]="user.photo"
                             alt="Card cover image">
                         <mat-icon
                             *ngIf="!user.photo"
-                            class="w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+                            class="cursor-pointer w-12 min-w-12 h-12 rounded-full mr-4 bg-gray-200"
+                            [routerLink]="['profile', user.userId]"
                             [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                         <span>{{ user.name }}</span>
                     </div>
