@@ -280,6 +280,8 @@ export class UserService
         const sex: string = localStorage.getItem('sex');
         let minAge: string, maxAge: string;
         [minAge, maxAge] = localStorage.getItem('age').split('-');
-        return `?sex=${sex}&minAge=${minAge}&maxAge=${maxAge}`;
+        const interest = localStorage.getItem('interest');
+        const region = localStorage.getItem('region');
+        return `?sex=${sex}&minAge=${minAge}&maxAge=${maxAge}&interest=${interest}&region=${region}`;
     }
 }

@@ -26,6 +26,8 @@ import { FuseVerticalNavigationGroupItemComponent } from '@fuse/components/navig
 import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navigation/vertical/components/spacer/spacer.component';
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 import { DatingSettingsDialogComponent } from "@fuse/components/navigation/dating-settings-dialog/dating-settings-dialog.component";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
     declarations: [
@@ -57,7 +59,9 @@ import { DatingSettingsDialogComponent } from "@fuse/components/navigation/datin
         MatButtonToggleModule,
         MatSliderModule,
         NgxMatRangeSliderModule,
-        FormsModule
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule
     ],
     exports     : [
         FuseHorizontalNavigationComponent,

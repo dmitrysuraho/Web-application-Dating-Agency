@@ -11,6 +11,8 @@ export class DatingSettingsDialogComponent {
     sex: string;
     minAge: number;
     maxAge: number;
+    interest: string;
+    region: string;
 
     /**
      * Constructor
@@ -33,6 +35,8 @@ export class DatingSettingsDialogComponent {
         this.sex = localStorage.getItem('sex');
         this.minAge = Number(localStorage.getItem('age').split('-')[0]);
         this.maxAge = Number(localStorage.getItem('age').split('-')[1]);
+        this.interest = localStorage.getItem('interest');
+        this.region = localStorage.getItem('region');
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -46,6 +50,8 @@ export class DatingSettingsDialogComponent {
         // Set a new settings
         localStorage.setItem('sex', this.sex);
         localStorage.setItem('age', this.minAge + '-' + this.maxAge);
+        localStorage.setItem('interest', this.interest);
+        localStorage.setItem('region', this.region);
 
         // Reload the app
         location.reload();

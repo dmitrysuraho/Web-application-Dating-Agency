@@ -25,10 +25,10 @@ namespace WebApplication.Controllers
 
         [TypeFilter(typeof(AuthFilter))]
         [HttpGet]
-        public IActionResult Get(string sex, int minAge, int maxAge)
+        public IActionResult Get(string sex, int minAge, int maxAge, string interest, string region)
         {
             User currentUser = _GetCurrentUser();
-            User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge);
+            User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge, interest, region);
             if (candidate == null)
             {
                 return NotFound(new { message = "Candidate is not found" });
@@ -65,11 +65,11 @@ namespace WebApplication.Controllers
 
         [TypeFilter(typeof(AuthFilter))]
         [HttpPost]
-        public IActionResult Post(string sex, int minAge, int maxAge, [FromBody] Dating dating)
+        public IActionResult Post(string sex, int minAge, int maxAge, string interest, string region, [FromBody] Dating dating)
         {
             User currentUser = _GetCurrentUser();
             _datingRepository.Dating(currentUser, dating);
-            User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge);
+            User candidate = _datingRepository.GetDatingUser(currentUser.UserId, sex, minAge, maxAge, interest, region);
             if (candidate == null)
             {
                 return NotFound(new { message = "Candidate is not found" });

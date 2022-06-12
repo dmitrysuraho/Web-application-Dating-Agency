@@ -71,6 +71,16 @@ export class UserComponent implements OnInit, OnDestroy
             localStorage.setItem('age', '18-30');
         }
 
+        // Set interest
+        if (!localStorage.getItem('interest')) {
+            localStorage.setItem('interest', '');
+        }
+
+        // Set region
+        if (!localStorage.getItem('region')) {
+            localStorage.setItem('region', '');
+        }
+
         this._setNavigationSubtitles();
 
         // Subscribe to user changes

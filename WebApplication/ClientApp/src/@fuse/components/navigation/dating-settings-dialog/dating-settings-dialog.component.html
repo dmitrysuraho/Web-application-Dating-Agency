@@ -28,6 +28,32 @@
                 [value]="{min: minAge, max: maxAge}"
                 (output)="onAgeChange($event)"></lib-ngx-mat-range-slider>
         </div>
+
+        <!-- Interest -->
+        <mat-form-field class="w-full">
+            <mat-label>{{ 'navigation.dating-settings.interest' | translate }}</mat-label>
+            <input
+                matInput
+                [maxlength]="15"
+                [(ngModel)]="interest">
+            <mat-icon
+                class="icon-size-5"
+                matPrefix
+                [svgIcon]="'heroicons_solid:emoji-happy'"></mat-icon>
+        </mat-form-field>
+
+        <!-- Region -->
+        <mat-form-field class="w-full">
+            <mat-label>{{ 'navigation.dating-settings.region' | translate }}</mat-label>
+            <input
+                matInput
+                [maxLength]="20"
+                [(ngModel)]="region">
+            <mat-icon
+                class="icon-size-5"
+                matPrefix
+                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+        </mat-form-field>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions class="flex flex-row justify-center">

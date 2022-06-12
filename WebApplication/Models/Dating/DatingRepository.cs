@@ -14,12 +14,14 @@ namespace WebApplication.Models
             _context = context;
         }
 
-        public User GetDatingUser(int currentId, string sex, int minAge, int maxAge)
+        public User GetDatingUser(int currentId, string sex, int minAge, int maxAge, string interest, string region)
         {
             return _context.Users
                 .Where(
                     prop => prop.UserId != currentId &&
                     (sex != "All" ? prop.Sex == sex : prop.Sex == "Male" || prop.Sex == "Female") &&
+                    (string.IsNullOrEmpty(interest) || prop.About.ToLower().Contains(interest.ToLower())) &&
+                    (string.IsNullOrEmpty(region) || prop.Region.ToLower().Contains(region.ToLower())) &&
                     prop.Birthday <= _GetDateFromMinAge(minAge) &&
                     prop.Birthday >= _GetDateFromMaxAge(maxAge) &&
                     _context.Blacklists.FirstOrDefault(p => (p.UserId == currentId && p.BlockedUser == prop.UserId) ||
