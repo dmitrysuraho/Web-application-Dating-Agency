@@ -108,6 +108,8 @@ export class SettingsAccountComponent implements OnInit, OnDestroy
             ...this.accountForm.value,
             photo: this.user.photo
         };
+        const birthday: Date = this.accountForm.get('birthday').value;
+        birthday.setDate(birthday.getDate() + 1);
 
         // Update current user
         this._userService.updateCurrentUser(user)
