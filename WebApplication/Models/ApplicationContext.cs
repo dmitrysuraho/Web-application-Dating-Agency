@@ -35,7 +35,7 @@ namespace WebApplication.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=tcp:dating-agency-server.database.windows.net,1433;Initial Catalog=dating-agency;Persist Security Info=False;User ID=dsuraho;Password=f,d2001l5;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=dating-agency.mssql.somee.com;packet size=4096;user id=dsuraho_SQLLogin_1;pwd=hfibisvmh2;data source=dating-agency.mssql.somee.com;persist security info=False;initial catalog=dating-agency");
             }
         }
     }
